@@ -668,6 +668,38 @@ footer{
 .lesson-preview-card .btn-primary{background:var(--gold);border-color:var(--gold);color:var(--ink);width:100%;text-align:center;padding-inline:18px;}
 @media(max-width:900px){.lesson-preview{padding:64px 28px}.lesson-preview-inner{grid-template-columns:1fr}.lesson-preview-card{padding:26px}.nav-logo{font-size:1rem}.nav-cta{padding:10px 14px;font-size:.72rem}.hero-proof{flex-wrap:wrap}.preview-meta{grid-template-columns:1fr}}
 
+/* ══ PHONE MENU + SMALL SCREEN FIXES ══ */
+.menu-toggle{display:none;background:none;border:1.5px solid rgba(26,18,8,.25);border-radius:6px;width:42px;height:40px;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);}
+.menu-toggle svg{display:block}
+.menu-toggle:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.hero{overflow:hidden;}
+.contact-hp{display:none;}
+.footer-contact-form button:disabled{opacity:.6;cursor:default;}
+@media(max-width:900px){
+  .menu-toggle{display:inline-flex;}
+  nav.menu-open .nav-links{
+    display:flex;flex-direction:column;align-items:stretch;gap:0;
+    position:absolute;top:100%;left:0;right:0;
+    background:var(--cream);border-bottom:1px solid rgba(26,18,8,.12);
+    box-shadow:0 16px 32px rgba(26,18,8,.12);padding:8px 24px 16px;
+  }
+  nav.menu-open .nav-links a{padding:14px 0;border-bottom:1px solid rgba(26,18,8,.08);opacity:1;font-size:.9rem;}
+  nav.menu-open .nav-links a:last-child{border-bottom:none;}
+}
+@media(max-width:640px){
+  footer{padding:48px 24px 32px;}
+  .footer-top{flex-direction:column;gap:20px;}
+  .footer-links{flex-wrap:wrap;gap:14px 22px;}
+  .footer-contact{gap:36px;}
+  .footer-contact-info,.footer-contact-form{min-width:0;flex-basis:100%;}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center;}
+  #joinForm > div{grid-template-columns:1fr !important;}
+  #joinForm input{min-width:0;width:100%;}
+  .pricing-inner > div[style*="repeat(3,1fr)"]{grid-template-columns:1fr !important;}
+  .pricing-inner > div[style*="repeat(3,1fr)"] > div{border-left:none !important;}
+}
+@media(max-width:400px){.nav-cta{display:none;}}
 </style>
 </head>
 <body>
@@ -678,7 +710,7 @@ footer{
 <!-- NAV -->
 <nav aria-label="Main navigation">
   <a class="nav-logo" href="index.html">Vaughn Tucker <span>Art Academy</span></a>
-  <div class="nav-links">
+  <div class="nav-links" id="navLinks">
     <a href="art-academy-intro.html">Welcome</a>
     <a href="#schools">Schools</a>
     <a href="lessons.html">Lessons</a>
@@ -688,7 +720,12 @@ footer{
     <a href="community.html">Community</a>
     <a href="#artist">Artist</a>
   </div>
-  <a href="living-studio.html" class="nav-cta">Living Studio</a>
+  <div class="nav-right">
+    <a href="living-studio.html" class="nav-cta">Living Studio</a>
+    <button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -1079,14 +1116,16 @@ document.addEventListener('DOMContentLoaded',()=>{
         <a href="https://www.paypal.com/donate/?business=vaughntuckerart%40gmail.com&item_name=Support+Vaughn+Tucker+Art+Academy&currency_code=USD" target="_blank" class="donate-btn">♥ Support the Academy</a>
       </div>
     </div>
-    <div class="footer-contact-form">
+    <form class="footer-contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="contactForm">
       <h3>Send a Message</h3>
-      <input id="contactName" type="text" placeholder="Your name">
-      <input id="contactEmail" type="email" placeholder="Your email">
-      <textarea id="contactMessage" placeholder="Your message..."></textarea>
-      <button onclick="handleContact()">Send Message ✦</button>
-      <p id="contactMsg"></p>
-    </div>
+      <input type="hidden" name="form-name" value="contact">
+      <p class="contact-hp"><label>Leave this empty: <input name="bot-field"></label></p>
+      <input id="contactName" name="name" type="text" placeholder="Your name" aria-label="Your name" autocomplete="name">
+      <input id="contactEmail" name="email" type="email" placeholder="Your email" aria-label="Your email" autocomplete="email">
+      <textarea id="contactMessage" name="message" placeholder="Your message..." aria-label="Your message"></textarea>
+      <button type="submit">Send Message ✦</button>
+      <p id="contactMsg" role="status"></p>
+    </form>
   </div>
 
   <div class="footer-bottom">
@@ -1096,15 +1135,48 @@ document.addEventListener('DOMContentLoaded',()=>{
 </footer>
 
 <script>
-function handleContact(){
+// Contact form: sends the message to Netlify Forms, which emails it to the academy.
+document.getElementById('contactForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const form=this;
   const name=document.getElementById('contactName').value.trim();
   const email=document.getElementById('contactEmail').value.trim();
   const message=document.getElementById('contactMessage').value.trim();
   const msg=document.getElementById('contactMsg');
+  const button=form.querySelector('button[type="submit"]');
   if(!name){msg.style.color='#e07050';msg.textContent='Please enter your name.';return;}
   if(!email||!email.includes('@')){msg.style.color='#e07050';msg.textContent='Please enter a valid email.';return;}
   if(!message){msg.style.color='#e07050';msg.textContent='Please enter a message.';return;}
-  const subject=encodeURIComponent('Message from '+name+' via VTAA');
-  const body=encodeURIComponent('From: '+name+'\nEmail: '+email+'\n\n'+message);
-  window.location.href='mailto:info@vaughntuckerartacademy.com?subject='+subject+'&body='+body;
-  msg.styl
+  button.disabled=true;
+  msg.style.color='var(--gold)';msg.textContent='Sending...';
+  fetch('/',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams(new FormData(form)).toString()
+  }).then(function(res){
+    if(!res.ok) throw new Error(res.status);
+    form.reset();
+    msg.style.color='var(--gold)';
+    msg.textContent='Thank you, '+name+'! Your message was sent. I will get back to you soon.';
+  }).catch(function(){
+    msg.style.color='#e07050';
+    msg.textContent='Sorry, the message could not be sent. Please email info@vaughntuckerartacademy.com instead.';
+  }).finally(function(){button.disabled=false;});
+});
+
+// Phone menu: show and hide the page links
+(function(){
+  const nav=document.querySelector('nav');
+  const toggle=nav.querySelector('.menu-toggle');
+  function setOpen(open){
+    nav.classList.toggle('menu-open',open);
+    toggle.setAttribute('aria-expanded',open);
+    toggle.setAttribute('aria-label',open?'Close menu':'Open menu');
+  }
+  toggle.addEventListener('click',function(){setOpen(!nav.classList.contains('menu-open'));});
+  nav.querySelectorAll('.nav-links a').forEach(function(a){a.addEventListener('click',function(){setOpen(false);});});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});
+})();
+</script>
+</body>
+</html>
