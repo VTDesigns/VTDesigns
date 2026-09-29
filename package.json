@@ -1,0 +1,9 @@
+{
+  "name": "vaughn-tucker-art-academy",
+  "private": true,
+  "type": "module",
+  "description": "Website for vaughntuckerartacademy.com. Static pages live in site/, serverless functions in netlify/functions/.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.129.0"
+  }
+}
