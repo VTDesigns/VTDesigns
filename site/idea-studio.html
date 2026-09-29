@@ -119,6 +119,14 @@ section.part{padding:48px 0;border-top:1px solid var(--line);}
 footer{padding:40px 0 56px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink2);}
 footer a{margin-right:18px;}
 
+/* ── Pencil to paint showcase ── */
+.journey{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:18px;align-items:center;margin-top:8px;}
+.journey figure{background:var(--white);padding:10px;border:1px solid var(--line);box-shadow:0 14px 36px rgba(26,18,8,.12);}
+.journey img{display:block;width:100%;height:auto;}
+.journey figcaption{padding:12px 4px 4px;font-size:.92rem;color:var(--ink2);line-height:1.55;}
+.journey figcaption b{display:block;font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--ink);margin-bottom:2px;}
+.journey .arrow{font-size:2rem;color:var(--accent);}
+@media(max-width:900px){.journey{grid-template-columns:1fr;}.journey .arrow{text-align:center;transform:rotate(90deg);}}
 @media(max-width:900px){
   nav{padding:14px 20px;flex-wrap:wrap;}
   .nav-links{gap:14px;}
@@ -152,6 +160,24 @@ footer a{margin-right:18px;}
   <p class="lead">Describe the picture you want to make. The Idea Studio turns it into a real drawing project, the way I teach in my studio: where your eyes are, which perspective to use, how to arrange it, and how to build it step by step from simple forms to the finished piece. Then take it to paint in oil, acrylic or watercolor, with a palette and a painting process for your picture.</p>
   <p class="quote">"Construction before detail. Get the eye level right and the rest follows."</p>
 </header>
+
+<!-- ═══ PENCIL TO PAINT ═══ -->
+<section class="part" aria-labelledby="journeyTitle">
+  <div class="step-num">From my studio</div>
+  <h2 id="journeyTitle">First build it in pencil. Then paint it.</h2>
+  <p class="sub">This is how I made <em>Down Town Kingstown</em> (22 × 28 in). The drawing settles the eye level, the two vanishing points and the big shapes. Only then does the paint go on. The Idea Studio walks you through the same two stages for your own picture.</p>
+  <div class="journey">
+    <figure>
+      <img src="down-town-kingstown-sketch.jpg" width="1471" height="1069" alt="Vaughn Tucker's pencil drawing of Down Town Kingstown: a two-storey corner building in two-point perspective, with construction lines, a traffic light and people on the sidewalk." loading="lazy">
+      <figcaption><b>1. Construct in pencil</b>Eye level, vanishing points, boxes for the building, then windows, steps and people.</figcaption>
+    </figure>
+    <div class="arrow" aria-hidden="true">→</div>
+    <figure>
+      <img src="corner-building.jpg" width="960" height="718" alt="The finished painting Down Town Kingstown by Vaughn Tucker: the same corner building in white with red trim under a blue sky." loading="lazy">
+      <figcaption><b>2. Paint</b>The same structure, now carried by light, shadow and colour: white walls, red trim and a Caribbean sky.</figcaption>
+    </figure>
+  </div>
+</section>
 
 <!-- ═══ ASK ═══ -->
 <section class="part" aria-labelledby="askTitle">
