@@ -478,7 +478,7 @@
 
 <p class="footer-note">
     All paintings ship within the continental US. International shipping available on request.<br>
-    Questions? <a href="mailto:vaughntuckerart@gmail.com">vaughntuckerart@gmail.com</a>
+    Questions? <a href="mailto:info@vaughntuckerartacademy.com">info@vaughntuckerartacademy.com</a>
 </p>
 
 <!-- ── Inquiry Modal ── -->
@@ -537,7 +537,7 @@
         const msg = document.getElementById('inquiryMessage').value.trim();
         const subject = encodeURIComponent('Inquiry: ' + title + ' (' + price + ')');
         const body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nPainting: ' + title + '\nPrice: ' + price + '\n\n' + (msg || '(No additional message)'));
-        window.open('mailto:vaughntuckerart@gmail.com?subject=' + subject + '&body=' + body);
+        window.open('mailto:info@vaughntuckerartacademy.com?subject=' + subject + '&body=' + body);
         document.getElementById('inquiryForm').style.display = 'none';
         document.getElementById('successMsg').style.display = 'block';
     }
