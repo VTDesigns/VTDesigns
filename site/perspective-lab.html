@@ -102,6 +102,23 @@ footer a{margin-right:18px;}
   .study,.lab{grid-template-columns:1fr;}
   .exercises{grid-template-columns:1fr;}
 }
+/* ── Locked preview ── */
+.unlock{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:center;}
+.unlock-preview{position:relative;border-radius:8px;overflow:hidden;box-shadow:0 12px 36px rgba(26,18,8,.12);}
+.unlock-preview img{display:block;width:100%;height:auto;filter:blur(1.5px) saturate(.9);opacity:.85;}
+.unlock-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;background:rgba(245,240,232,.25);}
+.unlock-card{background:var(--ink);color:var(--white);padding:30px;border-left:4px solid var(--gold);}
+.unlock-kicker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+.unlock-price{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:900;margin:6px 0 14px;}
+.unlock-price span{font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:400;opacity:.7;}
+.unlock-card ul{list-style:none;margin-bottom:22px;}
+.unlock-card li{padding:6px 0 6px 22px;position:relative;font-size:.92rem;color:rgba(253,250,244,.85);}
+.unlock-card li::before{content:'✦';position:absolute;left:0;color:var(--gold);}
+.unlock-btn{display:block;text-align:center;padding:16px 20px;background:var(--gold);color:var(--ink);text-decoration:none;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.88rem;border-radius:6px;}
+.unlock-btn:hover{background:var(--white);}
+.unlock-btn:focus-visible{outline:3px solid var(--white);outline-offset:3px;}
+.unlock-small{font-size:.78rem;opacity:.6;margin-top:10px;text-align:center;}
+@media(max-width:900px){.unlock{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -133,7 +150,7 @@ footer a{margin-right:18px;}
   <div class="study">
     <div>
       <div class="painting-frame">
-        <img src="corner-building.jpg" width="960" height="718" alt="Oil painting by Vaughn Tucker of a two-storey white building with red trim on a street corner, under a blue sky with power lines.">
+        <img src="corner-building.jpg" width="960" height="718" alt="Down Town Kingstown, a painting by Vaughn Tucker of a two-storey white building with red trim on a street corner, under a blue sky with power lines.">
         <svg viewBox="0 0 960 718" preserveAspectRatio="none" aria-hidden="true">
           <g id="g-horizon" style="display:none">
             <line x1="0" y1="461" x2="960" y2="461" stroke="#ffd23f" stroke-width="4" stroke-dasharray="14 8"/>
@@ -154,7 +171,7 @@ footer a{margin-right:18px;}
           </g>
         </svg>
       </div>
-      <p class="caption">Vaughn Tucker, street corner, oil on canvas, 2021. The guides are drawn over the painting to show its construction.</p>
+      <p class="caption">Vaughn Tucker, <em>Down Town Kingstown</em>, 22 × 28 in, 2021. The guides are drawn over the painting to show its construction.</p>
     </div>
 
     <div>
@@ -172,56 +189,30 @@ footer a{margin-right:18px;}
   </div>
 </section>
 
-<!-- ═══ PART 2: THE LAB ═══ -->
+<!-- ═══ PARTS 2 & 3: LOCKED PREVIEW ═══ -->
 <section class="part" aria-labelledby="p2">
-  <div class="step-num">Part 2</div>
+  <div class="step-num">Parts 2 &amp; 3</div>
   <h2 id="p2">Now move it yourself</h2>
-  <p class="sub">Drag the <b>eye level</b> line up and down. Drag the <b>vanishing points</b> (the colored circles). You can also drag the boxes around. Read the notes as you go.</p>
+  <p class="sub">In the full lab you take control. Drag the eye level and the vanishing points, switch between 1-, 2- and 3-point perspective, and watch the scene change while my notes explain what you are seeing. Then put it on paper with guided drawing exercises.</p>
 
-  <div class="modes" role="group" aria-label="Type of perspective">
-    <button class="mode-btn" data-mode="1" aria-pressed="false">1-Point</button>
-    <button class="mode-btn" data-mode="2" aria-pressed="true">2-Point</button>
-    <button class="mode-btn" data-mode="3" aria-pressed="false">3-Point</button>
-  </div>
-
-  <div class="lab">
-    <div>
-      <div class="stage">
-        <svg id="lab" viewBox="0 0 1000 620" role="img" aria-label="Interactive perspective drawing. Drag the eye level line, the vanishing points and the boxes."></svg>
-        <div class="stage-bar">
-          <label><input type="checkbox" id="showLines" checked> Construction lines</label>
-          <button class="small-btn" id="resetBtn" type="button">Reset</button>
-        </div>
-      </div>
-      <p class="how">Tip: on a phone or iPad, drag with one finger.</p>
+  <div class="unlock">
+    <div class="unlock-preview">
+      <img src="perspective-lab-preview.jpg" width="1200" height="744" alt="Preview of the interactive Perspective Lab: boxes drawn in two-point perspective with a draggable eye level and vanishing points.">
+      <div class="unlock-lock" aria-hidden="true">🔒</div>
     </div>
-
-    <aside class="panel" aria-live="polite">
-      <div class="teacher">Notes from Vaughn</div>
-      <h3 id="modeTitle"></h3>
-      <p class="mode-desc" id="modeDesc"></p>
-      <ul id="notes"></ul>
-    </aside>
-  </div>
-</section>
-
-<!-- ═══ PART 3: ON PAPER ═══ -->
-<section class="part" aria-labelledby="p3">
-  <div class="step-num">Part 3</div>
-  <h2 id="p3">Try it on paper</h2>
-  <p class="sub">You need a pencil, a ruler and a sheet of paper. Draw lightly at first; these are construction lines.</p>
-  <div class="exercises">
-    <div class="ex">
-      <h3>1. Three boxes, one eye level</h3>
-      <p>Draw a horizon line across your page and one vanishing point. Draw one box below the line, one crossing it and one floating above it. Which boxes show their top? Which show their bottom?</p>
-    </div>
-    <div class="ex">
-      <h3>2. The street corner</h3>
-      <p>Draw a low horizon line and two vanishing points near the edges of the page. Draw one tall vertical line for the corner of a building, then connect its top and bottom to both vanishing points.</p>
-    </div>
-    <div class="ex">
-      <h3>3. Look around you</h3>
-      <p>Stand at a window or on a street. Hold your pencil flat at eye level. Notice that everything above your pencil slopes down toward it, and everything below slopes up.</p>
+    <div class="unlock-card">
+      <div class="unlock-kicker">Full Perspective Lab</div>
+      <div class="unlock-price">$12 <span>one-time</span></div>
+      <ul>
+        <li>Interactive lab: 1-, 2- and 3-point perspective</li>
+        <li>Drag the eye level, vanishing points and forms</li>
+        <li>Live teaching notes from Vaughn as you work</li>
+        <li>Three guided drawing exercises on paper</li>
+        <li>Works on computer, iPad and phone</li>
+        <li>Yours to keep, with no subscription</li>
+      </ul>
+      <a class="unlock-btn" href="https://buy.stripe.com/7sY5kE4joeQudPr1n8dMI0d">Unlock the Full Lab: $12</a>
+      <p class="unlock-small">Secure checkout by Stripe. You go straight to the full lab after paying.</p>
     </div>
   </div>
 </section>
@@ -242,303 +233,6 @@ document.querySelectorAll('.toggle input').forEach(function (box) {
   });
 });
 
-/* ───────── Part 2: the lab ───────── */
-(function () {
-  const svg = document.getElementById('lab');
-  const NS = 'http://www.w3.org/2000/svg';
-  const W = 1000, H = 620;
-  const COLORS = { vp1: '#b85c1a', vp2: '#1a3a5c', vp3: '#2d5a27' };
-
-  const PRESETS = {
-    1: {
-      horizon: 300,
-      vp: [{ x: 500, y: 300 }],
-      boxes: [
-        { x: 60,  y: 120, w: 230, h: 400, d: 0.42 },   // left building, crosses eye level
-        { x: 710, y: 170, w: 230, h: 350, d: 0.42 },   // right building
-        { x: 420, y: 440, w: 160, h: 90,  d: 0.25 },   // low box, below eye level
-        { x: 440, y: 70,  w: 120, h: 55,  d: 0.18 }    // floating sign, above eye level
-      ]
-    },
-    2: {
-      horizon: 330,
-      vp: [{ x: 40, y: 330 }, { x: 960, y: 330 }],
-      boxes: [
-        { bx: 520, by: 470, h: 270, dl: 0.34, dr: 0.28 },  // corner building (like the painting)
-        { bx: 250, by: 540, h: 90,  dl: 0.28, dr: 0.22 },  // low box
-        { bx: 780, by: 150, h: 70,  dl: 0.2,  dr: 0.25 }   // floating box
-      ]
-    },
-    3: {
-      horizon: 520,
-      vp: [{ x: 30, y: 520 }, { x: 970, y: 520 }, { x: 500, y: -1100 }],
-      boxes: [
-        { bx: 500, by: 590, h: 430, dl: 0.3,  dr: 0.3 },
-        { bx: 230, by: 580, h: 260, dl: 0.22, dr: 0.18 },
-        { bx: 790, by: 575, h: 300, dl: 0.18, dr: 0.24 }
-      ]
-    }
-  };
-
-  let mode = 2;
-  let state;
-  let showLines = true;
-
-  function clone(o) { return JSON.parse(JSON.stringify(o)); }
-  function reset() { state = clone(PRESETS[mode]); draw(); }
-
-  /* geometry helpers */
-  function lerp(a, b, t) { return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }; }
-  function intersect(p1, p2, p3, p4) {
-    const d = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
-    if (Math.abs(d) < 1e-6) return lerp(p1, p3, 0.5);
-    const t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / d;
-    return { x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) };
-  }
-  // A point further along the "vertical" through p: straight up in 2-point, toward/away from VP3 in 3-point
-  function vertAlong(p) {
-    if (mode !== 3) return { x: p.x, y: p.y - 100 };
-    const v = state.vp[2];
-    return { x: v.x, y: v.y };
-  }
-  function upFrom(p, len) {
-    if (mode !== 3) return { x: p.x, y: p.y - len };
-    const v = state.vp[2];
-    let dx = v.x - p.x, dy = v.y - p.y;
-    const L = Math.hypot(dx, dy) || 1;
-    dx /= L; dy /= L;
-    if (dy > 0) { dx = -dx; dy = -dy; }          // always go upward on screen
-    return { x: p.x + dx * len, y: p.y + dy * len };
-  }
-
-  /* build the corners of a 2-/3-point box */
-  function box3(b) {
-    const L = state.vp[0], R = state.vp[1];
-    const B = { x: b.bx, y: b.by };
-    const T = upFrom(B, b.h);
-    const BL = lerp(B, L, b.dl), BR = lerp(B, R, b.dr);
-    const TL = intersect(T, L, BL, vertAlong(BL));
-    const TR = intersect(T, R, BR, vertAlong(BR));
-    const BB = intersect(BL, R, BR, L);
-    const TB = intersect(TL, R, TR, L);
-    return { B, T, BL, BR, TL, TR, BB, TB };
-  }
-  /* build the corners of a 1-point box */
-  function box1(b) {
-    const V = state.vp[0];
-    const f = [{ x: b.x, y: b.y }, { x: b.x + b.w, y: b.y }, { x: b.x + b.w, y: b.y + b.h }, { x: b.x, y: b.y + b.h }];
-    const k = f.map(function (p) { return lerp(p, V, b.d); });
-    return { f, k };
-  }
-
-  /* drawing helpers */
-  function el(name, attrs, parent) {
-    const e = document.createElementNS(NS, name);
-    for (const a in attrs) e.setAttribute(a, attrs[a]);
-    (parent || svg).appendChild(e);
-    return e;
-  }
-  function pts(list) { return list.map(function (p) { return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' '); }
-  function face(list, fill, data, parent) {
-    return el('polygon', { points: pts(list), fill: fill, stroke: '#1a1208', 'stroke-width': 2, 'stroke-linejoin': 'round', 'data-box': data, style: 'cursor:grab' }, parent);
-  }
-  function guide(a, b, color, parent) {
-    el('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: color, 'stroke-width': 1.3, 'stroke-dasharray': '6 5', opacity: 0.75 }, parent);
-  }
-
-  // viewBox units per screen pixel, so handles stay finger-sized on phones
-  function px(n) { return n * W / (svg.clientWidth || W); }
-
-  function draw() {
-    svg.innerHTML = '';
-    const hr = Math.max(24, px(22)), vr = Math.max(12, px(9)), fs = Math.max(15, px(11));
-    const h = state.horizon;
-
-    // sky and ground
-    el('rect', { x: 0, y: 0, width: W, height: Math.max(0, h), fill: '#eef3f6' });
-    el('rect', { x: 0, y: h, width: W, height: Math.max(0, H - h), fill: '#efe6d4' });
-
-    const guides = el('g', {});
-    const shapes = el('g', {});
-
-    if (mode === 1) {
-      const V = state.vp[0];
-      state.boxes.map(function (b, i) { return { b, i, g: box1(b) }; })
-        .sort(function (a, b) { return a.b.d - b.b.d; })
-        .forEach(function (o) {
-          const f = o.g.f, k = o.g.k, b = o.b;
-          if (showLines) f.forEach(function (p) { guide(p, V, COLORS.vp1, guides); });
-          const g = el('g', {}, shapes);
-          if (b.y > V.y) face([f[0], f[1], k[1], k[0]], '#f3d9a8', o.i, g);            // top visible
-          if (b.y + b.h < V.y) face([f[3], f[2], k[2], k[3]], '#9c8467', o.i, g);      // underside visible
-          if (b.x > V.x) face([f[0], f[3], k[3], k[0]], '#d9c2a0', o.i, g);            // left side visible
-          if (b.x + b.w < V.x) face([f[1], f[2], k[2], k[1]], '#d9c2a0', o.i, g);      // right side visible
-          face(f, '#fdfaf4', o.i, g);                                                  // front
-        });
-    } else {
-      const L = state.vp[0], R = state.vp[1];
-      state.boxes.map(function (b, i) { return { b, i, g: box3(b) }; })
-        .sort(function (a, b) { return a.b.by - b.b.by; })
-        .forEach(function (o) {
-          const c = o.g;
-          if (showLines) {
-            [c.B, c.T].forEach(function (p) { guide(p, L, COLORS.vp1, guides); guide(p, R, COLORS.vp2, guides); });
-            if (mode === 3) [c.B, c.BL, c.BR].forEach(function (p) { guide(p, state.vp[2], COLORS.vp3, guides); });
-          }
-          const g = el('g', {}, shapes);
-          if (c.BB.y > c.B.y + 0.5) face([c.B, c.BL, c.BB, c.BR], '#9c8467', o.i, g);  // underside visible
-          if (c.TB.y < c.T.y - 0.5) face([c.T, c.TL, c.TB, c.TR], '#f3d9a8', o.i, g);  // top visible
-          face([c.B, c.BL, c.TL, c.T], '#d9c2a0', o.i, g);                             // left wall
-          face([c.B, c.BR, c.TR, c.T], '#fdfaf4', o.i, g);                             // right wall
-        });
-    }
-
-    // eye level line (wide invisible hit area + visible line + label)
-    el('line', { x1: 0, y1: h, x2: W, y2: h, stroke: '#c9943a', 'stroke-width': 3 });
-    const hit = el('line', { x1: 0, y1: h, x2: W, y2: h, stroke: 'transparent', 'stroke-width': 2 * hr, 'data-drag': 'horizon', style: 'cursor:ns-resize' });
-    hit.setAttribute('aria-hidden', 'true');
-    const lab = el('g', { 'data-drag': 'horizon', style: 'cursor:ns-resize' });
-    const lw = fs * 9.5, lx0 = W - lw - 60;
-    el('rect', { x: lx0, y: h - fs * 2.1, width: lw, height: fs * 1.7, rx: 5, fill: '#1a1208', 'data-drag': 'horizon' }, lab);
-    el('text', { x: lx0 + fs * 0.8, y: h - fs * 0.9, fill: '#ffd98a', 'font-size': fs, 'font-weight': 700, 'font-family': 'DM Sans, sans-serif', 'data-drag': 'horizon' }, lab).textContent = 'EYE LEVEL ↕';
-
-    // vanishing points
-    const names = ['VP1', 'VP2', 'VP3'];
-    const cols = [COLORS.vp1, COLORS.vp2, COLORS.vp3];
-    const count = mode === 1 ? 1 : mode === 2 ? 2 : 3;
-    for (let i = 0; i < count; i++) {
-      const p = state.vp[i];
-      const vy = Math.max(14, Math.min(H - 14, p.y));   // keep an off-screen VP3 grabbable at the edge
-      const g = el('g', { 'data-drag': 'vp' + i, style: 'cursor:grab' });
-      el('circle', { cx: p.x, cy: vy, r: hr, fill: 'transparent', 'data-drag': 'vp' + i }, g);
-      el('circle', { cx: p.x, cy: vy, r: vr, fill: cols[i], stroke: '#fff', 'stroke-width': 3, 'data-drag': 'vp' + i }, g);
-      const lx = Math.min(W - fs * 3.2, Math.max(4, p.x - fs * 1.2));
-      el('text', { x: lx, y: vy + (vy > H - 60 ? -vr - 8 : vr + fs + 6), fill: cols[i], 'font-size': fs, 'font-weight': 700, 'font-family': 'DM Sans, sans-serif', 'data-drag': 'vp' + i }, g).textContent = names[i] + (p.y < 0 ? ' ↑' : '');
-    }
-
-    guides.style.display = showLines ? '' : 'none';
-    writeNotes();
-  }
-
-  /* ───────── teaching notes ───────── */
-  const MODE_TEXT = {
-    1: ['One-point perspective', 'You are looking straight down a street or into a room. Every line that goes away from you meets at one vanishing point on your eye level. Upright lines stay upright, and lines across the view stay flat.'],
-    2: ['Two-point perspective', 'You are looking at the corner of something, like the building in my painting. Each side runs away to its own vanishing point, and both points sit on the eye level.'],
-    3: ['Three-point perspective', 'You are looking up at something tall. Now even the upright edges lean toward a third vanishing point high above you. (Looking down from somewhere high works the same way, with VP3 below you.)']
-  };
-
-  function writeNotes() {
-    document.getElementById('modeTitle').textContent = MODE_TEXT[mode][0];
-    document.getElementById('modeDesc').textContent = MODE_TEXT[mode][1];
-    const notes = [];
-    const h = state.horizon;
-    let below = 0, above = 0, across = 0;
-
-    state.boxes.forEach(function (b) {
-      let top, bottom;
-      if (mode === 1) { top = b.y; bottom = b.y + b.h; }
-      else { const c = box3(b); top = Math.min(c.T.y, c.TL.y, c.TR.y); bottom = Math.max(c.B.y, c.BL.y, c.BR.y); }
-      if (top > h) below++; else if (bottom < h) above++; else across++;
-    });
-
-    if (h < 170) notes.push('<b>Your eye level is high</b>, like looking out of an upstairs window. You look down on the scene and see the tops of things.');
-    else if (h > 450) notes.push('<b>Your eye level is low</b>, like sitting on the ground or standing at the bottom of a hill. Buildings tower over you, as in my street corner painting.');
-    else notes.push('<b>Your eye level is in the middle</b>, like a person standing on flat ground.');
-
-    if (below) notes.push('<b>' + below + (below === 1 ? ' shape is' : ' shapes are') + ' below your eye level</b>, so you can see ' + (below === 1 ? 'its top' : 'their tops') + '.');
-    if (above) notes.push('<b>' + above + (above === 1 ? ' shape is' : ' shapes are') + ' above your eye level</b>, so you see ' + (above === 1 ? 'its underside' : 'their undersides') + ', like looking up at a balcony.');
-    if (across) notes.push('<b>Your eye level cuts through ' + across + (across === 1 ? ' shape' : ' shapes') + '.</b> You cannot see the top or the bottom, only the sides.');
-
-    if (mode !== 1) {
-      const gap = Math.abs(state.vp[1].x - state.vp[0].x);
-      if (gap < 500) notes.push('<b>Your vanishing points are close together.</b> Look how sharp and stretched the corners have become, like a photo taken with a wide lens. Drag them apart.');
-      else if (gap > 850) notes.push('<b>Your vanishing points are far apart.</b> The shapes look calm and natural. In most of my paintings they sit outside the canvas.');
-      else notes.push('Try dragging VP1 and VP2 <b>closer together</b>, then <b>far apart</b>, and watch what happens to the corners.');
-    }
-    if (mode === 3) {
-      notes.push(state.vp[2].y > -500
-        ? '<b>VP3 is close.</b> The buildings lean in strongly, as if you are standing right at their base looking straight up.'
-        : '<b>VP3 is far above you</b>, so the upright edges lean together only gently. Drag VP3 down to make the buildings lean more.');
-    }
-    if (mode === 1) notes.push('Drag <b>VP1</b> left or right. Notice which side walls appear and disappear.');
-
-    document.getElementById('notes').innerHTML = notes.map(function (n) { return '<li>' + n + '</li>'; }).join('');
-  }
-
-  /* ───────── dragging ───────── */
-  let drag = null;
-
-  function toSvg(e) {
-    const r = svg.getBoundingClientRect();
-    return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
-  }
-  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-
-  svg.addEventListener('pointerdown', function (e) {
-    const t = e.target;
-    const p = toSvg(e);
-    if (t.dataset.drag) drag = { kind: t.dataset.drag, start: p, orig: t.dataset.drag === 'vp2' ? clone(state.vp[2]) : null };
-    else if (t.dataset.box !== undefined) drag = { kind: 'box', i: +t.dataset.box, start: p, orig: clone(state.boxes[+t.dataset.box]) };
-    else return;
-    svg.setPointerCapture(e.pointerId);
-    e.preventDefault();
-  });
-
-  svg.addEventListener('pointermove', function (e) {
-    if (!drag) return;
-    const p = toSvg(e);
-    const s = state;
-    if (drag.kind === 'horizon') {
-      s.horizon = clamp(p.y, 30, H - 30);
-      s.vp[0].y = s.horizon;
-      if (mode !== 1) s.vp[1].y = s.horizon;
-    } else if (drag.kind === 'vp0') {
-      if (mode === 1) {
-        s.vp[0].x = clamp(p.x, 20, W - 20);
-        s.vp[0].y = s.horizon = clamp(p.y, 30, H - 30);
-      } else {
-        s.vp[0].x = clamp(p.x, 5, Math.min.apply(null, s.boxes.map(function (b) { return b.bx; })) - 40);
-      }
-    } else if (drag.kind === 'vp1') {
-      s.vp[1].x = clamp(p.x, Math.max.apply(null, s.boxes.map(function (b) { return b.bx; })) + 40, W - 5);
-    } else if (drag.kind === 'vp2') {
-      s.vp[2].x = clamp(drag.orig.x + (p.x - drag.start.x), 100, W - 100);
-      // move faster than the finger; this version shows the worm's-eye view, so VP3 stays well above the eye level
-      // ...and always above the tallest building, so no building reaches past it
-      const tallest = Math.min.apply(null, s.boxes.map(function (b) { return b.by - b.h; }));
-      s.vp[2].y = clamp(drag.orig.y + (p.y - drag.start.y) * 4, -1600, Math.min(s.horizon - 300, tallest - 120));
-    } else if (drag.kind === 'box') {
-      const b = s.boxes[drag.i], o = drag.orig;
-      const dx = p.x - drag.start.x, dy = p.y - drag.start.y;
-      if (mode === 1) {
-        b.x = clamp(o.x + dx, -b.w / 2, W - b.w / 2);
-        b.y = clamp(o.y + dy, 10, H - b.h - 10);
-      } else {
-        b.bx = clamp(o.bx + dx, s.vp[0].x + 40, s.vp[1].x - 40);
-        b.by = clamp(o.by + dy, mode === 3 ? s.vp[2].y + b.h + 120 : b.h * 0.3, H - 10);
-      }
-    }
-    draw();
-  });
-
-  function endDrag() { drag = null; }
-  svg.addEventListener('pointerup', endDrag);
-  svg.addEventListener('pointercancel', endDrag);
-
-  /* ───────── controls ───────── */
-  document.querySelectorAll('.mode-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      mode = +btn.dataset.mode;
-      document.querySelectorAll('.mode-btn').forEach(function (b) { b.setAttribute('aria-pressed', b === btn); });
-      reset();
-    });
-  });
-  document.getElementById('resetBtn').addEventListener('click', reset);
-  document.getElementById('showLines').addEventListener('change', function () { showLines = this.checked; draw(); });
-
-  window.addEventListener('resize', draw);
-  reset();
-})();
 </script>
 </body>
 </html>
