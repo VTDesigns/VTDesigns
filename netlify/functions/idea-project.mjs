@@ -1,9 +1,11 @@
 // Idea Studio: turns a student's described idea into a step-by-step drawing
 // project in Vaughn's teaching method, plus the numbers for a starting
-// perspective diagram that the page draws.
+// perspective diagram that the page draws. A second request carries the
+// finished drawing plan into a painting process in oil, acrylic or watercolor.
 //
-// GET  /.netlify/functions/idea-project  -> { enabled }
-// POST /.netlify/functions/idea-project  -> { project }
+// GET  /.netlify/functions/idea-project                      -> { enabled }
+// POST /.netlify/functions/idea-project                      -> { project }
+// POST /.netlify/functions/idea-project  { action: "paint" } -> { painting }
 //
 // Uses the same ANTHROPIC_API_KEY environment variable as the critique.
 
@@ -101,6 +103,75 @@ const SCHEMA = {
   additionalProperties: false,
 };
 
+// ── Painting process: carry the finished drawing plan into paint ──
+const PAINT_MEDIUMS = ["Oil", "Acrylic", "Watercolor"];
+
+const PAINT_SYSTEM = `You are the studio assistant of Vaughn Tucker, a self-taught Jamaican-born fine artist with more than thirty years at the easel in oil, acrylic and watercolor, teaching at the Vaughn Tucker Art Academy. A student has already planned a drawing in the Idea Studio. Now they want to paint it. Write the painting process for THEIR picture in the medium they chose, the way Vaughn teaches:
+
+- Build on their drawing plan: same eye level, composition and big idea. Refer to their subjects by name at each stage.
+- Big shapes and values first, color second, edges third, details last. Stop before overworking.
+- Respect how the medium works:
+  Oil: tone the canvas, thin lean underpainting, work dark to light and thin to thick (fat over lean), soft blending, let layers dry when needed.
+  Acrylic: it dries fast, so work in layers, keep paint moist on a stay-wet palette or with a mister, block in flat shapes, glaze or scumble to adjust, lights can go over darks.
+  Watercolor: plan and save the whites of the paper, work light to dark, big wet washes first, let each layer dry before the next, darks and sharp edges last; no white paint needed.
+- A limited palette of 5 to 8 real, common paint colors, each with its job in this picture. Give a hex color close to the paint's mass tone.
+- Name a value plan: what is lightest, what is middle, what is darkest, so the big idea reads.
+- Warm and clear, in plain words a beginner understands. Around 6 to 8 stages.`;
+
+const PAINT_SCHEMA = {
+  type: "object",
+  properties: {
+    medium: { type: "string", enum: PAINT_MEDIUMS },
+    surface: { type: "string", description: "What to paint on, a suggested size, and how to prepare it." },
+    palette: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: { name: { type: "string" }, hex: { type: "string" }, use: { type: "string" } },
+        required: ["name", "hex", "use"],
+        additionalProperties: false,
+      },
+    },
+    tools: { type: "array", items: { type: "string" }, description: "Brushes, mediums and other supplies." },
+    color_mood: { type: "string", description: "The color idea, e.g. warm near and cool far." },
+    value_plan: {
+      type: "object",
+      properties: { lights: { type: "string" }, mids: { type: "string" }, darks: { type: "string" } },
+      required: ["lights", "mids", "darks"],
+      additionalProperties: false,
+    },
+    stages: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: { title: { type: "string" }, detail: { type: "string" } },
+        required: ["title", "detail"],
+        additionalProperties: false,
+      },
+    },
+    watch_out: { type: "string", description: "The one mistake most likely to spoil this painting, and how to avoid it." },
+  },
+  required: ["medium", "surface", "palette", "tools", "color_mood", "value_plan", "stages", "watch_out"],
+  additionalProperties: false,
+};
+
+// Keep only the parts of the drawing plan the painting step needs
+function planSummary(p) {
+  if (!p || typeof p !== "object") return null;
+  const str = (v) => (typeof v === "string" ? v.slice(0, 600) : "");
+  const steps = Array.isArray(p.steps) ? p.steps.slice(0, 10).map((s) => `- ${str(s?.title)}: ${str(s?.detail)}`) : [];
+  const shapes = Array.isArray(p.diagram?.shapes) ? p.diagram.shapes.slice(0, 8).map((s) => str(s?.label)).filter(Boolean) : [];
+  if (!str(p.title) || !steps.length) return null;
+  return [
+    `Project title: ${str(p.title)}`,
+    `Perspective: ${str(p.perspective?.type)}, ${str(p.perspective?.eye_level)} eye level. ${str(p.perspective?.why)}`,
+    `Big idea: ${str(p.big_idea)}`,
+    `Main subjects: ${shapes.join(", ") || "see steps"}`,
+    "Drawing steps:",
+    ...steps,
+  ].join("\n");
+}
+
 const client = new Anthropic(); // reads ANTHROPIC_API_KEY
 
 function json(status, body) {
@@ -108,6 +179,25 @@ function json(status, body) {
     status,
     headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
   });
+}
+
+async function ask(system, schema, content) {
+  const response = await client.beta.messages.create({
+    model: "claude-opus-5-5",
+    max_tokens: 16000,
+    betas: ["server-side-fallback-2026-07-01"],
+    fallbacks: "default",
+    system,
+    output_config: {
+      effort: "medium",
+      format: { type: "json_schema", schema },
+    },
+    messages: [{ role: "user", content }],
+  });
+  if (response.stop_reason === "refusal") return { status: 422, error: "We couldn't turn that into a project. Please describe a different picture." };
+  if (response.stop_reason === "max_tokens") return { status: 502, error: "The answer was cut short. Please try again." };
+  const text = response.content.find((b) => b.type === "text")?.text;
+  return { status: 200, data: JSON.parse(text) };
 }
 
 export default async (req) => {
@@ -120,40 +210,36 @@ export default async (req) => {
   try {
     input = await req.json();
   } catch {
-    return json(400, { error: "Could not read your idea. Please try again." });
+    return json(400, { error: "Could not read your request. Please try again." });
   }
   const idea = typeof input?.idea === "string" ? input.idea.trim() : "";
   if (idea.length < 10) return json(400, { error: "Please describe your idea in a sentence or two." });
-
-  const brief = [
-    `The student's idea: "${idea.slice(0, 800)}"`,
-    `Medium: ${MEDIUMS.includes(input.medium) ? input.medium : "Pencil"}.`,
-    `Skill level: ${LEVELS.includes(input.level) ? input.level : "Beginner"}.`,
-    `View: ${VIEWS.includes(input.view) ? input.view : "Let the studio decide"}.`,
-  ].join("\n");
+  const level = LEVELS.includes(input.level) ? input.level : "Beginner";
 
   try {
-    const response = await client.beta.messages.create({
-      model: "claude-opus-5-5",
-      max_tokens: 16000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      system: SYSTEM,
-      output_config: {
-        effort: "medium",
-        format: { type: "json_schema", schema: SCHEMA },
-      },
-      messages: [{ role: "user", content: brief }],
-    });
-
-    if (response.stop_reason === "refusal") {
-      return json(422, { error: "We couldn't turn that into a project. Please describe a different picture." });
+    let result;
+    if (input.action === "paint") {
+      const medium = PAINT_MEDIUMS.includes(input.medium) ? input.medium : null;
+      const plan = planSummary(input.project);
+      if (!medium || !plan) return json(400, { error: "Please build a drawing project first, then choose oil, acrylic or watercolor." });
+      result = await ask(PAINT_SYSTEM, PAINT_SCHEMA, [
+        `The student's idea: "${idea.slice(0, 800)}"`,
+        `Skill level: ${level}.`,
+        `Paint it in: ${medium}.`,
+        "",
+        plan,
+      ].join("\n"));
+      if (result.data) return json(200, { painting: result.data });
+    } else {
+      result = await ask(SYSTEM, SCHEMA, [
+        `The student's idea: "${idea.slice(0, 800)}"`,
+        `Medium: ${MEDIUMS.includes(input.medium) ? input.medium : "Pencil"}.`,
+        `Skill level: ${level}.`,
+        `View: ${VIEWS.includes(input.view) ? input.view : "Let the studio decide"}.`,
+      ].join("\n"));
+      if (result.data) return json(200, { project: result.data });
     }
-    if (response.stop_reason === "max_tokens") {
-      return json(502, { error: "The project was cut short. Please try again." });
-    }
-    const text = response.content.find((b) => b.type === "text")?.text;
-    return json(200, { project: JSON.parse(text) });
+    return json(result.status, { error: result.error });
   } catch (err) {
     if (err instanceof Anthropic.RateLimitError) {
       return json(429, { error: "The studio is busy right now. Please try again in a minute." });
@@ -162,7 +248,7 @@ export default async (req) => {
       console.error("Anthropic API error", err.status, err.message);
       return json(502, { error: "The Idea Studio had a problem. Please try again shortly." });
     }
-    console.error("Idea project failed", err);
+    console.error("Idea Studio request failed", err);
     return json(500, { error: "Something went wrong. Please try again." });
   }
 };

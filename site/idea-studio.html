@@ -89,6 +89,32 @@ section.part{padding:48px 0;border-top:1px solid var(--line);}
 .extra b{color:var(--ink);}
 .next{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;}
 .msg{background:var(--white);border-left:4px solid var(--accent);padding:16px 18px;color:var(--ink2);}
+.paint{margin-top:30px;padding-top:26px;border-top:2px dashed rgba(184,92,26,.3);}
+.paint h4{font-size:1.45rem;}
+.paint-pick{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.paint-pick button{padding:12px 20px;border:1.5px solid rgba(26,18,8,.22);background:var(--white);border-radius:8px;font:inherit;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.8rem;color:var(--ink2);cursor:pointer;}
+.paint-pick button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink);}
+.paint-pick button:disabled{opacity:.55;cursor:default;}
+.paint-pick button:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+.guide{margin-top:18px;}
+.guide-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:start;}
+.guide h5{font-family:'Playfair Display',serif;font-size:1.08rem;margin:16px 0 8px;}
+.guide h5:first-child{margin-top:0;}
+.guide p,.guide li{color:var(--ink2);line-height:1.65;}
+.swatches{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.swatches li{display:flex;gap:12px;align-items:flex-start;}
+.sw{width:30px;height:30px;border-radius:50%;flex-shrink:0;border:2px solid #fff;box-shadow:0 0 0 1px rgba(26,18,8,.2);}
+.swatches b{color:var(--ink);}
+.tools{padding-left:18px;}
+.values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.values div{padding:10px;border-radius:6px;font-size:.85rem;line-height:1.45;}
+.values .v1{background:#ece8e0;color:#1a1208;}
+.values .v2{background:#8d8579;color:#fff;}
+.values .v3{background:#2b241c;color:#f5f0e8;}
+.values b{display:block;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;}
+.watch{margin-top:16px;background:rgba(184,92,26,.1);border-left:4px solid var(--accent);padding:12px 16px;color:var(--ink2);}
+.watch b{color:var(--ink);}
+@media(max-width:900px){.guide-grid{grid-template-columns:1fr;}.values{grid-template-columns:1fr;}}
 
 footer{padding:40px 0 56px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink2);}
 footer a{margin-right:18px;}
@@ -123,7 +149,7 @@ footer a{margin-right:18px;}
 <header class="intro">
   <div class="eyebrow">Idea Studio</div>
   <h1>You have a picture in your head.<br><em>Let's build it.</em></h1>
-  <p class="lead">Describe the picture you want to make. The Idea Studio turns it into a real drawing project, the way I teach in my studio: where your eyes are, which perspective to use, how to arrange it, and how to build it step by step from simple forms to the finished piece.</p>
+  <p class="lead">Describe the picture you want to make. The Idea Studio turns it into a real drawing project, the way I teach in my studio: where your eyes are, which perspective to use, how to arrange it, and how to build it step by step from simple forms to the finished piece. Then take it to paint in oil, acrylic or watercolor, with a palette and a painting process for your picture.</p>
   <p class="quote">"Construction before detail. Get the eye level right and the rest follows."</p>
 </header>
 
@@ -212,6 +238,33 @@ footer a{margin-right:18px;}
         { label: 'David', kind: 'figure', x: 0.22, ground_y: 0.99, height: 0.27, width: 0.06 }
       ]
     }
+  };
+
+  const EXAMPLE_PAINT = {
+    medium: 'Oil',
+    surface: 'A 16 \u00d7 20 inch primed canvas, toned with a thin wash of Burnt Sienna and left until it is just dry to the touch.',
+    palette: [
+      { name: 'Titanium White', hex: '#f4f1ea', use: 'Sky near the horizon and the haze around Goliath.' },
+      { name: 'Yellow Ochre', hex: '#c8962e', use: 'Sunlit valley floor and warm skin light.' },
+      { name: 'Cadmium Yellow Light', hex: '#f2c230', use: 'A few sunlight accents in the foreground only.' },
+      { name: 'Burnt Sienna', hex: '#8a3b12', use: 'Toning the canvas; mixed with blue for warm darks.' },
+      { name: 'Alizarin Crimson', hex: '#7a1f2b', use: 'Deepest darks in David\u2019s figure and the rock shadows.' },
+      { name: 'Ultramarine Blue', hex: '#2a3c8f', use: 'Sky, cool distance, and the grey of Goliath\u2019s armour.' },
+      { name: 'Sap Green', hex: '#4e6b2a', use: 'Valley greens, warmed with ochre as they come forward.' }
+    ],
+    tools: ['Filbert brushes #8 and #12 for big shapes', 'A #4 round for the sling and small details', 'A palette knife for mixing', 'Odourless mineral spirits for the thin first layers, linseed oil for the later, thicker ones'],
+    color_mood: 'Warm and strong near, cool and grey far away. David carries the warmest, darkest colour; Goliath is painted in cooler greys so the air sits between them.',
+    value_plan: { lights: 'The sky near the horizon and the sunlit valley floor.', mids: 'The distant hills and Goliath, only a little darker than the hills behind him.', darks: 'David and the shadow side of the rock.' },
+    stages: [
+      { title: 'Transfer the drawing', detail: 'On the toned canvas, redraw the eye level, the vanishing points and the three figures with a thin mix of Ultramarine and Burnt Sienna. Check that David\u2019s and the soldier\u2019s eyes sit on the eye level.' },
+      { title: 'Lean value underpainting', detail: 'With thin paint and no white, block the darks: David and the rock shadow. Give Goliath and the hills one quiet middle value. This is the painting in light and dark only.' },
+      { title: 'Sky and distance first', detail: 'Paint the sky, lighter and warmer near the horizon. Paint the far hills in cool blue-grey, then paint Goliath into them only slightly darker, so the distance stays.' },
+      { title: 'The valley floor', detail: 'Warm yellow-greens coming forward. Let your strokes lie along the ground and lead toward the vanishing points.' },
+      { title: 'David', detail: 'Your strongest darks and warmest colours go here, with the sharpest edges in the painting. Keep the shape simple.' },
+      { title: 'Edges and thicker paint', detail: 'Soften Goliath\u2019s edges into the haze. Use thicker paint (fat over lean) only in the foreground lights.' },
+      { title: 'Details last', detail: 'A small light on the sling, a touch on Goliath\u2019s helmet. Then stop, before you overwork it.' }
+    ],
+    watch_out: 'If Goliath gets too dark or too sharp, he jumps forward and the distance disappears. Keep him cooler, lighter and softer than David.'
   };
 
   /* ───────── helpers ───────── */
@@ -335,8 +388,28 @@ footer a{margin-right:18px;}
     return svg;
   }
 
+  /* ───────── painting guide ───────── */
+  function renderPainting(g) {
+    const div = document.createElement('div');
+    div.className = 'guide';
+    const hex = function (h) { return /^#[0-9a-f]{6}$/i.test(h) ? h : '#999999'; };
+    div.innerHTML =
+      '<div class="guide-grid"><div>' +
+      '<h5>Surface</h5><p>' + esc(g.surface) + '</p>' +
+      '<h5>Your palette</h5><ul class="swatches">' + g.palette.map(function (c) { return '<li><span class="sw" style="background:' + hex(c.hex) + '"></span><span><b>' + esc(c.name) + '.</b> ' + esc(c.use) + '</span></li>'; }).join('') + '</ul>' +
+      '<h5>Tools</h5><ul class="tools">' + g.tools.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+      '</div><div>' +
+      '<h5>Colour idea</h5><p>' + esc(g.color_mood) + '</p>' +
+      '<h5>Value plan</h5><div class="values"><div class="v1"><b>Lights</b>' + esc(g.value_plan.lights) + '</div><div class="v2"><b>Middles</b>' + esc(g.value_plan.mids) + '</div><div class="v3"><b>Darks</b>' + esc(g.value_plan.darks) + '</div></div>' +
+      '<h5>Paint it step by step</h5><ol class="steps">' + g.stages.map(function (s) { return '<li><b>' + esc(s.title) + '.</b> ' + esc(s.detail) + '</li>'; }).join('') + '</ol>' +
+      '<div class="watch"><b>Watch out:</b> ' + esc(g.watch_out) + '</div>' +
+      '</div></div>';
+    return div;
+  }
+
   /* ───────── project view ───────── */
-  function renderProject(p, idea) {
+  function renderProject(p, idea, opts) {
+    opts = opts || {};
     const box = document.createElement('article');
     box.className = 'project';
     if (!p.is_drawable) {
@@ -354,13 +427,33 @@ footer a{margin-right:18px;}
       '<div class="extra"><div><b>Practice first:</b> ' + esc(p.practice_first) + '</div>' +
       '<div><b>Start with this lesson:</b> <a href="' + lesson[1] + '">' + esc(lesson[0]) + ' →</a></div></div></div>' +
       '<div><h4>Build it step by step</h4><ol class="steps">' + p.steps.map(function (s) { return '<li><b>' + esc(s.title) + '.</b> ' + esc(s.detail) + '</li>'; }).join('') + '</ol></div></div>' +
+      '<div class="paint"><div class="project-kicker">Next: take it to paint</div><h4>Paint your idea</h4>' +
+      (opts.example ? '<p class="notice">Here the student chose oil. You can choose oil, acrylic or watercolor.</p>' :
+        '<p class="notice">When your drawing is ready, choose a medium and get the painting process for this picture.</p><div class="paint-pick" role="group" aria-label="Choose a medium"><button type="button" data-medium="Oil" aria-pressed="false">Oil</button><button type="button" data-medium="Acrylic" aria-pressed="false">Acrylic</button><button type="button" data-medium="Watercolor" aria-pressed="false">Watercolor</button></div>') +
+      '<div class="paint-out"></div></div>' +
       '<div class="next"><a class="btn" href="living-studio.html#critique">Finished? Get a Critique</a><button class="btn btn-ghost" type="button" data-print>Print This Project</button></div>';
     box.querySelector('.diagram').appendChild(drawDiagram(p.diagram));
+    const out = box.querySelector('.paint-out');
+    if (opts.example) out.appendChild(renderPainting(EXAMPLE_PAINT));
+    box.querySelectorAll('.paint-pick button').forEach(function (b) {
+      b.addEventListener('click', function () { if (opts.onPaint) opts.onPaint(b.dataset.medium, box); });
+    });
+    if (opts.paintings) {
+      const first = Object.keys(opts.paintings)[0];
+      if (first) showPainting(box, first, opts.paintings[first]);
+    }
     box.querySelector('[data-print]').addEventListener('click', function () { window.print(); });
     return box;
   }
 
-  document.getElementById('example').appendChild(renderProject(EXAMPLE));
+  function showPainting(box, medium, guide) {
+    box.querySelectorAll('.paint-pick button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.medium === medium); });
+    const out = box.querySelector('.paint-out');
+    out.innerHTML = '';
+    out.appendChild(renderPainting(guide));
+  }
+
+  document.getElementById('example').appendChild(renderProject(EXAMPLE, null, { example: true }));
 
   /* ───────── asking for a project ───────── */
   const form = document.getElementById('ideaForm'), btn = document.getElementById('ideaBtn'), notice = document.getElementById('ideaNotice');
@@ -370,11 +463,39 @@ footer a{margin-right:18px;}
   function load() { try { return JSON.parse(localStorage.getItem('vtaaIdeaStudio') || 'null'); } catch (e) { return null; } }
   function save(v) { try { localStorage.setItem('vtaaIdeaStudio', JSON.stringify(v)); } catch (e) {} }
   function show(node) { result.innerHTML = ''; result.appendChild(node); resultSection.hidden = false; }
+  function showProject(saved) {
+    show(renderProject(saved.project, saved.idea, { paintings: saved.paintings || {}, onPaint: paint }));
+  }
+
+  // Carry the drawing plan into a painting process for the chosen medium
+  async function paint(medium, box) {
+    const saved = load();
+    if (!saved || !saved.project) return;
+    saved.paintings = saved.paintings || {};
+    if (saved.paintings[medium]) { showPainting(box, medium, saved.paintings[medium]); return; }
+    const out = box.querySelector('.paint-out'), buttons = box.querySelectorAll('.paint-pick button');
+    buttons.forEach(function (b) { b.disabled = true; b.setAttribute('aria-pressed', b.dataset.medium === medium); });
+    out.innerHTML = '<div class="msg">Planning your ' + esc(medium.toLowerCase()) + ' painting: palette, values and stages. This takes about half a minute.</div>';
+    try {
+      const res = await fetch('/.netlify/functions/idea-project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        action: 'paint', medium: medium, idea: saved.idea, level: document.getElementById('level').value, project: saved.project
+      }) });
+      const data = await res.json().catch(function () { return {}; });
+      if (!res.ok || !data.painting) throw new Error(data.error || 'Something went wrong. Please try again.');
+      saved.paintings[medium] = data.painting;
+      save(saved);
+      showPainting(box, medium, data.painting);
+    } catch (err) {
+      out.innerHTML = '<div class="msg">' + esc(err.message) + '</div>';
+    } finally {
+      buttons.forEach(function (b) { b.disabled = false; });
+    }
+  }
   function showMsg(text) { const m = document.createElement('div'); m.className = 'msg'; m.textContent = text; show(m); }
 
   // Bring back the student's last project so they can keep working from it
   const last = load();
-  if (last && last.project) show(renderProject(last.project, last.idea));
+  if (last && last.project) showProject(last);
   const usedToday = function () { const v = load(); return !!(v && v.day === today && v.counted); };
   if (usedToday()) notice.textContent = 'You’ve used today’s free project. Your project is below; come back tomorrow for a new one.';
 
@@ -395,8 +516,9 @@ footer a{margin-right:18px;}
       }) });
       const data = await res.json().catch(function () { return {}; });
       if (!res.ok || !data.project) throw new Error(data.error || 'Something went wrong. Please try again.');
-      save({ day: today, counted: data.project.is_drawable, idea: idea, project: data.project });
-      show(renderProject(data.project, idea));
+      const saved = { day: today, counted: data.project.is_drawable, idea: idea, project: data.project, paintings: {} };
+      save(saved);
+      showProject(saved);
       if (data.project.is_drawable) notice.textContent = 'Enjoy your project! Your next free idea opens tomorrow.';
       resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
