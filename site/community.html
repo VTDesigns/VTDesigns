@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Community — Vaughn Tucker Art Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── VARIABLES ── */
+:root{
+  --bg:#FAF6F0;
+  --ink:#1A1208;
+  --ink2:#5C4A32;
+  --gold:#C8973E;
+  --gold-light:#E8D5A8;
+  --accent:#C8973E;
+  --accent-hover:#B8872E;
+  --card:#FFFFFF;
+  --border:rgba(26,18,8,0.08);
+  --shadow:0 2px 12px rgba(26,18,8,0.06);
+  --radius:8px;
+}
+
+/* ── RESET ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);color:var(--ink);
+  line-height:1.6;
+}
+a{text-decoration:none;color:inherit;}
+img{max-width:100%;display:block;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 40px;
+  background:rgba(250,246,240,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.15rem;font-weight:700;color:var(--ink);
+}
+.nav-logo span{font-style:italic;color:var(--gold);font-weight:400;}
+.nav-links{display:flex;align-items:center;gap:28px;font-size:0.85rem;font-weight:500;letter-spacing:0.02em;text-transform:uppercase;}
+.nav-links a{opacity:0.55;transition:opacity 0.2s;}
+.nav-links a:hover{opacity:1;}
+.nav-cta{
+  background:var(--gold);color:white;
+  padding:8px 20px;border-radius:6px;
+  opacity:1!important;font-weight:600;
+  transition:background 0.2s;
+}
+.nav-cta:hover{background:var(--accent-hover);}
+
+/* ── PAGE HEADER ── */
+.page-header{
+  padding:130px 40px 50px;text-align:center;
+  background:linear-gradient(180deg,rgba(200,151,62,0.06) 0%,transparent 100%);
+}
+.page-eyebrow{
+  font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;margin-bottom:12px;
+}
+.page-title{
+  font-family:'Playfair Display',serif;
+  font-size:2.6rem;font-weight:700;margin-bottom:12px;
+}
+.page-subtitle{
+  font-size:1rem;color:var(--ink2);max-width:520px;margin:0 auto;opacity:0.7;
+}
+
+/* ── MAIN LAYOUT ── */
+.main{max-width:900px;margin:0 auto;padding:40px 24px 80px;}
+
+/* ── TEACHER MODE ── */
+.teacher-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--ink);color:white;
+  padding:12px 20px;border-radius:var(--radius);
+  margin-bottom:28px;
+}
+.teacher-toggle-label{
+  font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;
+  display:flex;align-items:center;gap:8px;
+}
+.toggle-switch{position:relative;width:44px;height:24px;cursor:pointer;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;inset:0;background:rgba(255,255,255,0.2);
+  transition:0.2s;border-radius:24px;
+}
+.toggle-slider::before{
+  content:'';position:absolute;height:18px;width:18px;
+  left:3px;bottom:3px;background:white;
+  transition:0.2s;border-radius:50%;
+}
+input:checked + .toggle-slider{background:var(--gold);}
+input:checked + .toggle-slider::before{transform:translateX(20px);}
+
+/* ── SUBMISSION FORM ── */
+.post-form-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:32px;
+  box-shadow:var(--shadow);margin-bottom:48px;
+}
+.post-form-card h2{
+  font-family:'Playfair Display',serif;
+  font-size:1.5rem;margin-bottom:4px;
+}
+.post-form-card .form-desc{
+  font-size:0.9rem;color:var(--ink2);opacity:0.6;margin-bottom:24px;
+}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+label.field-label{
+  display:block;font-size:0.75rem;letter-spacing:0.08em;
+  text-transform:uppercase;font-weight:600;color:var(--ink2);margin-bottom:6px;
+}
+input[type="text"],textarea,select{
+  width:100%;padding:12px 14px;
+  border:1px solid rgba(26,18,8,0.12);border-radius:6px;
+  font-family:'DM Sans',sans-serif;font-size:0.95rem;
+  background:var(--bg);color:var(--ink);
+  transition:border-color 0.2s;
+}
+input[type="text"]:focus,textarea:focus,select:focus{
+  outline:none;border-color:var(--gold);
+}
+textarea{resize:vertical;min-height:80px;}
+
+/* ── FILE UPLOAD AREA ── */
+.upload-area{
+  border:2px dashed rgba(26,18,8,0.15);
+  border-radius:var(--radius);
+  padding:36px 20px;text-align:center;
+  cursor:pointer;transition:border-color 0.2s,background 0.2s;
+  margin-bottom:16px;position:relative;
+}
+.upload-area:hover{border-color:var(--gold);background:rgba(200,151,62,0.03);}
+.upload-area.has-file{border-color:var(--gold);background:rgba(200,151,62,0.05);}
+.upload-icon{font-size:2rem;margin-bottom:8px;opacity:0.3;}
+.upload-text{font-size:0.9rem;color:var(--ink2);opacity:0.5;}
+.upload-text strong{color:var(--gold);opacity:1;}
+.upload-preview{max-height:200px;margin:12px auto 0;border-radius:6px;display:none;}
+.upload-filename{font-size:0.85rem;color:var(--gold);margin-top:8px;display:none;font-weight:500;}
+
+.or-divider{
+  text-align:center;font-size:0.8rem;color:var(--ink2);opacity:0.35;
+  margin:12px 0;letter-spacing:0.05em;text-transform:uppercase;
+}
+
+.submit-btn{
+  display:block;width:100%;padding:14px;
+  background:var(--gold);color:white;
+  border:none;border-radius:6px;
+  font-family:'DM Sans',sans-serif;font-size:0.95rem;
+  font-weight:600;letter-spacing:0.05em;text-transform:uppercase;
+  cursor:pointer;transition:background 0.2s;
+}
+.submit-btn:hover{background:var(--accent-hover);}
+
+/* ── SUCCESS MESSAGE ── */
+.success-msg{
+  display:none;text-align:center;padding:40px 20px;
+  background:rgba(200,151,62,0.08);border-radius:var(--radius);
+}
+.success-msg.show{display:block;}
+.success-icon{font-size:2.5rem;margin-bottom:12px;}
+.success-title{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:8px;}
+.success-text{font-size:0.9rem;color:var(--ink2);opacity:0.7;}
+.success-again{
+  margin-top:16px;padding:10px 24px;
+  background:var(--gold);color:white;border:none;
+  border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:0.85rem;font-weight:600;
+}
+
+/* ── GALLERY SECTION ── */
+.gallery-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;
+}
+.gallery-title{font-family:'Playfair Display',serif;font-size:1.6rem;}
+.gallery-count{font-size:0.85rem;color:var(--ink2);opacity:0.5;}
+
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;
+}
+
+/* ── GALLERY CARD ── */
+.gallery-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);transition:transform 0.2s,box-shadow 0.2s;
+}
+.gallery-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(26,18,8,0.1);}
+.gallery-card img{width:100%;aspect-ratio:4/3;object-fit:cover;cursor:pointer;}
+.card-body{padding:16px;}
+.card-student{font-weight:600;font-size:0.95rem;margin-bottom:2px;}
+.card-school{font-size:0.8rem;color:var(--gold);font-weight:500;margin-bottom:6px;}
+.card-caption{font-size:0.85rem;color:var(--ink2);opacity:0.7;line-height:1.5;}
+.card-date{font-size:0.75rem;color:var(--ink2);opacity:0.4;margin-top:8px;}
+
+/* ── TEACHER GRADE BADGE ── */
+.card-grade{
+  display:inline-block;margin-top:8px;
+  padding:4px 12px;border-radius:20px;
+  font-size:0.75rem;font-weight:600;letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.grade-a{background:rgba(46,139,87,0.12);color:#2E8B57;}
+.grade-b{background:rgba(65,105,225,0.12);color:#4169E1;}
+.grade-c{background:rgba(200,151,62,0.15);color:#B8872E;}
+
+/* ── TEACHER COMMENT ── */
+.teacher-comment{
+  margin-top:10px;padding:10px 12px;
+  background:rgba(200,151,62,0.06);border-left:3px solid var(--gold);
+  border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--ink2);
+}
+.teacher-comment strong{color:var(--gold);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:2px;}
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  text-align:center;padding:60px 24px;
+  border:2px dashed rgba(26,18,8,0.1);border-radius:var(--radius);
+}
+.empty-icon{font-size:3rem;margin-bottom:16px;}
+.empty-text{
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;color:var(--ink);opacity:0.4;
+}
+.empty-sub{font-size:0.85rem;color:var(--ink2);opacity:0.35;margin-top:8px;}
+
+/* ── LIGHTBOX ── */
+.lightbox{
+  position:fixed;inset:0;background:rgba(26,18,8,0.92);
+  z-index:1000;display:none;align-items:center;justify-content:center;
+  padding:24px;
+}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:4px;}
+.lightbox-close{
+  position:absolute;top:20px;right:24px;
+  background:none;border:none;color:white;
+  font-size:2rem;cursor:pointer;opacity:0.7;
+}
+.lightbox-close:hover{opacity:1;}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:40px 20px;
+  border-top:1px solid var(--border);
+  font-size:0.85rem;color:var(--ink2);opacity:0.5;
+}
+.footer-brand{
+  font-family:'Playfair Display',serif;
+  font-size:1rem;margin-bottom:8px;opacity:0.6;
+}
+.footer-brand span{font-style:italic;color:var(--gold);}
+.footer-bottom-link{color:var(--gold);font-weight:500;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:14px 20px;}
+  .nav-links{gap:16px;font-size:0.78rem;}
+  .page-header{padding:100px 20px 40px;}
+  .page-title{font-size:2rem;}
+  .main{padding:32px 16px 60px;}
+  .form-row{grid-template-columns:1fr;}
+  .post-form-card{padding:20px;}
+  .gallery-grid{grid-template-columns:1fr;}
+}
+@media(max-width:520px){
+  .nav-links a:not(.nav-cta){display:none;}
+  .page-title{font-size:1.6rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Vaughn Tucker <span>Art Academy</span></a>
+  <div class="nav-links">
+    <a href="index.html#schools">Schools</a>
+    <a href="index.html#why-different">Why Different</a>
+    <a href="index.html#the-artist">The Artist</a>
+    <a href="community.html" style="opacity:1;color:var(--accent);">Community</a>
+    <a href="index.html#join" class="nav-cta">Join Free</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow">Student Gallery</div>
+  <h1 class="page-title">Show Your Work</h1>
+  <p class="page-subtitle">Share what you've been creating. Every painting posted here is a step forward.</p>
+</div>
+
+<div class="main">
+
+  <!-- TEACHER MODE TOGGLE -->
+  <div class="teacher-bar">
+    <div class="teacher-toggle-label">
+      🎨 Teacher Mode
+    </div>
+    <label class="toggle-switch">
+      <input type="checkbox" id="teacherToggle">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       SUBMISSION FORM — Powered by Netlify Forms
+       Students fill this out and you receive submissions at:
+       Netlify Dashboard → Forms → "student-artwork"
+       ════════════════════════════════════════════════════════ -->
+  <div class="post-form-card" id="formCard">
+    <h2>Share Your Work</h2>
+    <p class="form-desc">Upload an image or paste your Instagram link</p>
+
+    <form name="student-artwork" method="POST" data-netlify="true" enctype="multipart/form-data" id="artworkForm">
+      <!-- Netlify hidden field -->
+      <input type="hidden" name="form-name" value="student-artwork">
+
+      <div class="form-row">
+        <div>
+          <label class="field-label" for="studentName">Your Name</label>
+          <input type="text" id="studentName" name="student-name" placeholder="e.g. Maria S." required>
+        </div>
+        <div>
+          <label class="field-label" for="school">School</label>
+          <select id="school" name="school" required>
+            <option value="">— Select a school —</option>
+            <option value="Oil Painting">Oil Painting School</option>
+            <option value="Acrylic Painting">Acrylic Painting School</option>
+            <option value="Watercolor">Watercolor School</option>
+            <option value="Pencil Drawing">Pencil Drawing School</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label class="field-label" for="caption">Caption (Optional)</label>
+        <textarea id="caption" name="caption" placeholder="Tell us about this piece — what were you working on?"></textarea>
+      </div>
+
+      <label class="field-label">Upload Your Artwork</label>
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">🖼</div>
+        <div class="upload-text">Click to upload or drag image here<br><strong>JPG, PNG, GIF</strong> supported</div>
+        <img class="upload-preview" id="uploadPreview" alt="Preview">
+        <div class="upload-filename" id="uploadFilename"></div>
+        <input type="file" name="artwork" id="artworkFile" accept="image/jpeg,image/png,image/gif" style="display:none;">
+      </div>
+
+      <div class="or-divider">OR</div>
+
+      <div style="margin-bottom:20px;">
+        <label class="field-label" for="igLink">Instagram Link</label>
+        <input type="text" id="igLink" name="instagram-link" placeholder="https://www.instagram.com/p/...">
+      </div>
+
+      <button type="submit" class="submit-btn">Post to Gallery</button>
+    </form>
+
+    <!-- Success message after submission -->
+    <div class="success-msg" id="successMsg">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Artwork Submitted!</div>
+      <div class="success-text">Your work has been sent to the teacher for review.<br>Once approved, it will appear in the gallery below.</div>
+      <button class="success-again" onclick="resetForm()">Submit Another</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       CURATED GALLERY
+       
+       HOW TO ADD STUDENT WORK:
+       ─────────────────────────
+       When you approve a student's submission from your
+       Netlify dashboard, copy the template below and paste
+       it inside the gallery-grid div. Then replace the
+       placeholder info with the student's actual details.
+
+       TEMPLATE TO COPY:
+       
+       <div class="gallery-card">
+         <img src="DATA_URI_OR_IMAGE_URL" alt="Student artwork" onclick="openLightbox(this.src)">
+         <div class="card-body">
+           <div class="card-student">STUDENT NAME</div>
+           <div class="card-school">SCHOOL NAME</div>
+           <div class="card-caption">THEIR CAPTION HERE</div>
+           <div class="card-date">April 2026</div>
+           <div class="card-grade grade-a">A — Excellent</div>
+           <div class="teacher-comment">
+             <strong>Teacher's Note</strong>
+             YOUR COMMENT HERE
+           </div>
+         </div>
+       </div>
+
+       GRADE OPTIONS:
+       grade-a = green "A — Excellent"
+       grade-b = blue  "B — Good Work"
+       grade-c = gold  "C — Keep Practicing"
+       
+       Or remove the grade div entirely if you don't want
+       to grade that particular piece.
+       ════════════════════════════════════════════════════════ -->
+
+  <div class="gallery-header">
+    <h2 class="gallery-title">Student Gallery</h2>
+    <span class="gallery-count" id="galleryCount"></span>
+  </div>
+
+  <div class="gallery-grid" id="galleryGrid">
+
+    <!-- ══ EXAMPLE CARD (delete this once you add real student work) ══ -->
+    <div class="gallery-card">
+      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI0Y1RjBFOCIvPjx0ZXh0IHg9IjIwMCIgeT0iMTQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0nc2VyaWYnIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNDOEEwNkEiIG9wYWNpdHk9IjAuNCI+U2FtcGxlIEFydHdvcms8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSIxNzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9IjEzIiBmaWxsPSIjQzhBMDZBIiBvcGFjaXR5PSIwLjMiPkRlbGV0ZSB0aGlzIGNhcmQgJiBhZGQgcmVhbCBzdHVkZW50IHdvcms8L3RleHQ+PC9zdmc+" alt="Sample artwork" onclick="openLightbox(this.src)">
+      <div class="card-body">
+        <div class="card-student">Sample Student</div>
+        <div class="card-school">Oil Painting School</div>
+        <div class="card-caption">This is an example card. Delete it and replace with real student submissions!</div>
+        <div class="card-date">April 2026</div>
+        <div class="card-grade grade-a">A — Excellent</div>
+        <div class="teacher-comment">
+          <strong>Teacher's Note</strong>
+          Great use of color and composition! Keep exploring those warm tones.
+        </div>
+      </div>
+    </div>
+    <!-- ══ END EXAMPLE CARD ══ -->
+
+  </div>
+
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" src="" alt="Full size artwork">
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Vaughn Tucker <span>Art Academy</span></div>
+  <a href="index.html" class="footer-bottom-link">← Back to Academy</a>
+</footer>
+
+<script>
+/* ── FILE UPLOAD PREVIEW ── */
+const uploadArea = document.getElementById('uploadArea');
+const artworkFile = document.getElementById('artworkFile');
+const uploadPreview = document.getElementById('uploadPreview');
+const uploadFilename = document.getElementById('uploadFilename');
+
+uploadArea.addEventListener('click', () => artworkFile.click());
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = 'var(--gold)'; });
+uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = ''; });
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadArea.style.borderColor = '';
+  if (e.dataTransfer.files.length) {
+    artworkFile.files = e.dataTransfer.files;
+    showPreview(e.dataTransfer.files[0]);
+  }
+});
+artworkFile.addEventListener('change', () => {
+  if (artworkFile.files.length) showPreview(artworkFile.files[0]);
+});
+
+function showPreview(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    uploadPreview.src = e.target.result;
+    uploadPreview.style.display = 'block';
+    uploadFilename.textContent = file.name;
+    uploadFilename.style.display = 'block';
+    uploadArea.classList.add('has-file');
+    uploadArea.querySelector('.upload-icon').style.display = 'none';
+    uploadArea.querySelector('.upload-text').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── FORM SUBMISSION ── */
+const form = document.getElementById('artworkForm');
+const formCard = document.getElementById('formCard');
+const successMsg = document.getElementById('successMsg');
+
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  // Basic validation — need either a file or an Instagram link
+  const hasFile = artworkFile.files.length > 0;
+  const hasLink = document.getElementById('igLink').value.trim() !== '';
+  if (!hasFile && !hasLink) {
+    alert('Please upload an image or paste an Instagram link.');
+    return;
+  }
+
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch('/', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response.ok) {
+      form.style.display = 'none';
+      successMsg.classList.add('show');
+    } else {
+      alert('Something went wrong. Please try again.');
+    }
+  } catch (err) {
+    alert('Could not submit. Please check your connection and try again.');
+  }
+});
+
+function resetForm() {
+  form.reset();
+  form.style.display = 'block';
+  successMsg.classList.remove('show');
+  uploadPreview.style.display = 'none';
+  uploadFilename.style.display = 'none';
+  uploadArea.classList.remove('has-file');
+  uploadArea.querySelector('.upload-icon').style.display = '';
+  uploadArea.querySelector('.upload-text').style.display = '';
+}
+
+/* ── GALLERY COUNT ── */
+const cards = document.querySelectorAll('.gallery-card');
+const countEl = document.getElementById('galleryCount');
+if (cards.length > 0) {
+  countEl.textContent = cards.length + ' piece' + (cards.length !== 1 ? 's' : '');
+}
+
+/* ── LIGHTBOX ── */
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+/* ── TEACHER MODE ── */
+const teacherToggle = document.getElementById('teacherToggle');
+teacherToggle.addEventListener('change', function() {
+  // Teacher mode currently controls visibility — 
+  // could be extended to show grading interface, etc.
+  document.body.classList.toggle('teacher-active', this.checked);
+});
+</script>
+
+</body>
+</html>

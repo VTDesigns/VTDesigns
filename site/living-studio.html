@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Living Studio — Vaughn Tucker Art Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f5f0e8; --warm:#ede4d0; --ink:#1a1208; --ink2:#3d2c14;
+  --accent:#b85c1a; --accent2:#7a3d0e; --gold:#c9943a; --green:#2d5a27;
+  --deep:#203626; --white:#fdfaf4; --sage:#6b8f6b; --line:rgba(26,18,8,.12);
+  --soft:rgba(26,18,8,.08); --panel:#fffaf1;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.5}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");mix-blend-mode:multiply}
+nav{position:sticky;top:0;z-index:40;display:flex;justify-content:space-between;align-items:center;padding:18px 6vw;background:rgba(245,240,232,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-logo{font-family:'Playfair Display',serif;font-weight:700;font-size:1.15rem;text-decoration:none;color:var(--ink)}
+.nav-logo span{color:var(--accent);font-style:italic}
+.nav-links{display:flex;gap:24px;align-items:center}.nav-links a{text-decoration:none;color:var(--ink2);font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;opacity:.78}
+.nav-links a:hover{opacity:1}.nav-cta{background:var(--accent);color:var(--white)!important;padding:11px 18px;border-radius:999px;opacity:1!important}
+.hero{min-height:78vh;padding:72px 6vw 64px;background:radial-gradient(circle at 75% 20%,rgba(201,148,58,.22),transparent 26%),linear-gradient(135deg,#203626,#17241b 58%,#342214);color:var(--white);display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:54px;align-items:center;overflow:hidden}
+.eyebrow{font-family:'Caveat',cursive;color:var(--gold);font-size:1.35rem;margin-bottom:16px}.hero h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(3rem,6vw,5.8rem);line-height:.98;letter-spacing:-.03em;margin-bottom:22px}.hero h1 em{color:var(--gold);font-style:italic}.hero p{max-width:690px;color:rgba(253,250,244,.78);font-size:1.13rem;line-height:1.75;margin-bottom:28px}.hero-actions{display:flex;gap:14px;flex-wrap:wrap}.btn{border:none;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:15px 22px;border-radius:999px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem;transition:transform .2s,background .2s,border .2s}.btn:hover{transform:translateY(-2px)}.btn-primary{background:var(--gold);color:var(--ink)}.btn-secondary{border:1px solid rgba(255,255,255,.28);color:var(--white);background:rgba(255,255,255,.06)}
+.hero-board{background:rgba(253,250,244,.08);border:1px solid rgba(253,250,244,.14);border-radius:28px;padding:28px;box-shadow:0 24px 80px rgba(0,0,0,.22);position:relative}.hero-board::before{content:'The Living Studio';position:absolute;top:-16px;right:22px;background:var(--accent);color:var(--white);padding:8px 14px;border-radius:999px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}.board-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px}.board-card{padding:18px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}.board-card strong{display:block;color:var(--gold);font-family:'Playfair Display',serif;font-size:1.08rem;margin-bottom:8px}.board-card span{color:rgba(253,250,244,.76);font-size:.92rem;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:92px 6vw}.section-head{max-width:830px;margin-bottom:38px}.section-tag{font-family:'Caveat',cursive;color:var(--accent);font-size:1.22rem;margin-bottom:8px}.section-head h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.4rem);line-height:1.08;margin-bottom:14px}.section-head p{color:rgba(61,44,20,.78);font-size:1.02rem;line-height:1.8}
+.panel-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.85fr);gap:28px;align-items:start}.card{background:var(--panel);border:1px solid var(--line);box-shadow:0 18px 45px rgba(26,18,8,.08);border-radius:28px;padding:30px}.card h3{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:10px}.card p{color:rgba(61,44,20,.78);line-height:1.7;margin-bottom:18px}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.field{display:flex;flex-direction:column;gap:8px}.field.full{grid-column:1/-1}.field label{font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent2)} select,input[type="text"],textarea{width:100%;border:1px solid rgba(26,18,8,.18);background:var(--white);padding:14px 14px;border-radius:14px;font:inherit;color:var(--ink)} textarea{min-height:120px;resize:vertical}.output{margin-top:22px;padding:22px;border-radius:22px;background:linear-gradient(135deg,rgba(201,148,58,.14),rgba(184,92,26,.08));border:1px solid rgba(184,92,26,.18)}.output h4{font-family:'Playfair Display',serif;font-size:1.22rem;margin-bottom:12px}.output ul{padding-left:18px;color:var(--ink2)}.output li{margin:10px 0;line-height:1.6}.micro{font-size:.84rem;color:rgba(61,44,20,.64);margin-top:12px}
+.studio-note{padding:24px;border-left:4px solid var(--gold);background:rgba(201,148,58,.10);border-radius:0 22px 22px 0;margin-top:18px}.studio-note strong{display:block;font-family:'Caveat',cursive;color:var(--accent2);font-size:1.35rem;margin-bottom:6px}.studio-note p{margin:0;color:var(--ink2)}
+.dark{background:var(--ink);color:var(--white)}.dark .section-head p{color:rgba(253,250,244,.72)}.qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.qa-btn{padding:18px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--white);border-radius:18px;text-align:left;cursor:pointer;font:inherit;transition:transform .2s,border .2s}.qa-btn:hover{transform:translateY(-2px);border-color:rgba(201,148,58,.55)}.qa-btn strong{display:block;color:var(--gold);margin-bottom:6px}.answer-box{margin-top:24px;padding:26px;border-radius:24px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);min-height:138px}.answer-box h4{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.3rem;margin-bottom:10px}.answer-box p{color:rgba(253,250,244,.84);line-height:1.85}
+.critique-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.9fr);gap:28px;align-items:start}.upload{border:2px dashed rgba(184,92,26,.35);border-radius:24px;padding:28px;text-align:center;background:rgba(255,255,255,.5)}.upload input{margin-top:14px}.preview{margin-top:18px;display:none}.preview img{width:100%;max-height:340px;object-fit:contain;border-radius:20px;border:1px solid var(--line);background:#fff}.critique-box{margin-top:18px;padding:22px;border-radius:22px;background:var(--white);border:1px solid var(--line)}.critique-box h4{font-family:'Playfair Display',serif;font-size:1.24rem;margin-bottom:12px}.critique-box ul{padding-left:18px}.critique-box li{margin:10px 0;line-height:1.65}.notice{font-size:.88rem;color:rgba(61,44,20,.68);margin-top:14px}
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.step{padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:24px;box-shadow:0 12px 30px rgba(26,18,8,.06)}.step b{display:inline-flex;width:34px;height:34px;border-radius:50%;align-items:center;justify-content:center;background:var(--accent);color:var(--white);margin-bottom:16px}.step h3{font-family:'Playfair Display',serif;font-size:1.22rem;margin-bottom:10px}.step p{color:rgba(61,44,20,.76);line-height:1.7;font-size:.94rem}
+.cta{padding:84px 6vw;background:linear-gradient(135deg,var(--warm),var(--cream));text-align:center}.cta-inner{max-width:860px;margin:0 auto}.cta h2{font-family:'Playfair Display',serif;font-size:clamp(2.1rem,4vw,3.7rem);line-height:1.08;margin-bottom:16px}.cta p{color:rgba(61,44,20,.8);font-size:1.08rem;line-height:1.8;margin-bottom:26px}.footer{padding:42px 6vw;background:var(--ink);color:rgba(253,250,244,.62);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer strong{display:block;color:var(--white);font-family:'Playfair Display',serif;font-size:1.18rem;margin-bottom:4px}.footer a{color:var(--gold);text-decoration:none}
+@media(max-width:980px){.hero,.panel-grid,.critique-grid{grid-template-columns:1fr}.roadmap{grid-template-columns:repeat(2,1fr)}.qa-grid{grid-template-columns:1fr}.nav-links{display:none}}
+@media(max-width:640px){nav{padding:16px 20px}.hero,.wrap,.cta,.footer{padding-left:22px;padding-right:22px}.hero{padding-top:54px;padding-bottom:48px}.board-grid,.form-grid,.roadmap{grid-template-columns:1fr}.card{padding:22px}.hero h1{font-size:2.9rem}}
+@media print{nav,.hero-actions,.dark,.upload input,.btn,.cta,.footer{display:none!important}body{background:#fff}.wrap{padding:20px}.card,.step{box-shadow:none}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Vaughn Tucker <span>Art Academy</span></a>
+  <div class="nav-links">
+    <a href="#planner">Studio Path</a><a href="#ask">Ask the Artist</a><a href="#critique">Critique</a><a href="#roadmap">Build</a><a class="nav-cta" href="#planner">Begin</a>
+  </div>
+</nav>
+<section class="hero">
+  <div>
+    <div class="eyebrow">AI-guided fine art apprenticeship</div>
+    <h1>The <em>Living</em><br>Studio</h1>
+    <p>A new way to teach art: Vaughn Tucker’s paintings, teaching voice, studio wisdom, and adaptive AI-guided learning in one interactive experience. Students do not merely watch. They choose, think, practice, upload, reflect, and improve.</p>
+    <div class="hero-actions"><a class="btn btn-primary" href="#planner">Build My Studio Path</a><a class="btn btn-secondary" href="#critique">Try Critique Flow</a></div>
+  </div>
+  <aside class="hero-board">
+    <div class="board-grid">
+      <div class="board-card"><strong>1. See</strong><span>Study real paintings through composition, color, values, and story.</span></div>
+      <div class="board-card"><strong>2. Choose</strong><span>Adapt the lesson by medium, skill level, and visual mood.</span></div>
+      <div class="board-card"><strong>3. Practice</strong><span>Receive a clear painting route instead of a generic tutorial.</span></div>
+      <div class="board-card"><strong>4. Reflect</strong><span>Upload work and move toward structured critique and revision.</span></div>
+    </div>
+  </aside>
+</section>
+<section class="wrap" id="planner">
+  <div class="section-head"><div class="section-tag">Interactive lesson builder</div><h2>Start with <em>The Road to Brown’s Town</em></h2><p>This first Living Studio experience turns one of Vaughn’s painting lessons into a personalized art path. Select your goals and the page generates a focused studio plan.</p></div>
+  <div class="panel-grid">
+    <div class="card">
+      <h3>Create My Studio Path</h3><p>Choose the way you want to approach the lesson. This prototype generates a tailored learning route that can later be connected to a full AI tutor.</p>
+      <div class="form-grid">
+        <div class="field"><label for="level">Skill level</label><select id="level"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+        <div class="field"><label for="medium">Medium</label><select id="medium"><option>Oil</option><option>Acrylic</option><option>Watercolor adaptation</option><option>Drawing study</option></select></div>
+        <div class="field"><label for="mood">Desired mood</label><select id="mood"><option>Warm memory</option><option>Quiet morning</option><option>Dramatic atmosphere</option><option>Bright tropical light</option></select></div>
+        <div class="field"><label for="focus">Main focus</label><select id="focus"><option>Composition</option><option>Color harmony</option><option>Depth and distance</option><option>Brushwork</option></select></div>
+        <div class="field full"><label for="goal">Personal goal</label><input id="goal" type="text" placeholder="Example: I want my road to lead the eye naturally into the hills."></div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px"><button class="btn btn-primary" onclick="buildPlan()">Generate Studio Path</button><button class="btn" style="background:var(--ink);color:var(--white)" onclick="window.print()">Print Plan</button></div>
+      <div class="output" id="planOutput"><h4>Your studio path will appear here.</h4><p class="micro">The first build is rule-based and front-end only. It establishes the experience design before a connected AI tutor is added.</p></div>
+    </div>
+    <aside class="card">
+      <h3>Vaughn’s Studio Notes</h3><p>These short mentoring lines give the Living Studio a human center. The voice of the teacher remains visible.</p>
+      <div class="studio-note"><strong>Do not decorate a weak composition.</strong><p>Before details, make sure the large pathway, horizon, and value structure are working.</p></div>
+      <div class="studio-note"><strong>Paint memory, not mere inventory.</strong><p>A landscape becomes personal when the artist decides what feeling the place should carry.</p></div>
+      <div class="studio-note"><strong>Distance is a temperature decision.</strong><p>Far hills often soften, cool, and lose contrast so the foreground can breathe.</p></div>
+    </aside>
+  </div>
+</section>
+<section class="wrap dark" id="ask" style="max-width:none">
+  <div style="max-width:1180px;margin:0 auto">
+    <div class="section-head"><div class="section-tag" style="color:var(--gold)">Ask the Artist AI</div><h2>A conversational layer for the lesson</h2><p>These responses model the sort of painting guidance students could receive from a future AI assistant grounded in Vaughn Tucker’s lessons, voice, and artworks.</p></div>
+    <div class="qa-grid">
+      <button class="qa-btn" data-key="composition"><strong>Why does the road curve?</strong><span>Composition and eye movement</span></button>
+      <button class="qa-btn" data-key="green"><strong>How should I mix tropical greens?</strong><span>Color control, not muddy color</span></button>
+      <button class="qa-btn" data-key="distance"><strong>How do I make the hills feel far away?</strong><span>Atmospheric depth</span></button>
+      <button class="qa-btn" data-key="story"><strong>How does memory shape a painting?</strong><span>Meaning beyond reference</span></button>
+    </div>
+    <div class="answer-box" id="answerBox"><h4>Choose a question.</h4><p>The Living Studio answer will appear here in a warm, direct teaching voice.</p></div>
+  </div>
+</section>
+<section class="wrap" id="critique">
+  <div class="section-head"><div class="section-tag">Student critique station</div><h2>Upload. Review. Revise.</h2><p>This prototype shows the critique workflow. It previews the artwork and creates a structured feedback checklist based on the student’s chosen concern. The next upgrade is true vision-AI critique.</p></div>
+  <div class="critique-grid">
+    <div class="card">
+      <div class="upload"><h3>Upload a practice image</h3><p>Sketch, painting block-in, or finished study.</p><input type="file" id="artUpload" accept="image/*"><div class="preview" id="preview"><img alt="Student artwork preview" id="previewImg"></div></div>
+      <div class="form-grid" style="margin-top:18px">
+        <div class="field"><label for="critiqueFocus">Critique focus</label><select id="critiqueFocus"><option>Composition</option><option>Value</option><option>Color</option><option>Depth</option></select></div>
+        <div class="field"><label for="stage">Stage</label><select id="stage"><option>Sketch</option><option>Block-in</option><option>Mid-painting</option><option>Nearly finished</option></select></div>
+        <div class="field full"><label for="studentQuestion">What do you want help with?</label><textarea id="studentQuestion" placeholder="Example: My background feels too strong and the road does not lead the eye."></textarea></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:18px" onclick="makeCritique()">Generate Critique Checklist</button>
+      <p class="notice">Current version: structured critique scaffold. Future version: connect to an AI vision model for real artwork analysis.</p>
+    </div>
+    <div class="card">
+      <h3>Studio Critique</h3><p>Feedback should always move the student toward the next revision, not merely judge the work.</p>
+      <div class="critique-box" id="critiqueOutput"><h4>Your critique checklist will appear here.</h4><ul><li>Upload an image and choose a critique focus.</li><li>The Living Studio will return a revision pathway.</li><li>This can later become a true AI art coach.</li></ul></div>
+    </div>
+  </div>
+</section>
+<section class="wrap" id="roadmap">
+  <div class="section-head"><div class="section-tag">The platform vision</div><h2>What the full Living Studio becomes</h2><p>This first build creates the foundation. The full platform can expand into a distinctive AI-assisted fine art school.</p></div>
+  <div class="roadmap">
+    <div class="step"><b>1</b><h3>Grounded AI tutor</h3><p>Answers questions from Vaughn’s own lessons, artwork notes, and teaching philosophy.</p></div>
+    <div class="step"><b>2</b><h3>Vision critique</h3><p>Students upload artwork and receive composition, color, value, and depth feedback.</p></div>
+    <div class="step"><b>3</b><h3>Adaptive lesson tracks</h3><p>Beginner, intermediate, and advanced routes from the same master lesson.</p></div>
+    <div class="step"><b>4</b><h3>Portfolio pathway</h3><p>Students collect studies, reflections, revisions, and finished projects inside the Academy.</p></div>
+  </div>
+</section>
+<section class="cta"><div class="cta-inner"><h2>This is not AI replacing the artist.<br>It is the artist’s studio becoming interactive.</h2><p>The Living Studio gives Vaughn Tucker Art Academy a stronger identity than generic tutorial content: a guided, reflective, craft-centered art learning environment.</p><a class="btn btn-primary" href="#planner">Use the Living Studio</a></div></section>
+<footer class="footer"><div><strong>Vaughn Tucker Art Academy</strong><span>The Living Studio — AI-guided art apprenticeship.</span></div><div><a href="painting-lesson.html">Original Brown’s Town Lesson</a> · <a href="index.html">Back to Academy</a></div></footer>
+<script>
+const planMap={
+  Beginner:{tone:'Keep the lesson simple and visible.',start:'Begin with a light drawing of the road, horizon, and largest tree masses.'},
+  Intermediate:{tone:'Use the lesson to build control and intention.',start:'Start with a clear value map before committing to color.'},
+  Advanced:{tone:'Treat the scene as a personal interpretation, not a copy.',start:'Design the composition around rhythm, edge control, and atmosphere.'}
+};
+const mediumMap={
+  Oil:'Work from thin to thicker passages. Save richer highlights and more decisive accents for later.',
+  Acrylic:'Work quickly in clear layers. Rebuild lost transitions with fresh mixed color rather than overworking.',
+  'Watercolor adaptation':'Preserve light early. Let washes establish atmosphere before defining the road and foliage.',
+  'Drawing study':'Focus on value grouping, the road’s perspective, and directional marks before any color is considered.'
+};
+const moodMap={
+  'Warm memory':'Use gentler contrasts, warm reflected light, and softened edges to suggest remembrance.',
+  'Quiet morning':'Lower the drama. Favor cooler distance, calmer skies, and fewer sharp accents.',
+  'Dramatic atmosphere':'Push stronger value contrast, more active clouds, and a road that presses deeper into space.',
+  'Bright tropical light':'Clarify sunlight direction. Let the brightest planes feel intentional, not scattered.'
+};
+const focusMap={
+  Composition:['Make the road the visual pathway, not a decorative stripe.','Check whether the eye enters the scene, turns, and rests.','Reduce competing high-contrast shapes near the edges.'],
+  'Color harmony':['Choose a dominant color family before mixing many variations.','Let greens shift warm and cool instead of becoming one flat mixture.','Reserve the highest chroma for areas that matter most.'],
+  'Depth and distance':['Cool and soften distant hills.','Reduce detail and contrast as forms move backward.','Use the road width and edge clarity to help space unfold.'],
+  Brushwork:['Use broad strokes for masses first.','Save smaller strokes for moments of emphasis.','Let brush direction describe the land rather than randomly filling space.']
+};
+function buildPlan(){
+  const level=document.getElementById('level').value, medium=document.getElementById('medium').value, mood=document.getElementById('mood').value, focus=document.getElementById('focus').value, goal=document.getElementById('goal').value.trim();
+  const p=planMap[level], points=focusMap[focus];
+  document.getElementById('planOutput').innerHTML=`<h4>${level} ${medium} Path — ${focus}</h4><ul><li><strong>Teacher emphasis:</strong> ${p.tone}</li><li><strong>First move:</strong> ${p.start}</li><li><strong>Medium guidance:</strong> ${mediumMap[medium]}</li><li><strong>Mood guidance:</strong> ${moodMap[mood]}</li><li><strong>Focus checkpoint:</strong> ${points[0]}</li><li>${points[1]}</li><li>${points[2]}</li>${goal?`<li><strong>Your personal goal:</strong> ${escapeHtml(goal)}</li>`:''}</ul><p class="micro">Suggested assignment: complete a thumbnail, a value study, and one 45–90 minute painting pass before revision.</p>`;
+}
+const answers={
+  composition:{title:'Why the road curves',text:'A curving road does more than describe geography. It becomes a visual invitation. It brings the viewer into the painting, slows the eye, and creates a sense of discovery. In this kind of Jamaican landscape, the road can carry memory, movement, and expectation all at once.'},
+  green:{title:'Mixing tropical greens',text:'Do not use one green for everything. Think in families: warmer yellow-greens where light strikes, deeper olive or blue-greens in shadow, and quieter, cooler greens in the distance. The goal is not to make every leaf exciting. The goal is to make the scene breathe.'},
+  distance:{title:'Creating distant hills',text:'Distance is often created by reducing contrast, reducing detail, softening edges, and slightly cooling the color. A far hill should not compete with the foreground. It supports the space so the road and nearer forms can carry the stronger statement.'},
+  story:{title:'Painting from memory',text:'Memory helps the painter choose. A photograph records everything. The artist decides what matters. When the scene is tied to lived experience, the painting can become less literal and more truthful—especially in atmosphere, emphasis, and emotional tone.'}
+};
+document.querySelectorAll('.qa-btn').forEach(btn=>btn.addEventListener('click',()=>{const a=answers[btn.dataset.key];document.getElementById('answerBox').innerHTML=`<h4>${a.title}</h4><p>${a.text}</p>`;}));
+const upload=document.getElementById('artUpload');upload.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;const url=URL.createObjectURL(file);document.getElementById('previewImg').src=url;document.getElementById('preview').style.display='block';});
+const critiqueMap={
+  Composition:['Can the viewer enter the scene immediately?','Does the main pathway or focal direction feel clear?','Remove or soften one competing area near the edge.'],
+  Value:['Squint at the image. Are the darks, mids, and lights clearly grouped?','Strengthen only one or two major contrast areas.','Check whether the foreground has more authority than the distance.'],
+  Color:['Identify the dominant temperature: warm, cool, or balanced.','Look for one color mixture that has become muddy and remix it cleanly.','Use saturation selectively so focal areas speak louder.'],
+  Depth:['Cool or soften one distant shape.','Reduce sharpness in the background.','Clarify overlap: foreground over middle ground, middle ground over distance.']
+};
+function makeCritique(){const focus=document.getElementById('critiqueFocus').value,stage=document.getElementById('stage').value,q=document.getElementById('studentQuestion').value.trim();const items=critiqueMap[focus];document.getElementById('critiqueOutput').innerHTML=`<h4>${stage} critique — ${focus}</h4><ul><li><strong>Main review:</strong> ${items[0]}</li><li><strong>Revision move:</strong> ${items[1]}</li><li><strong>Next pass:</strong> ${items[2]}</li>${q?`<li><strong>Your concern:</strong> ${escapeHtml(q)}</li>`:''}<li><strong>Teacher direction:</strong> Make one strong improvement before making five small ones.</li></ul>`;}
+function escapeHtml(str){return str.replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
+buildPlan();
+</script>
+</body>
+</html>

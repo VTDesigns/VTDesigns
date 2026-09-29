@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Originals for Sale | Vaughn Tucker Art Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C5A55A;
+            --gold-light: #E8D5A3;
+            --dark: #1A1A1A;
+            --dark-warm: #2C2622;
+            --cream: #FAF6EE;
+            --cream-dark: #F0E8D8;
+            --text: #3A3330;
+            --text-light: #7A7068;
+            --white: #FFFFFF;
+            --shadow: 0 4px 24px rgba(0,0,0,0.12);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* ── Header ── */
+        .page-header {
+            background: var(--dark-warm);
+            padding: 60px 20px 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(197,165,90,0.15) 0%, transparent 60%);
+        }
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            color: var(--gold-light);
+            letter-spacing: 0.04em;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .page-header p {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.65);
+            font-weight: 300;
+            max-width: 540px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .divider {
+            width: 60px; height: 2px;
+            background: var(--gold);
+            margin: 20px auto;
+            position: relative;
+        }
+
+        /* ── Gallery Grid ── */
+        .gallery {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px 80px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        /* ── Painting Card ── */
+        .painting-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .painting-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+        .painting-image-wrap {
+            position: relative;
+            overflow: hidden;
+            background: var(--dark);
+            cursor: pointer;
+        }
+        .painting-image-wrap img {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .painting-card:hover .painting-image-wrap img {
+            transform: scale(1.03);
+        }
+        .badge-sold {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: #B94A3E;
+            color: white;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            display: none;
+        }
+        .painting-card.sold .badge-sold { display: block; }
+        .painting-card.sold .painting-image-wrap img { filter: grayscale(30%); }
+
+        .painting-info {
+            padding: 28px 28px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .painting-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--dark-warm);
+            margin-bottom: 6px;
+        }
+        .painting-details {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        .painting-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--gold);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .painting-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.25s ease;
+            font-family: 'Lato', sans-serif;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--white);
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            background: #B8963E;
+            transform: translateY(-1px);
+        }
+        .btn-share {
+            background: var(--cream);
+            color: var(--text);
+            padding: 12px 16px;
+            position: relative;
+        }
+        .btn-share:hover { background: var(--cream-dark); }
+        .btn-share svg { width: 18px; height: 18px; }
+
+        .share-dropdown {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            right: 0;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            padding: 8px;
+            z-index: 20;
+            min-width: 180px;
+        }
+        .share-dropdown.active { display: block; }
+        .share-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.88rem;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .share-link:hover { background: var(--cream); }
+        .share-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        /* ── Modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--white);
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 36px; height: 36px;
+            border: none;
+            background: var(--cream);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .modal-close:hover { background: var(--cream-dark); color: var(--text); }
+        .modal h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--dark-warm);
+            margin-bottom: 6px;
+        }
+        .modal .modal-subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #E0D8CE;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Lato', sans-serif;
+            transition: border-color 0.2s;
+            background: var(--cream);
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: var(--white);
+        }
+        .form-group textarea { height: 100px; resize: vertical; }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Lato', sans-serif;
+            transition: background 0.25s;
+            margin-top: 8px;
+        }
+        .btn-submit:hover { background: #B8963E; }
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px 10px;
+        }
+        .success-message svg { width: 56px; height: 56px; color: var(--gold); margin-bottom: 16px; }
+        .success-message h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 8px; }
+        .success-message p { color: var(--text-light); font-size: 0.95rem; }
+
+        /* ── Lightbox ── */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 90;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            cursor: zoom-out;
+        }
+        .lightbox-overlay.active { display: flex; }
+        .lightbox-overlay img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.5);
+        }
+
+        /* ── Footer Note ── */
+        .footer-note {
+            text-align: center;
+            padding: 0 20px 60px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .footer-note a { color: var(--gold); text-decoration: none; }
+        .footer-note a:hover { text-decoration: underline; }
+
+        /* ── Responsive ── */
+        @media (max-width: 720px) {
+            .gallery { grid-template-columns: 1fr; gap: 30px; padding: 30px 16px 60px; }
+            .page-header { padding: 40px 16px 36px; }
+            .modal { padding: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="page-header">
+    <h1>Originals for Sale</h1>
+    <div class="divider"></div>
+    <p>Original oil paintings by Vaughn Tucker — Caribbean life, portraits, and landscapes alive with warmth and expression.</p>
+</header>
+
+<section class="gallery">
+
+    <!-- Card 1: Smile -->
+    <div class="painting-card" data-title="Smile" data-price="$150">
+        <div class="painting-image-wrap" onclick="openLightbox(this)">
+            <img src="E153D2F8-DEB9-4D7B-BBA2-907DBCCD12FB.JPG" alt="Smile — Oil portrait by Vaughn Tucker" loading="lazy">
+            <span class="badge-sold">Sold</span>
+        </div>
+        <div class="painting-info">
+            <h2 class="painting-title">Smile</h2>
+            <p class="painting-details">Oil on Canvas &nbsp;·&nbsp; 5 × 7 in</p>
+            <p class="painting-price">$150</p>
+            <div class="painting-actions">
+                <button class="btn btn-primary" onclick="openInquiry('Smile', '$150')">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Inquire
+                </button>
+                <button class="btn btn-share" onclick="toggleShare(event, this)">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    <div class="share-dropdown">
+                        <a class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=https://vaughntuckerartacademy.com/originals-for-sale.html" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Facebook
+                        </a>
+                        <a class="share-link" href="https://twitter.com/intent/tweet?text=Check out this painting by Vaughn Tucker!&url=https://vaughntuckerartacademy.com/originals-for-sale.html" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="#1DA1F2"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                            Twitter / X
+                        </a>
+                        <a class="share-link copy-link" href="#" onclick="copyLink(event)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                            Copy Link
+                        </a>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Little Boy -->
+    <div class="painting-card" data-title="Little Boy" data-price="$150">
+        <div class="painting-image-wrap" onclick="openLightbox(this)">
+            <img src="img-1952.jpeg" alt="Little Boy — Oil portrait by Vaughn Tucker" loading="lazy">
+            <span class="badge-sold">Sold</span>
+        </div>
+        <div class="painting-info">
+            <h2 class="painting-title">Little Boy</h2>
+            <p class="painting-details">Oil on Canvas &nbsp;·&nbsp; 5 × 7 in</p>
+            <p class="painting-price">$150</p>
+            <div class="painting-actions">
+                <button class="btn btn-primary" onclick="openInquiry('Little Boy', '$150')">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Inquire
+                </button>
+                <button class="btn btn-share" onclick="toggleShare(event, this)">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    <div class="share-dropdown">
+                        <a class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=https://vaughntuckerartacademy.com/originals-for-sale.html" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Facebook
+                        </a>
+                        <a class="share-link" href="https://twitter.com/intent/tweet?text=Check out this painting by Vaughn Tucker!&url=https://vaughntuckerartacademy.com/originals-for-sale.html" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="#1DA1F2"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                            Twitter / X
+                        </a>
+                        <a class="share-link copy-link" href="#" onclick="copyLink(event)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                            Copy Link
+                        </a>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3: Morning in the Hills -->
+    <div class="painting-card" data-title="Morning in the Hills" data-price="$2,000">
+        <div class="painting-image-wrap" onclick="openLightbox(this)">
+            <img src="img-2964.jpeg" alt="Morning in the Hills — Oil landscape by Vaughn Tucker" loading="lazy">
+            <span class="badge-sold">Sold</span>
+        </div>
+        <div class="painting-info">
+            <h2 class="painting-title">Morning in the Hills</h2>
+            <p class="painting-details">Oil on Canvas &nbsp;·&nbsp; 20 × 24 in</p>
+            <p class="painting-price">$2,000</p>
+            <div class="painting-actions">
+                <button class="btn btn-primary" onclick="openInquiry('Morning in the Hills', '$2,000')">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Inquire
+                </button>
+                <button class="btn btn-share" onclick="toggleShare(event, this)">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    <div class="share-dropdown">
+                        <a class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=https://vaughntuckerartacademy.com/originals-for-sale.html" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Facebook
+                        </a>
+                        <a class="share-link" href="https://twitter.com/intent/tweet?text=Check out this painting by Vaughn Tucker!&url=https://vaughntuckerartacademy.com/originals-for-sale.html" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="#1DA1F2"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                            Twitter / X
+                        </a>
+                        <a class="share-link copy-link" href="#" onclick="copyLink(event)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                            Copy Link
+                        </a>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<p class="footer-note">
+    All paintings ship within the continental US. International shipping available on request.<br>
+    Questions? <a href="mailto:vaughntuckerart@gmail.com">vaughntuckerart@gmail.com</a>
+</p>
+
+<!-- ── Inquiry Modal ── -->
+<div class="modal-overlay" id="inquiryModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeInquiry()">&times;</button>
+        <div id="inquiryForm">
+            <h2>Inquire About <span id="modalTitle"></span></h2>
+            <p class="modal-subtitle">Price: <span id="modalPrice"></span> &nbsp;·&nbsp; We'll get back to you within 24 hours.</p>
+            <div class="form-group">
+                <label for="inquiryName">Your Name</label>
+                <input type="text" id="inquiryName" placeholder="Full name">
+            </div>
+            <div class="form-group">
+                <label for="inquiryEmail">Email Address</label>
+                <input type="email" id="inquiryEmail" placeholder="you@email.com">
+            </div>
+            <div class="form-group">
+                <label for="inquiryMessage">Message (optional)</label>
+                <textarea id="inquiryMessage" placeholder="Any questions about this painting?"></textarea>
+            </div>
+            <button class="btn-submit" onclick="submitInquiry()">Send Inquiry</button>
+        </div>
+        <div class="success-message" id="successMsg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <h3>Inquiry Sent!</h3>
+            <p>Thank you for your interest. Vaughn will be in touch soon.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ── Lightbox ── -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+    function openInquiry(title, price) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalPrice').textContent = price;
+        document.getElementById('inquiryForm').style.display = 'block';
+        document.getElementById('successMsg').style.display = 'none';
+        document.getElementById('inquiryModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeInquiry() {
+        document.getElementById('inquiryModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    function submitInquiry() {
+        const name = document.getElementById('inquiryName').value.trim();
+        const email = document.getElementById('inquiryEmail').value.trim();
+        if (!name || !email) { alert('Please enter your name and email.'); return; }
+        const title = document.getElementById('modalTitle').textContent;
+        const price = document.getElementById('modalPrice').textContent;
+        const msg = document.getElementById('inquiryMessage').value.trim();
+        const subject = encodeURIComponent('Inquiry: ' + title + ' (' + price + ')');
+        const body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nPainting: ' + title + '\nPrice: ' + price + '\n\n' + (msg || '(No additional message)'));
+        window.open('mailto:vaughntuckerart@gmail.com?subject=' + subject + '&body=' + body);
+        document.getElementById('inquiryForm').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+    }
+    document.getElementById('inquiryModal').addEventListener('click', function(e) {
+        if (e.target === this) closeInquiry();
+    });
+    function openLightbox(wrap) {
+        const img = wrap.querySelector('img');
+        document.getElementById('lightboxImg').src = img.src;
+        document.getElementById('lightbox').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    function toggleShare(e, btn) {
+        e.stopPropagation();
+        const dropdown = btn.querySelector('.share-dropdown');
+        document.querySelectorAll('.share-dropdown.active').forEach(d => { if (d !== dropdown) d.classList.remove('active'); });
+        dropdown.classList.toggle('active');
+    }
+    function copyLink(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            const link = e.currentTarget;
+            const orig = link.innerHTML;
+            link.innerHTML = link.innerHTML.replace('Copy Link', 'Copied!');
+            setTimeout(() => { link.innerHTML = orig; }, 1500);
+        });
+    }
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.share-dropdown.active').forEach(d => d.classList.remove('active'));
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeInquiry(); closeLightbox(); }
+    });
+</script>
+
+</body>
+</html>
