@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idea Studio — Vaughn Tucker Art Academy</title>
+<meta name="description" content="Describe the picture in your head and get a step-by-step drawing project from Vaughn Tucker's studio: eye level, perspective, composition and construction.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f5f0e8;
+  --warm:#ede4d0;
+  --ink:#1a1208;
+  --ink2:#3d2c14;
+  --accent:#b85c1a;
+  --accent2:#7a3d0e;
+  --gold:#c9943a;
+  --green:#2d5a27;
+  --blue:#1a3a5c;
+  --white:#fdfaf4;
+  --line:rgba(26,18,8,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;overflow-x:hidden;}
+a{color:var(--accent)}
+
+/* ── Nav ── */
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 48px;background:rgba(245,240,232,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);text-decoration:none;white-space:nowrap;}
+.nav-logo span{color:var(--accent);font-style:italic;}
+.nav-links{display:flex;gap:24px;flex-wrap:wrap;}
+.nav-links a{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);text-decoration:none;opacity:.75;font-weight:500;}
+.nav-links a:hover{opacity:1}
+
+/* ── Layout ── */
+.wrap{max-width:1100px;margin:0 auto;padding:0 48px;}
+header.intro{padding:72px 0 40px;}
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:16px;}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--accent);}
+h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5.5vw,4rem);font-weight:900;line-height:1.02;margin-bottom:18px;}
+h1 em{color:var(--accent);}
+h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700;line-height:1.15;margin-bottom:12px;}
+.lead{font-size:1.08rem;max-width:700px;color:var(--ink2);}
+.quote{font-family:'Playfair Display',serif;font-style:italic;color:var(--green);font-size:1.15rem;margin-top:18px;max-width:640px;}
+section.part{padding:48px 0;border-top:1px solid var(--line);}
+.sub{color:var(--ink2);max-width:700px;margin-bottom:24px;}
+.step-num{font-family:'Caveat',cursive;color:var(--gold);font-size:1.3rem;margin-bottom:4px;}
+
+/* ── Form ── */
+.ask{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:0 14px 40px rgba(26,18,8,.08);}
+.ask label{display:block;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent2);margin-bottom:8px;}
+.ask textarea,.ask select{width:100%;border:1px solid rgba(26,18,8,.18);background:#fff;padding:14px;border-radius:10px;font:inherit;color:var(--ink);}
+.ask textarea{min-height:120px;resize:vertical;font-size:1.02rem;}
+.ask .row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px;}
+.ask .actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:20px;}
+.btn{display:inline-block;padding:15px 26px;border:none;border-radius:8px;background:var(--accent);color:var(--white);font:inherit;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem;cursor:pointer;text-decoration:none;}
+.btn:hover{background:var(--accent2);}
+.btn:disabled{opacity:.55;cursor:default;}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+.btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid rgba(26,18,8,.25);}
+.btn-ghost:hover{background:var(--warm);color:var(--ink);}
+.notice{font-size:.88rem;color:rgba(61,44,20,.7);}
+.ideas{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.idea-chip{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:.82rem;color:var(--ink2);cursor:pointer;}
+.idea-chip:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── Project ── */
+.project{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:32px;box-shadow:0 18px 48px rgba(26,18,8,.1);}
+.project-kicker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+.project h3{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.4vw,2.2rem);line-height:1.15;margin:6px 0 10px;}
+.project .said{font-style:italic;color:rgba(61,44,20,.75);margin-bottom:14px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.chip{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.8rem;color:var(--ink2);}
+.chip b{color:var(--ink);}
+.big-idea{background:rgba(201,148,58,.12);border-left:4px solid var(--gold);padding:14px 18px;margin-bottom:22px;color:var(--ink2);}
+.big-idea b{color:var(--ink);}
+.project-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:start;}
+.diagram{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;}
+.diagram svg{display:block;width:100%;height:auto;}
+.diagram-cap{font-size:.8rem;color:rgba(61,44,20,.7);padding:8px 12px;border-top:1px solid var(--line);background:var(--cream);}
+.project h4{font-family:'Playfair Display',serif;font-size:1.2rem;margin:4px 0 10px;}
+.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:12px;}
+.steps li{counter-increment:s;position:relative;padding-left:40px;color:var(--ink2);line-height:1.65;}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--white);font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;}
+.steps li b{color:var(--ink);}
+.extra{margin-top:18px;display:grid;gap:12px;}
+.extra div{background:var(--cream);padding:14px 16px;border-radius:8px;color:var(--ink2);font-size:.95rem;}
+.extra b{color:var(--ink);}
+.next{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;}
+.msg{background:var(--white);border-left:4px solid var(--accent);padding:16px 18px;color:var(--ink2);}
+
+footer{padding:40px 0 56px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink2);}
+footer a{margin-right:18px;}
+
+@media(max-width:900px){
+  nav{padding:14px 20px;flex-wrap:wrap;}
+  .nav-links{gap:14px;}
+  .wrap{padding:0 20px;}
+  header.intro{padding:40px 0 28px;}
+  .ask{padding:20px;}
+  .ask .row{grid-template-columns:1fr;}
+  .project{padding:20px;}
+  .project-grid{grid-template-columns:1fr;}
+}
+@media print{nav,.ask,footer,.next,#exampleSection,header.intro{display:none!important}body{background:#fff}.project{box-shadow:none;border:none}}
+</style>
+</head>
+<body>
+
+<nav aria-label="Main navigation">
+  <a class="nav-logo" href="index.html">Vaughn Tucker <span>Art Academy</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="lessons.html">Lessons</a>
+    <a href="perspective-lab.html">Perspective Lab</a>
+    <a href="living-studio.html#critique">Critique</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<header class="intro">
+  <div class="eyebrow">Idea Studio</div>
+  <h1>You have a picture in your head.<br><em>Let's build it.</em></h1>
+  <p class="lead">Describe the picture you want to make. The Idea Studio turns it into a real drawing project, the way I teach in my studio: where your eyes are, which perspective to use, how to arrange it, and how to build it step by step from simple forms to the finished piece.</p>
+  <p class="quote">"Construction before detail. Get the eye level right and the rest follows."</p>
+</header>
+
+<!-- ═══ ASK ═══ -->
+<section class="part" aria-labelledby="askTitle">
+  <div class="step-num">Your idea</div>
+  <h2 id="askTitle">Describe the picture in your head</h2>
+  <p class="sub">Say who or what is in it, what is near and what is far, and how it should feel. One free project a day.</p>
+
+  <form class="ask" id="ideaForm">
+    <label for="idea">Your idea</label>
+    <textarea id="idea" maxlength="800" placeholder="Example: A fisherman pulling his boat onto the beach at sunset, with the village and the hills behind him."></textarea>
+    <div class="ideas" aria-label="Example ideas">
+      <button type="button" class="idea-chip">A church at the end of a long street, seen from the middle of the road</button>
+      <button type="button" class="idea-chip">My grandmother's house from the bottom of the hill</button>
+      <button type="button" class="idea-chip">A market woman with her basket, the busy market behind her</button>
+    </div>
+    <div class="row">
+      <div><label for="medium">Medium</label><select id="medium"><option>Pencil</option><option>Pen &amp; ink</option><option>Acrylic</option><option>Oil</option><option>Watercolor</option><option>Mixed media</option></select></div>
+      <div><label for="level">Your level</label><select id="level"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+      <div><label for="view">View</label><select id="view"><option>Let the studio decide</option><option>Eye level</option><option>Looking up</option><option>Looking down</option></select></div>
+    </div>
+    <div class="actions">
+      <button class="btn" type="submit" id="ideaBtn">Build My Project</button>
+      <span class="notice" id="ideaNotice">Free: one project idea a day.</span>
+    </div>
+  </form>
+</section>
+
+<!-- ═══ RESULT ═══ -->
+<section class="part" id="resultSection" aria-live="polite" hidden>
+  <div class="step-num">Your project</div>
+  <div id="result"></div>
+</section>
+
+<!-- ═══ EXAMPLE ═══ -->
+<section class="part" id="exampleSection" aria-labelledby="exTitle">
+  <div class="step-num">Example</div>
+  <h2 id="exTitle">What you get</h2>
+  <p class="sub">A student typed: <em>"David in the foreground, Goliath towering in the distance."</em> This is the project the studio built.</p>
+  <div id="example"></div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <a href="lessons.html">← All lessons</a>
+  <a href="perspective-lab.html">Perspective Lab</a>
+  <a href="living-studio.html#critique">Get a critique</a>
+</footer>
+
+<script>
+(function () {
+  const LESSONS = {
+    'perspective-lab': ['Perspective Lab', 'perspective-lab.html'],
+    'drawing-studio': ['Drawing Studio', 'drawing-studio.html'],
+    'painting-lesson': ['The Road to Brown’s Town', 'painting-lesson.html'],
+    'automated-lesson': ['Jamaican Road Study', 'automated-lesson.html'],
+    'art-materials': ['Art Materials & Colour Mixing', 'art-materials.html']
+  };
+
+  const EXAMPLE = {
+    is_drawable: true,
+    message: 'A great subject: the whole story is in the difference of scale.',
+    title: 'The Giant Across the Valley',
+    perspective: { type: 'Two-point', eye_level: 'Low', why: 'We stand down at David’s height, looking up the valley. A low eye level makes Goliath loom.' },
+    difficulty: 'Intermediate',
+    big_idea: 'Goliath is far away but still huge. That tension is the whole picture, and it only works if the viewer can measure the distance, so we use overlap, a path and figure scale.',
+    steps: [
+      { title: 'Thumbnails (10 minutes)', detail: 'Three tiny sketches, 2 × 3 inches: David on the left, David on the right, David seen from behind. Pick the one where David’s shape and Goliath’s shape don’t touch.' },
+      { title: 'Eye level', detail: 'Draw the horizon low, about a quarter of the way up the page. David’s eyes sit on it, and so do the eyes of anyone else standing on the same ground.' },
+      { title: 'Ground plane', detail: 'Lay a simple two-point grid on the valley floor so the distances can be measured.' },
+      { title: 'Scale check', detail: 'Use a normal-sized soldier in the middle distance as a measuring stick: his eyes are on the horizon line. Goliath’s knees reach that line, which shows he is a giant.' },
+      { title: 'Block in forms', detail: 'David as a simple cylinder-and-box figure, Goliath as larger stacked boxes across the valley. Keep everything simple.' },
+      { title: 'Value plan', detail: 'David dark against the light valley. Goliath lighter and hazier with distance, but his shape stays big.' },
+      { title: 'Details last', detail: 'The sling, armour and faces come only after everything above reads clearly.' }
+    ],
+    practice_first: 'Five minutes in the Perspective Lab moving the eye level, then a page of cylinder figures drawn at three distances.',
+    start_lesson: 'perspective-lab',
+    diagram: {
+      mode: 2, horizon: 0.74, vp_left_x: -0.25, vp_right_x: 1.25, vp3_y: -2,
+      shapes: [
+        { label: 'Goliath', kind: 'figure', x: 0.68, ground_y: 0.8, height: 0.26, width: 0.06 },
+        { label: 'Soldier', kind: 'figure', x: 0.47, ground_y: 0.81, height: 0.085, width: 0.03 },
+        { label: 'Rock', kind: 'block', x: 0.8, ground_y: 0.93, height: 0.08, width: 0.14 },
+        { label: 'David', kind: 'figure', x: 0.22, ground_y: 0.99, height: 0.27, width: 0.06 }
+      ]
+    }
+  };
+
+  /* ───────── helpers ───────── */
+  const NS = 'http://www.w3.org/2000/svg', W = 1000, H = 620;
+  function esc(s) { return String(s).replace(/[&<>'"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]; }); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function num(v, d) { return typeof v === 'number' && isFinite(v) ? v : d; }
+  function lerp(a, b, t) { return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }; }
+  function intersect(p1, p2, p3, p4) {
+    const d = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
+    if (Math.abs(d) < 1e-6) return lerp(p1, p3, 0.5);
+    const t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / d;
+    return { x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) };
+  }
+
+  /* ───────── starting diagram ───────── */
+  function drawDiagram(d) {
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Starting diagram: eye level, vanishing points and blocked-in shapes for this project.');
+    function el(name, attrs, parent) {
+      const e = document.createElementNS(NS, name);
+      for (const a in attrs) e.setAttribute(a, attrs[a]);
+      (parent || svg).appendChild(e);
+      return e;
+    }
+    function pts(list) { return list.map(function (p) { return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' '); }
+    function guide(a, b, color, g) { el('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: color, 'stroke-width': 1.3, 'stroke-dasharray': '6 5', opacity: 0.7 }, g); }
+    function label(text, x, y, g) {
+      const t = el('text', { x: clamp(x, 60, W - 60), y: clamp(y, 18, H - 6), 'text-anchor': 'middle', 'font-family': 'DM Sans, sans-serif', 'font-size': 22, 'font-weight': 700, fill: '#1a1208', stroke: '#fdfaf4', 'stroke-width': 6, 'paint-order': 'stroke' }, g);
+      t.textContent = text;
+    }
+
+    const mode = [1, 2, 3].indexOf(d.mode) >= 0 ? d.mode : 2;
+    const h = clamp(num(d.horizon, 0.5), 0.08, 0.92) * H;
+    let L = { x: num(d.vp_left_x, -0.2) * W, y: h }, R = { x: num(d.vp_right_x, 1.2) * W, y: h };
+    if (L.x > R.x) { const t = L; L = R; R = t; }
+    if (mode === 1) L = { x: clamp(num(d.vp_left_x, 0.5), 0.05, 0.95) * W, y: h };
+    let v3y = num(d.vp3_y, -1.5) * H;
+    if (Math.abs(v3y - h) < 300) v3y = v3y < h ? h - 300 : h + 300;
+    const V3 = { x: W / 2, y: v3y };
+
+    el('rect', { x: 0, y: 0, width: W, height: h, fill: '#eef3f6' });
+    el('rect', { x: 0, y: h, width: W, height: H - h, fill: '#efe6d4' });
+    const guides = el('g', {}), shapes = el('g', {}), labels = el('g', {});
+
+    function upFrom(p, len) {
+      if (mode !== 3) return { x: p.x, y: p.y - len };
+      let dx = V3.x - p.x, dy = V3.y - p.y; const n = Math.hypot(dx, dy) || 1; dx /= n; dy /= n;
+      if (dy > 0) { dx = -dx; dy = -dy; }
+      return { x: p.x + dx * len, y: p.y + dy * len };
+    }
+    function vertAlong(p) { return mode === 3 ? V3 : { x: p.x, y: p.y - 100 }; }
+
+    const list = (Array.isArray(d.shapes) ? d.shapes : []).slice(0, 8).map(function (s) {
+      return {
+        label: String(s.label || ''), kind: s.kind,
+        x: clamp(num(s.x, 0.5), 0.04, 0.96) * W,
+        g: clamp(num(s.ground_y, 0.8), 0.05, 1) * H,
+        hgt: clamp(num(s.height, 0.2), 0.02, 0.95) * H,
+        w: clamp(num(s.width, 0.1), 0.01, 0.8) * W
+      };
+    }).sort(function (a, b) { return a.g - b.g; });
+
+    list.forEach(function (s) {
+      const g = el('g', {}, shapes);
+      if (s.kind === 'figure') {
+        const r = Math.max(4, s.hgt * 0.085), top = s.g - s.hgt, bw = Math.max(6, s.hgt * 0.22);
+        el('circle', { cx: s.x, cy: top + r, r: r, fill: '#d9c2a0', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        el('rect', { x: s.x - bw / 2, y: top + 2 * r + 2, width: bw, height: s.hgt - 2 * r - 2, rx: bw / 3, fill: '#d9c2a0', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        label(s.label, s.x, top - 8, labels);
+      } else if (s.kind === 'cylinder') {
+        const top = s.g - s.hgt, rx = s.w / 2;
+        const ryTop = clamp(Math.abs(top - h) * 0.12, 3, rx * 0.5), ryBot = clamp(Math.abs(s.g - h) * 0.12, 3, rx * 0.5);
+        el('path', { d: 'M' + (s.x - rx) + ',' + top + ' L' + (s.x - rx) + ',' + s.g + ' A' + rx + ',' + ryBot + ' 0 0 0 ' + (s.x + rx) + ',' + s.g + ' L' + (s.x + rx) + ',' + top, fill: '#fdfaf4', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        el('ellipse', { cx: s.x, cy: top, rx: rx, ry: ryTop, fill: top > h ? '#f3d9a8' : '#fdfaf4', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        label(s.label, s.x, top - ryTop - 8, labels);
+      } else if (mode === 1) {
+        const f = [{ x: s.x - s.w / 2, y: s.g - s.hgt }, { x: s.x + s.w / 2, y: s.g - s.hgt }, { x: s.x + s.w / 2, y: s.g }, { x: s.x - s.w / 2, y: s.g }];
+        const k = f.map(function (p) { return lerp(p, L, 0.22); });
+        f.forEach(function (p) { guide(p, L, '#b85c1a', guides); });
+        if (f[0].y > h) el('polygon', { points: pts([f[0], f[1], k[1], k[0]]), fill: '#f3d9a8', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        if (f[2].y < h) el('polygon', { points: pts([f[3], f[2], k[2], k[3]]), fill: '#9c8467', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        if (f[0].x > L.x) el('polygon', { points: pts([f[0], f[3], k[3], k[0]]), fill: '#d9c2a0', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        if (f[1].x < L.x) el('polygon', { points: pts([f[1], f[2], k[2], k[1]]), fill: '#d9c2a0', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        el('polygon', { points: pts(f), fill: '#fdfaf4', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        label(s.label, s.x, s.g - s.hgt - 10, labels);
+      } else {
+        const bx = clamp(s.x, L.x + 30, R.x - 30);
+        const B = { x: bx, y: s.g }, T = upFrom(B, s.hgt);
+        const dl = clamp((s.w / 2) / Math.max(1, B.x - L.x), 0.03, 0.6), dr = clamp((s.w / 2) / Math.max(1, R.x - B.x), 0.03, 0.6);
+        const BL = lerp(B, L, dl), BR = lerp(B, R, dr);
+        const TL = intersect(T, L, BL, vertAlong(BL)), TR = intersect(T, R, BR, vertAlong(BR));
+        const BB = intersect(BL, R, BR, L), TB = intersect(TL, R, TR, L);
+        [B, T].forEach(function (p) { guide(p, L, '#b85c1a', guides); guide(p, R, '#1a3a5c', guides); });
+        if (BB.y > B.y + 0.5) el('polygon', { points: pts([B, BL, BB, BR]), fill: '#9c8467', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        if (TB.y < T.y - 0.5) el('polygon', { points: pts([T, TL, TB, TR]), fill: '#f3d9a8', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        el('polygon', { points: pts([B, BL, TL, T]), fill: '#d9c2a0', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        el('polygon', { points: pts([B, BR, TR, T]), fill: '#fdfaf4', stroke: '#1a1208', 'stroke-width': 2 }, g);
+        label(s.label, B.x, Math.min(T.y, TL.y, TR.y) - 10, labels);
+      }
+    });
+
+    // eye level
+    el('line', { x1: 0, y1: h, x2: W, y2: h, stroke: '#c9943a', 'stroke-width': 3 });
+    el('rect', { x: 34, y: h - 36, width: 136, height: 28, rx: 4, fill: '#1a1208' });
+    el('text', { x: 46, y: h - 16, fill: '#ffd98a', 'font-family': 'DM Sans, sans-serif', 'font-size': 18, 'font-weight': 700 }).textContent = 'EYE LEVEL';
+
+    // vanishing points (shown at the edge with an arrow when they sit off the page)
+    function vp(p, name, color) {
+      const inside = p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H;
+      const x = clamp(p.x, 14, W - 14), y = clamp(p.y, 14, H - 14);
+      el('circle', { cx: x, cy: y, r: 10, fill: color, stroke: '#fff', 'stroke-width': 3 });
+      const arrow = inside ? '' : (p.x < 0 ? ' ←' : p.x > W ? ' →' : p.y < 0 ? ' ↑' : ' ↓');
+      el('text', { x: clamp(x, 40, W - 90), y: y + (y > H - 40 ? -18 : 30), fill: color, 'font-family': 'DM Sans, sans-serif', 'font-size': 20, 'font-weight': 700 }).textContent = name + arrow;
+    }
+    if (mode === 1) vp(L, 'VP', '#b85c1a');
+    else { vp(L, 'VP1', '#b85c1a'); vp(R, 'VP2', '#1a3a5c'); if (mode === 3) vp(V3, 'VP3', '#2d5a27'); }
+    svg.appendChild(labels);
+    return svg;
+  }
+
+  /* ───────── project view ───────── */
+  function renderProject(p, idea) {
+    const box = document.createElement('article');
+    box.className = 'project';
+    if (!p.is_drawable) {
+      box.innerHTML = '<div class="msg">' + esc(p.message) + '</div>';
+      return box;
+    }
+    const lesson = LESSONS[p.start_lesson] || LESSONS['perspective-lab'];
+    box.innerHTML =
+      '<div class="project-kicker">Drawing project</div>' +
+      '<h3>' + esc(p.title) + '</h3>' +
+      (idea ? '<p class="said">“' + esc(idea) + '”</p>' : '') +
+      '<div class="chips"><span class="chip"><b>' + esc(p.perspective.type) + '</b> perspective</span><span class="chip"><b>' + esc(p.perspective.eye_level) + '</b> eye level</span><span class="chip"><b>' + esc(p.difficulty) + '</b></span></div>' +
+      '<div class="big-idea"><b>The big idea:</b> ' + esc(p.big_idea) + '</div>' +
+      '<div class="project-grid"><div><div class="diagram"></div><div class="diagram-cap">Starting diagram: ' + esc(p.perspective.why) + '</div>' +
+      '<div class="extra"><div><b>Practice first:</b> ' + esc(p.practice_first) + '</div>' +
+      '<div><b>Start with this lesson:</b> <a href="' + lesson[1] + '">' + esc(lesson[0]) + ' →</a></div></div></div>' +
+      '<div><h4>Build it step by step</h4><ol class="steps">' + p.steps.map(function (s) { return '<li><b>' + esc(s.title) + '.</b> ' + esc(s.detail) + '</li>'; }).join('') + '</ol></div></div>' +
+      '<div class="next"><a class="btn" href="living-studio.html#critique">Finished? Get a Critique</a><button class="btn btn-ghost" type="button" data-print>Print This Project</button></div>';
+    box.querySelector('.diagram').appendChild(drawDiagram(p.diagram));
+    box.querySelector('[data-print]').addEventListener('click', function () { window.print(); });
+    return box;
+  }
+
+  document.getElementById('example').appendChild(renderProject(EXAMPLE));
+
+  /* ───────── asking for a project ───────── */
+  const form = document.getElementById('ideaForm'), btn = document.getElementById('ideaBtn'), notice = document.getElementById('ideaNotice');
+  const resultSection = document.getElementById('resultSection'), result = document.getElementById('result');
+  const today = new Date().toDateString();
+
+  function load() { try { return JSON.parse(localStorage.getItem('vtaaIdeaStudio') || 'null'); } catch (e) { return null; } }
+  function save(v) { try { localStorage.setItem('vtaaIdeaStudio', JSON.stringify(v)); } catch (e) {} }
+  function show(node) { result.innerHTML = ''; result.appendChild(node); resultSection.hidden = false; }
+  function showMsg(text) { const m = document.createElement('div'); m.className = 'msg'; m.textContent = text; show(m); }
+
+  // Bring back the student's last project so they can keep working from it
+  const last = load();
+  if (last && last.project) show(renderProject(last.project, last.idea));
+  const usedToday = function () { const v = load(); return !!(v && v.day === today && v.counted); };
+  if (usedToday()) notice.textContent = 'You’ve used today’s free project. Your project is below; come back tomorrow for a new one.';
+
+  document.querySelectorAll('.idea-chip').forEach(function (c) {
+    c.addEventListener('click', function () { document.getElementById('idea').value = c.textContent; document.getElementById('idea').focus(); });
+  });
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const idea = document.getElementById('idea').value.trim();
+    if (usedToday()) { showMsg('You’ve used today’s free project idea. Come back tomorrow for the next one.'); return; }
+    if (idea.length < 10) { showMsg('Describe your picture in a sentence or two: who or what is in it, and what is near and far.'); return; }
+    btn.disabled = true; btn.textContent = 'Building your project…';
+    showMsg('Thinking through your picture: eye level, perspective, composition and steps. This takes about half a minute.');
+    try {
+      const res = await fetch('/.netlify/functions/idea-project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        idea: idea, medium: document.getElementById('medium').value, level: document.getElementById('level').value, view: document.getElementById('view').value
+      }) });
+      const data = await res.json().catch(function () { return {}; });
+      if (!res.ok || !data.project) throw new Error(data.error || 'Something went wrong. Please try again.');
+      save({ day: today, counted: data.project.is_drawable, idea: idea, project: data.project });
+      show(renderProject(data.project, idea));
+      if (data.project.is_drawable) notice.textContent = 'Enjoy your project! Your next free idea opens tomorrow.';
+      resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      showMsg(err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Build My Project';
+    }
+  });
+
+  // Keep the form closed until the studio has been switched on in Netlify
+  fetch('/.netlify/functions/idea-project').then(function (r) { return r.ok ? r.json() : { enabled: false }; }).catch(function () { return { enabled: false }; }).then(function (d) {
+    if (d.enabled) return;
+    btn.disabled = true;
+    notice.textContent = 'The Idea Studio opens very soon. Look at the example below to see what you’ll get.';
+  });
+})();
+</script>
+</body>
+</html>
