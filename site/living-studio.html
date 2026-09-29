@@ -28,7 +28,11 @@ nav{position:sticky;top:0;z-index:40;display:flex;justify-content:space-between;
 .panel-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.85fr);gap:28px;align-items:start}.card{background:var(--panel);border:1px solid var(--line);box-shadow:0 18px 45px rgba(26,18,8,.08);border-radius:28px;padding:30px}.card h3{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:10px}.card p{color:rgba(61,44,20,.78);line-height:1.7;margin-bottom:18px}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.field{display:flex;flex-direction:column;gap:8px}.field.full{grid-column:1/-1}.field label{font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent2)} select,input[type="text"],textarea{width:100%;border:1px solid rgba(26,18,8,.18);background:var(--white);padding:14px 14px;border-radius:14px;font:inherit;color:var(--ink)} textarea{min-height:120px;resize:vertical}.output{margin-top:22px;padding:22px;border-radius:22px;background:linear-gradient(135deg,rgba(201,148,58,.14),rgba(184,92,26,.08));border:1px solid rgba(184,92,26,.18)}.output h4{font-family:'Playfair Display',serif;font-size:1.22rem;margin-bottom:12px}.output ul{padding-left:18px;color:var(--ink2)}.output li{margin:10px 0;line-height:1.6}.micro{font-size:.84rem;color:rgba(61,44,20,.64);margin-top:12px}
 .studio-note{padding:24px;border-left:4px solid var(--gold);background:rgba(201,148,58,.10);border-radius:0 22px 22px 0;margin-top:18px}.studio-note strong{display:block;font-family:'Caveat',cursive;color:var(--accent2);font-size:1.35rem;margin-bottom:6px}.studio-note p{margin:0;color:var(--ink2)}
 .dark{background:var(--ink);color:var(--white)}.dark .section-head p{color:rgba(253,250,244,.72)}.qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.qa-btn{padding:18px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--white);border-radius:18px;text-align:left;cursor:pointer;font:inherit;transition:transform .2s,border .2s}.qa-btn:hover{transform:translateY(-2px);border-color:rgba(201,148,58,.55)}.qa-btn strong{display:block;color:var(--gold);margin-bottom:6px}.answer-box{margin-top:24px;padding:26px;border-radius:24px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);min-height:138px}.answer-box h4{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.3rem;margin-bottom:10px}.answer-box p{color:rgba(253,250,244,.84);line-height:1.85}
-.critique-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.9fr);gap:28px;align-items:start}.upload{border:2px dashed rgba(184,92,26,.35);border-radius:24px;padding:28px;text-align:center;background:rgba(255,255,255,.5)}.upload input{margin-top:14px}.preview{margin-top:18px;display:none}.preview img{width:100%;max-height:340px;object-fit:contain;border-radius:20px;border:1px solid var(--line);background:#fff}.critique-box{margin-top:18px;padding:22px;border-radius:22px;background:var(--white);border:1px solid var(--line)}.critique-box h4{font-family:'Playfair Display',serif;font-size:1.24rem;margin-bottom:12px}.critique-box ul{padding-left:18px}.critique-box li{margin:10px 0;line-height:1.65}.notice{font-size:.88rem;color:rgba(61,44,20,.68);margin-top:14px}
+.critique-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.9fr);gap:28px;align-items:start}.upload{border:2px dashed rgba(184,92,26,.35);border-radius:24px;padding:24px;text-align:center;background:rgba(255,255,255,.5)}.upload p{margin:0 0 6px}.upload input{margin-top:10px;max-width:100%}.preview{margin-top:18px;display:none}.preview img{width:100%;max-height:340px;object-fit:contain;border-radius:20px;border:1px solid var(--line);background:#fff}.critique-box{margin-top:6px;padding:24px;border-radius:22px;background:var(--white);border:1px solid var(--line)}.critique-box h4{font-family:'Playfair Display',serif;font-size:1.24rem;margin:18px 0 8px}.critique-box h4:first-child{margin-top:0}.critique-box ul,.critique-box ol{padding-left:20px}.critique-box li{margin:8px 0;line-height:1.65}.critique-box p{line-height:1.7;color:var(--ink2);margin-bottom:8px}.notice{font-size:.88rem;color:rgba(61,44,20,.68);margin-top:14px}
+.crit-kicker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px}.crit-lead{font-size:1.02rem;line-height:1.75;color:var(--ink2)}.crit-note{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--accent2);margin-top:14px}.crit-main{background:rgba(201,148,58,.12);border-left:4px solid var(--gold);padding:14px 16px;border-radius:0 14px 14px 0}
+.example{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:32px;align-items:start;margin-bottom:34px;background:var(--panel);border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:0 18px 45px rgba(26,18,8,.08)}.example-art img{width:100%;height:auto;display:block;border:6px solid var(--white);box-shadow:0 14px 36px rgba(26,18,8,.18)}.example-cap{font-size:.85rem;color:rgba(61,44,20,.7);margin-top:10px}.example-crit h3{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:10px}.example-crit h4{font-family:'Playfair Display',serif;font-size:1.12rem;margin:18px 0 6px}.example-crit ul,.example-crit ol{padding-left:20px}.example-crit li{margin:6px 0;line-height:1.65;color:var(--ink2)}.example-crit p{line-height:1.7;color:var(--ink2)}
+.personal{margin-top:34px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;background:var(--ink);color:var(--white);border-radius:28px;padding:34px;border-left:6px solid var(--gold)}.personal h3{font-family:'Playfair Display',serif;font-size:1.9rem;margin-bottom:10px}.personal p{color:rgba(253,250,244,.78);line-height:1.75}.personal .crit-kicker{color:var(--gold)}.personal-price{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:900;margin-top:16px}.personal-price span{font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:400;opacity:.7}.personal form{display:flex;flex-direction:column;gap:14px}.personal label{color:var(--gold)!important}.personal input[type="text"],.personal input[type="email"],.personal textarea{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:var(--white)}.personal input[type="email"]{width:100%;border:1px solid rgba(255,255,255,.2);padding:14px;border-radius:14px;font:inherit}.personal input[type="file"]{color:rgba(253,250,244,.8)}.personal .notice{color:rgba(253,250,244,.6);margin-top:0}.btn-dark{background:var(--gold);color:var(--ink)}.btn:disabled{opacity:.6;cursor:default;transform:none}.hp{display:none}
+@media(max-width:980px){.example,.personal{grid-template-columns:1fr;padding:22px}}
 .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.step{padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:24px;box-shadow:0 12px 30px rgba(26,18,8,.06)}.step b{display:inline-flex;width:34px;height:34px;border-radius:50%;align-items:center;justify-content:center;background:var(--accent);color:var(--white);margin-bottom:16px}.step h3{font-family:'Playfair Display',serif;font-size:1.22rem;margin-bottom:10px}.step p{color:rgba(61,44,20,.76);line-height:1.7;font-size:.94rem}
 .cta{padding:84px 6vw;background:linear-gradient(135deg,var(--warm),var(--cream));text-align:center}.cta-inner{max-width:860px;margin:0 auto}.cta h2{font-family:'Playfair Display',serif;font-size:clamp(2.1rem,4vw,3.7rem);line-height:1.08;margin-bottom:16px}.cta p{color:rgba(61,44,20,.8);font-size:1.08rem;line-height:1.8;margin-bottom:26px}.footer{padding:42px 6vw;background:var(--ink);color:rgba(253,250,244,.62);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer strong{display:block;color:var(--white);font-family:'Playfair Display',serif;font-size:1.18rem;margin-bottom:4px}.footer a{color:var(--gold);text-decoration:none}
 @media(max-width:980px){.hero,.panel-grid,.critique-grid{grid-template-columns:1fr}.roadmap{grid-template-columns:repeat(2,1fr)}.qa-grid{grid-template-columns:1fr}.nav-links{display:none}}
@@ -95,22 +99,70 @@ nav{position:sticky;top:0;z-index:40;display:flex;justify-content:space-between;
   </div>
 </section>
 <section class="wrap" id="critique">
-  <div class="section-head"><div class="section-tag">Student critique station</div><h2>Upload. Review. Revise.</h2><p>This prototype shows the critique workflow. It previews the artwork and creates a structured feedback checklist based on the student’s chosen concern. The next upgrade is true vision-AI critique.</p></div>
+  <div class="section-head"><div class="section-tag">Critique studio</div><h2>Show me your work.</h2><p>Upload a photo of your drawing or painting. You'll get an instant first look written in my teaching style: what is working, the one change that will help most, and what to do on your next pass. When you want my own eyes on it, ask for a personal critique.</p></div>
+
+  <div class="example">
+    <div class="example-art">
+      <img src="island-scape.jpg" width="550" height="436" alt="Island Scape by Vaughn Tucker: a green hillside with small white houses and palm trees sloping down to a blue bay with white surf, under misty mountains.">
+      <p class="example-cap"><em>Island Scape</em>, 16 × 20 in, mixed media</p>
+    </div>
+    <div class="example-crit">
+      <div class="crit-kicker">Example critique</div>
+      <h3>How a critique reads</h3>
+      <p class="crit-lead">A calm, airy painting. You feel the height of the hillside and the cool air coming off the bay, and the eye slides down the green slope to the water.</p>
+      <h4>What's working</h4>
+      <ul>
+        <li><b>Atmosphere:</b> the mountains fade into soft blue-grey, so the distance really feels far away.</li>
+        <li><b>A strong diagonal:</b> the hillside runs from the lower left down toward the bay and carries the eye into the scene.</li>
+        <li><b>Color harmony:</b> the yellow-greens, blue-greens and sea blues belong to one family, so nothing feels out of place.</li>
+        <li><b>Scale:</b> the tiny white houses tell us how big the land is.</li>
+      </ul>
+      <h4>One strong improvement: choose the star</h4>
+      <p>The houses, the palms, the dark rocks and the white surf all ask for attention at the same volume, so the eye wanders. Pick one, for example the dark rocks against the white surf, where your strongest contrast already is. Put your lightest light next to your darkest dark there, sharpen those edges, and soften the houses on the left a little so they support it.</p>
+      <h4>Next pass</h4>
+      <ol>
+        <li>The foreground band is wide and even. Add a few darker, directional strokes that point toward the bay.</li>
+        <li>The mountain ridge runs almost parallel to the top edge. Break it with one higher peak or a gap of light.</li>
+      </ol>
+      <p class="crit-note">"Make one strong improvement before five small ones."</p>
+    </div>
+  </div>
+
   <div class="critique-grid">
     <div class="card">
-      <div class="upload"><h3>Upload a practice image</h3><p>Sketch, painting block-in, or finished study.</p><input type="file" id="artUpload" accept="image/*"><div class="preview" id="preview"><img alt="Student artwork preview" id="previewImg"></div></div>
+      <h3>Your artwork</h3>
+      <div class="upload"><p><b>Upload a photo</b> of a sketch, a block-in or a finished piece. Take it straight on, in daylight, with the whole artwork in view.</p><input type="file" id="artUpload" accept="image/*" aria-label="Choose a photo of your artwork"><div class="preview" id="preview"><img alt="Your artwork preview" id="previewImg"></div></div>
       <div class="form-grid" style="margin-top:18px">
-        <div class="field"><label for="critiqueFocus">Critique focus</label><select id="critiqueFocus"><option>Composition</option><option>Value</option><option>Color</option><option>Depth</option></select></div>
-        <div class="field"><label for="stage">Stage</label><select id="stage"><option>Sketch</option><option>Block-in</option><option>Mid-painting</option><option>Nearly finished</option></select></div>
-        <div class="field full"><label for="studentQuestion">What do you want help with?</label><textarea id="studentQuestion" placeholder="Example: My background feels too strong and the road does not lead the eye."></textarea></div>
+        <div class="field"><label for="critiqueFocus">Focus</label><select id="critiqueFocus"><option>Overall</option><option>Composition</option><option>Value</option><option>Color</option><option>Depth</option><option>Drawing &amp; Perspective</option></select></div>
+        <div class="field"><label for="stage">Stage</label><select id="stage"><option>Sketch</option><option>Block-in</option><option>Mid-painting</option><option>Nearly finished</option><option selected>Finished</option></select></div>
+        <div class="field full"><label for="studentQuestion">What do you want help with? (optional)</label><textarea id="studentQuestion" placeholder="Example: My background feels too strong and the road does not lead the eye."></textarea></div>
       </div>
-      <button class="btn btn-primary" style="margin-top:18px" onclick="makeCritique()">Generate Critique Checklist</button>
-      <p class="notice">Current version: structured critique scaffold. Future version: connect to an AI vision model for real artwork analysis.</p>
+      <button class="btn btn-primary" id="aiBtn" type="button" style="margin-top:18px">Get My Instant First Look</button>
+      <p class="notice" id="aiNotice">Free: up to 3 instant critiques a day.</p>
     </div>
     <div class="card">
-      <h3>Studio Critique</h3><p>Feedback should always move the student toward the next revision, not merely judge the work.</p>
-      <div class="critique-box" id="critiqueOutput"><h4>Your critique checklist will appear here.</h4><ul><li>Upload an image and choose a critique focus.</li><li>The Living Studio will return a revision pathway.</li><li>This can later become a true AI art coach.</li></ul></div>
+      <h3>Studio Critique</h3>
+      <div class="critique-box" id="critiqueOutput"><h4>Your critique will appear here.</h4><p>Upload a photo of your artwork and press <b>Get My Instant First Look</b>. It takes about half a minute.</p></div>
     </div>
+  </div>
+
+  <div class="personal" id="personal">
+    <div>
+      <div class="crit-kicker">Personal critique</div>
+      <h3>Want my own eyes on your work?</h3>
+      <p>I'll study your piece myself and write you a detailed critique: what to keep, what to change, and how, in the order that will help you most. Delivered by email within 7 days.</p>
+      <div class="personal-price">$45 <span>per artwork</span></div>
+    </div>
+    <form name="personal-critique" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" id="personalForm">
+      <input type="hidden" name="form-name" value="personal-critique">
+      <p class="hp"><label>Leave this empty: <input name="bot-field"></label></p>
+      <div class="field"><label for="pName">Your name</label><input type="text" id="pName" name="name" autocomplete="name" required></div>
+      <div class="field"><label for="pEmail">Your email</label><input type="email" id="pEmail" name="email" autocomplete="email" required></div>
+      <div class="field"><label for="pFile">Photo of your artwork</label><input type="file" id="pFile" name="artwork" accept="image/*" required></div>
+      <div class="field"><label for="pNote">Title, size, medium and your question</label><textarea id="pNote" name="message" placeholder="Example: 'Morning Road', 12 × 16 acrylic. The sky feels flat to me."></textarea></div>
+      <button class="btn btn-dark" type="submit">Send &amp; Pay $45</button>
+      <p class="notice" id="personalMsg">After sending you'll go to secure checkout by Stripe.</p>
+    </form>
   </div>
 </section>
 <section class="wrap" id="roadmap">
@@ -160,14 +212,100 @@ const answers={
   story:{title:'Painting from memory',text:'Memory helps the painter choose. A photograph records everything. The artist decides what matters. When the scene is tied to lived experience, the painting can become less literal and more truthful—especially in atmosphere, emphasis, and emotional tone.'}
 };
 document.querySelectorAll('.qa-btn').forEach(btn=>btn.addEventListener('click',()=>{const a=answers[btn.dataset.key];document.getElementById('answerBox').innerHTML=`<h4>${a.title}</h4><p>${a.text}</p>`;}));
-const upload=document.getElementById('artUpload');upload.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;const url=URL.createObjectURL(file);document.getElementById('previewImg').src=url;document.getElementById('preview').style.display='block';});
-const critiqueMap={
-  Composition:['Can the viewer enter the scene immediately?','Does the main pathway or focal direction feel clear?','Remove or soften one competing area near the edge.'],
-  Value:['Squint at the image. Are the darks, mids, and lights clearly grouped?','Strengthen only one or two major contrast areas.','Check whether the foreground has more authority than the distance.'],
-  Color:['Identify the dominant temperature: warm, cool, or balanced.','Look for one color mixture that has become muddy and remix it cleanly.','Use saturation selectively so focal areas speak louder.'],
-  Depth:['Cool or soften one distant shape.','Reduce sharpness in the background.','Clarify overlap: foreground over middle ground, middle ground over distance.']
-};
-function makeCritique(){const focus=document.getElementById('critiqueFocus').value,stage=document.getElementById('stage').value,q=document.getElementById('studentQuestion').value.trim();const items=critiqueMap[focus];document.getElementById('critiqueOutput').innerHTML=`<h4>${stage} critique — ${focus}</h4><ul><li><strong>Main review:</strong> ${items[0]}</li><li><strong>Revision move:</strong> ${items[1]}</li><li><strong>Next pass:</strong> ${items[2]}</li>${q?`<li><strong>Your concern:</strong> ${escapeHtml(q)}</li>`:''}<li><strong>Teacher direction:</strong> Make one strong improvement before making five small ones.</li></ul>`;}
+/* ── Critique studio ── */
+const PERSONAL_CHECKOUT='https://buy.stripe.com/eVq3cw7vA23I8v75DodMI0e';
+const DAILY_LIMIT=3;
+let artData=null, artType='image/jpeg';
+
+// Shrink the photo in the browser so uploads are quick and small
+function shrinkImage(file){
+  return new Promise((resolve,reject)=>{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const max=1568, k=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement('canvas'); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg',0.86).split(',')[1]);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('unreadable'));};
+    img.src=url;
+  });
+}
+document.getElementById('artUpload').addEventListener('change',async e=>{
+  const file=e.target.files&&e.target.files[0]; if(!file) return;
+  document.getElementById('previewImg').src=URL.createObjectURL(file);
+  document.getElementById('preview').style.display='block';
+  try{ artData=await shrinkImage(file); artType='image/jpeg'; }
+  catch{ artData=null; showMessage('We could not read that file. Please choose a JPEG or PNG photo.'); }
+});
+
+function usedToday(){
+  try{ const d=JSON.parse(localStorage.getItem('vtaaCritiques')||'{}'); return d.day===new Date().toDateString()?d.count:0; }catch{ return 0; }
+}
+function countUse(){
+  try{ localStorage.setItem('vtaaCritiques',JSON.stringify({day:new Date().toDateString(),count:usedToday()+1})); }catch{}
+}
+function showMessage(text){
+  document.getElementById('critiqueOutput').innerHTML='<h4>Studio Critique</h4><p>'+escapeHtml(text)+'</p>';
+}
+function renderCritique(c){
+  const li=a=>a.map(x=>'<li>'+escapeHtml(x)+'</li>').join('');
+  let h='<p class="crit-lead">'+escapeHtml(c.first_impression)+'</p>';
+  if(c.is_artwork){
+    h+='<h4>What\'s working</h4><ul>'+li(c.strengths)+'</ul>';
+    h+='<h4>One strong improvement</h4><div class="crit-main"><b>'+escapeHtml(c.main_improvement.title)+'.</b> '+escapeHtml(c.main_improvement.detail)+'</div>';
+    h+='<h4>Next pass</h4><ol>'+li(c.next_pass)+'</ol>';
+    h+='<p class="crit-note">"'+escapeHtml(c.teacher_note.replace(/^"|"$/g,''))+'"</p>';
+    h+='<p style="margin-top:14px">Want my own eyes on this piece? <a href="#personal">Ask for a personal critique</a>.</p>';
+  }
+  document.getElementById('critiqueOutput').innerHTML=h;
+}
+
+const aiBtn=document.getElementById('aiBtn');
+aiBtn.addEventListener('click',async()=>{
+  if(!artData){ showMessage('First choose a photo of your artwork with the upload button.'); return; }
+  if(usedToday()>=DAILY_LIMIT){ showMessage('You have used your 3 free instant critiques for today. Come back tomorrow, or ask for a personal critique from Vaughn below.'); return; }
+  aiBtn.disabled=true; aiBtn.textContent='Looking at your work…';
+  showMessage('Studying your artwork. This takes about half a minute.');
+  try{
+    const res=await fetch('/.netlify/functions/critique',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      image:artData, mediaType:artType,
+      focus:document.getElementById('critiqueFocus').value,
+      stage:document.getElementById('stage').value,
+      question:document.getElementById('studentQuestion').value
+    })});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok||!data.critique) throw new Error(data.error||'Something went wrong. Please try again.');
+    countUse(); renderCritique(data.critique);
+    document.getElementById('critiqueOutput').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(err){ showMessage(err.message); }
+  finally{ aiBtn.disabled=false; aiBtn.textContent='Get My Instant First Look'; }
+});
+
+// Hide the instant critique until it has been switched on in Netlify
+fetch('/.netlify/functions/critique').then(r=>r.ok?r.json():{enabled:false}).catch(()=>({enabled:false})).then(d=>{
+  if(d.enabled) return;
+  aiBtn.style.display='none';
+  document.getElementById('aiNotice').textContent='Instant critiques are coming soon. For now, send your work for a personal critique below.';
+  showMessage('Instant critiques are coming soon. You can already send your work to Vaughn for a personal critique below.');
+});
+
+// Personal critique: save the upload with Netlify Forms, then go to checkout
+document.getElementById('personalForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const form=e.target, btn=form.querySelector('button'), msg=document.getElementById('personalMsg');
+  btn.disabled=true; msg.textContent='Sending your artwork…';
+  try{
+    const res=await fetch('/',{method:'POST',body:new FormData(form)});
+    if(!res.ok) throw new Error(res.status);
+    msg.textContent='Received! Taking you to checkout…';
+    window.location.href=PERSONAL_CHECKOUT+'?prefilled_email='+encodeURIComponent(form.email.value);
+  }catch{
+    btn.disabled=false;
+    msg.textContent='Sorry, the upload did not go through. Please try again, or email info@vaughntuckerartacademy.com.';
+  }
+});
 function escapeHtml(str){return str.replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));}
 buildPlan();
 </script>

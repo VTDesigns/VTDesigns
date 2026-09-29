@@ -2,3 +2,8 @@
 [build]
   publish = "site"
   command = ""
+
+# Serverless functions (e.g. the instant artwork critique)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
