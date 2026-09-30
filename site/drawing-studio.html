@@ -254,7 +254,12 @@ input[type=range]{
 .toast.show{opacity:1;}
 
 @media(max-width:700px){
-  .sidebar{width:180px;}
+  .sidebar{width:136px;}
+  .canvas-stage{padding:8px;}
+  #mainCanvas{max-width:100%;height:auto;}
+  .nav-title{display:none;}
+  .canvas-toolbar{height:auto;min-height:44px;flex-wrap:wrap;padding:8px;}
+  .canvas-info{display:none;}
   :root{--sidebar:180px;}
 }
 </style>
@@ -488,48 +493,26 @@ function setCustomColor(v){
 }
 
 // ── Background ─────────────────────────────────────────
+function syncPaper(){
+  canvas.style.backgroundColor=bgColor;
+  document.querySelectorAll('.bg-btn').forEach(b=>b.classList.toggle('active',bgColors[b.id.replace('bg-','')]===bgColor));
+}
 function setBg(name){
-  bgColor = bgColors[name];
-  document.querySelectorAll('.bg-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('bg-'+name).classList.add('active');
-  // Redraw background without clearing drawing
-  const img = ctx.getImageData(0,0,canvas.width,canvas.height);
-  ctx.fillStyle = bgColor;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  // Re-apply drawing on top — actually just fill bg first then redraw
-  // Better: save/restore
-  clearCanvasBg();
+  if(!bgColors[name] || bgColors[name]===bgColor)return;
+  saveHistory(); bgColor=bgColors[name]; syncPaper();
 }
-function clearCanvasBg(){
-  // Fill bg color underneath by compositing
-  ctx.save();
-  ctx.globalCompositeOperation = 'destination-over';
-  ctx.fillStyle = bgColor;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.restore();
-}
-
-// ── History ────────────────────────────────────────────
-function saveHistory(){
-  history.push(ctx.getImageData(0,0,canvas.width,canvas.height));
-  if(history.length>40) history.shift();
-  redoStack = [];
-}
-function undo(){
-  if(history.length===0){toast('Nothing to undo');return;}
-  redoStack.push(ctx.getImageData(0,0,canvas.width,canvas.height));
-  ctx.putImageData(history.pop(),0,0);
-}
-function redo(){
-  if(redoStack.length===0){toast('Nothing to redo');return;}
-  history.push(ctx.getImageData(0,0,canvas.width,canvas.height));
-  ctx.putImageData(redoStack.pop(),0,0);
-}
+function snapshot(){return {pixels:ctx.getImageData(0,0,canvas.width,canvas.height),paper:bgColor};}
+function restore(s){ctx.putImageData(s.pixels,0,0);bgColor=s.paper;syncPaper();}
+function saveHistory(){history.push(snapshot());if(history.length>40)history.shift();redoStack=[];}
+function undo(){if(!history.length){toast('Nothing to undo');return;}redoStack.push(snapshot());restore(history.pop());}
+function redo(){if(!redoStack.length){toast('Nothing to redo');return;}history.push(snapshot());restore(redoStack.pop());}
 function clearCanvas(){
-  if(!confirm('Clear the canvas? This cannot be undone.')) return;
-  saveHistory();
-  ctx.fillStyle = bgColor;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  if(!confirm('Clear the drawing? You can undo this.'))return;
+  saveHistory();ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+function exportCanvas(){
+  const out=document.createElement('canvas');out.width=canvas.width;out.height=canvas.height;
+  const c=out.getContext('2d');c.fillStyle=bgColor;c.fillRect(0,0,out.width,out.height);c.drawImage(canvas,0,0);return out;
 }
 
 // ── Drawing helpers ────────────────────────────────────
@@ -560,7 +543,7 @@ function floodFill(x, y){
   const w = canvas.width, h = canvas.height;
   const imgData = ctx.getImageData(0,0,w,h);
   const data = imgData.data;
-  const ix = Math.round(x), iy = Math.round(y);
+  const ix = Math.max(0,Math.min(w-1,Math.floor(x))), iy = Math.max(0,Math.min(h-1,Math.floor(y)));
   const idx = (iy*w+ix)*4;
   const tr=data[idx],tg=data[idx+1],tb=data[idx+2],ta=data[idx+3];
   if(tr+tg+tb < 150 && ta > 100){toast('Click inside a shape, not on a line');return;}
@@ -580,10 +563,9 @@ function floodFill(x, y){
     const pos=stack.pop();
     const px=pos%w, py=(pos/w)|0;
     const i=pos*4;
-    data[i]  =Math.round((data[i]  *(255-fa)+fr*fa)/255);
-    data[i+1]=Math.round((data[i+1]*(255-fa)+fg*fa)/255);
-    data[i+2]=Math.round((data[i+2]*(255-fa)+fb*fa)/255);
-    data[i+3]=255;
+    const oldA=data[i+3]/255, fillA=fa/255, outA=fillA+oldA*(1-fillA);
+    for(const [channel,value] of [[0,fr],[1,fg],[2,fb]])data[i+channel]=Math.round((value*fillA+data[i+channel]*oldA*(1-fillA))/(outA||1));
+    data[i+3]=Math.round(outA*255);
     const nb=[px>0?pos-1:-1,px<w-1?pos+1:-1,py>0?pos-w:-1,py<h-1?pos+w:-1];
     for(const n of nb){
       if(n<0||visited[n])continue;
@@ -647,8 +629,8 @@ function onMove(e){
   if(tool==='eraser'){
     ctx.save();
     ctx.globalAlpha=1;
-    ctx.globalCompositeOperation='source-over';
-    ctx.fillStyle=bgColor;
+    ctx.globalCompositeOperation='destination-out';
+    ctx.fillStyle='#000';
     ctx.beginPath();
     ctx.arc(p.x,p.y,size*2,0,Math.PI*2);
     ctx.fill();
@@ -712,14 +694,14 @@ function onUp(){
 function downloadCanvas(){
   const link = document.createElement('a');
   link.download = 'my-artwork.png';
-  link.href = canvas.toDataURL();
+  link.href = exportCanvas().toDataURL();
   link.click();
   toast('Artwork downloaded!');
 }
 
 // ── Post to Community ──────────────────────────────────
 function postToCommunity(){
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+  const dataUrl = exportCanvas().toDataURL('image/jpeg', 0.92);
   sessionStorage.setItem('pendingPost', dataUrl);
   window.location.href = 'community.html?post=1';
 }
@@ -735,8 +717,7 @@ function toast(msg){
 // ── Init ───────────────────────────────────────────────
 function init(){
   buildPalette();
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  syncPaper();
   document.getElementById('colorDot').style.background = color;
   document.getElementById('canvasInfo').textContent = canvas.width+' × '+canvas.height;
   // Handle incoming post from community page
@@ -752,5 +733,6 @@ function init(){
 }
 init();
 </script>
+<script src="assets/project-context.js"></script>
 </body>
 </html>
