@@ -327,7 +327,7 @@ footer a{margin-right:18px;}
 
     const mode = [1, 2, 3].indexOf(d.mode) >= 0 ? d.mode : 2;
     const h = clamp(num(d.horizon, 0.5), 0.08, 0.92) * H;
-    let L = { x: num(d.vp_left_x, -0.2) * W, y: h }, R = { x: num(d.vp_right_x, 1.2) * W, y: h };
+    let L = { x: clamp(num(d.vp_left_x, -0.2),-4,0.02) * W, y: h }, R = { x: clamp(num(d.vp_right_x, 1.2),0.98,5) * W, y: h };
     if (L.x > R.x) { const t = L; L = R; R = t; }
     if (mode === 1) L = { x: clamp(num(d.vp_left_x, 0.5), 0.05, 0.95) * W, y: h };
     let v3y = num(d.vp3_y, -1.5) * H;
@@ -354,7 +354,7 @@ footer a{margin-right:18px;}
         hgt: clamp(num(s.height, 0.2), 0.02, 0.95) * H,
         w: clamp(num(s.width, 0.1), 0.01, 0.8) * W
       };
-    }).sort(function (a, b) { return a.g - b.g; });
+    }).map(function(s){s.hgt=Math.min(s.hgt,Math.max(12,s.g-10));s.w=Math.min(s.w,W-20);s.x=clamp(s.x,s.w/2+10,W-s.w/2-10);return s;}).sort(function (a, b) { return a.g - b.g; });
 
     list.forEach(function (s) {
       const g = el('g', {}, shapes);
@@ -458,7 +458,33 @@ footer a{margin-right:18px;}
         '<p class="notice">When your drawing is ready, choose a medium and get the painting process for this picture.</p><div class="paint-pick" role="group" aria-label="Choose a medium"><button type="button" data-medium="Oil" aria-pressed="false">Oil</button><button type="button" data-medium="Acrylic" aria-pressed="false">Acrylic</button><button type="button" data-medium="Watercolor" aria-pressed="false">Watercolor</button></div>') +
       '<div class="paint-out"></div></div>' +
       '<div class="next"><a class="btn" href="living-studio.html#critique">Finished? Get a Critique</a><button class="btn btn-ghost" type="button" data-print>Print This Project</button></div>';
-    box.querySelector('.diagram').appendChild(drawDiagram(p.diagram));
+    const diagramHost=box.querySelector('.diagram');
+    const stageBar=document.createElement('div');stageBar.setAttribute('role','group');stageBar.setAttribute('aria-label','Project drawing stages');stageBar.style.cssText='display:flex;flex-wrap:wrap;gap:8px;padding:12px 0';
+    const stageNote=document.createElement('p');stageNote.className='notice';
+    const stageDescriptions={layout:'1. Placement study: compare the main masses before adding detail.',construction:'2. Construction study: check the eye level and edge directions. Figures and organic forms are simplified symbols.',values:'3. Suggested value grouping: an exercise in light, middle, and dark. Adjust these values to your chosen light source.'};
+    function diagramStage(stage){
+      const svg=drawDiagram(p.diagram);
+      const groups=svg.querySelectorAll(':scope > g');
+      if(stage!=='construction'){
+        svg.querySelectorAll('line,circle[stroke="#fff"],text').forEach(el=>el.remove());
+        // Remove eye-level label plate; retain shape geometry exactly across views.
+        svg.querySelectorAll('rect[fill="#1a1208"]').forEach(el=>el.remove());
+        if(groups[0])groups[0].remove();
+        svg.querySelectorAll('polygon,path,ellipse,circle,rect').forEach(el=>{
+          const fill=el.getAttribute('fill');
+          const tones={'#eef3f6':'#f8f4e9','#efe6d4':'#b7b3a8','#f3d9a8':'#f8f4e9','#9c8467':'#494a42','#d9c2a0':'#85867b','#fdfaf4':'#f8f4e9'};
+          if(tones[fill])el.setAttribute('fill',stage==='layout'?(fill==='#eef3f6'?'#f8f4e9':fill==='#efe6d4'?'#d7d0bf':'#85867b'):tones[fill]);
+          if(stage==='layout')el.setAttribute('stroke','none');
+        });
+      }
+      diagramHost.replaceChildren(svg);stageNote.textContent=stageDescriptions[stage];
+      stageBar.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.stage===stage)));
+    }
+    ['layout','construction','values'].forEach((stage,i)=>{const b=document.createElement('button');b.type='button';b.className='btn btn-ghost';b.dataset.stage=stage;b.textContent=(i+1)+'. '+stage.charAt(0).toUpperCase()+stage.slice(1);b.onclick=()=>diagramStage(stage);stageBar.append(b);});
+    diagramHost.before(stageBar);diagramHost.after(stageNote);diagramStage('construction');
+    box.querySelector('.next a').addEventListener('click', function () {
+      if(window.AcademyProject) AcademyProject.save({title:p.title,source:'idea-studio.html',stage:'Drawing project',goal:idea||p.big_idea,checkpoint:p.practice_first,notes:p.steps.map(function(s){return s.title;}).join('; ').slice(0,800)});
+    });
     const out = box.querySelector('.paint-out');
     if (opts.example) out.appendChild(renderPainting(EXAMPLE_PAINT));
     box.querySelectorAll('.paint-pick button').forEach(function (b) {
@@ -562,5 +588,6 @@ footer a{margin-right:18px;}
   });
 })();
 </script>
+<script src="assets/project-context.js"></script>
 </body>
 </html>
