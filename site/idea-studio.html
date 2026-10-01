@@ -227,6 +227,7 @@ footer a{margin-right:18px;}
   <a href="living-studio.html#critique">Get a critique</a>
 </footer>
 
+<script src="assets/idea-image.js"></script>
 <script>
 (function () {
   const LESSONS = {
@@ -458,6 +459,7 @@ footer a{margin-right:18px;}
         '<p class="notice">When your drawing is ready, choose a medium and get the painting process for this picture.</p><div class="paint-pick" role="group" aria-label="Choose a medium"><button type="button" data-medium="Oil" aria-pressed="false">Oil</button><button type="button" data-medium="Acrylic" aria-pressed="false">Acrylic</button><button type="button" data-medium="Watercolor" aria-pressed="false">Watercolor</button></div>') +
       '<div class="paint-out"></div></div>' +
       '<div class="next"><a class="btn" href="living-studio.html#critique">Finished? Get a Critique</a><button class="btn btn-ghost" type="button" data-print>Print This Project</button></div>';
+    if (!opts.example) window.addIdeaImage(box, p, idea);
     const diagramHost=box.querySelector('.diagram');
     const stageBar=document.createElement('div');stageBar.setAttribute('role','group');stageBar.setAttribute('aria-label','Project drawing stages');stageBar.style.cssText='display:flex;flex-wrap:wrap;gap:8px;padding:12px 0';
     const stageNote=document.createElement('p');stageNote.className='notice';
