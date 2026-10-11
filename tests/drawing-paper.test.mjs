@@ -10,4 +10,11 @@ assert.ok(html.includes("$('paperBg').style.background=st.paper"),'paper is show
 assert.ok(html.includes("sessionStorage.setItem('pendingPost'")&&html.includes("community.html?post=1"),'Post to Community hand-off is intact');
 assert.ok(html.includes('<script src="assets/project-context.js"></script>'),'lesson project banner script is loaded');
 assert.ok(html.includes("href='/#schools'"),'Back to Academy link is intact');
+// Installable app: settings file, icons and offline helper must exist and agree with each other.
+const mf=JSON.parse(fs.readFileSync(new URL('../site/studio.webmanifest',import.meta.url),'utf8'));
+assert.equal(mf.start_url,'/drawing-studio');assert.equal(mf.display,'standalone');
+for(const i of mf.icons)assert.ok(fs.existsSync(new URL('../site'+i.src,import.meta.url)),'icon exists: '+i.src);
+assert.ok(html.includes('rel="manifest" href="/studio.webmanifest"')&&html.includes("register('/studio-sw.js')"),'page links the app settings and offline helper');
+const sw=fs.readFileSync(new URL('../site/studio-sw.js',import.meta.url),'utf8');
+assert.ok(sw.includes("'/drawing-studio'")&&!/respondWith\(caches\.match\(e\.request\)\)\s*;?\s*}\s*\)\s*;?\s*$/.test(sw),'offline helper covers the studio only');
 console.log('Drawing Studio checks pass: paper is separate from marks; community hand-off and project banner intact.');
