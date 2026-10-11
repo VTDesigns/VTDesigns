@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Drawing Studio — Vaughn Tucker Art Academy</title>
+<link rel="manifest" href="/studio.webmanifest">
+<meta name="theme-color" content="#120d06">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Drawing Studio">
+<link rel="apple-touch-icon" href="/assets/studio-app/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/studio-app/icon-192.png">
 <meta name="description" content="A free sketchbook for Academy students: pencils, pens, brushes, layers, perspective guides and a place for your reference photo.">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -705,6 +713,7 @@ function openPop(kind,anchor,ev){
   if(kind==='menu'){
     head('Your drawing');
     pop.append(opt('Save to my device',download),opt('Post to Community',postToCommunity),opt('Start a new drawing…',()=>{pop.dataset.kind='';openPop('new',anchor);}),opt('How to use the studio',()=>{pop.dataset.kind='';openPop('help',anchor);}));
+    if(!isApp())pop.append(opt('Put the studio on my home screen',()=>{if(installEvt){const ev=installEvt;installEvt=null;closePop();ev.prompt();}else{pop.dataset.kind='';openPop('install',anchor);}}));
   }else if(kind==='new'){
     head('Start a new drawing','This clears the drawing you have open. Save it first if you want to keep it.');
     Object.keys(SIZES).forEach(k=>pop.append(opt(k+' page',()=>{newDoc(...SIZES[k]);closePop();})));
@@ -712,6 +721,12 @@ function openPop(kind,anchor,ev){
   }else if(kind==='help'){
     head('How to use the studio');
     ['Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo puts your reference picture on its own layer so you can draw beside it.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Your drawing is kept on this device, so it will be here when you come back.']
+      .forEach(t=>{const p=document.createElement('p');p.textContent=t;pop.append(p);});
+  }else if(kind==='install'){
+    head('Put the studio on your home screen','It opens like an app, full screen, and keeps working without internet.');
+    const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    (ios?['On iPad or iPhone, open this page in Safari.','Tap the Share button (the square with an arrow pointing up).','Choose "Add to Home Screen", then tap Add.']
+        :['On a computer, look for the install icon at the right end of the address bar in Chrome or Edge.','On an Android phone or tablet, open the browser menu (three dots) and choose "Install app" or "Add to Home screen".'])
       .forEach(t=>{const p=document.createElement('p');p.textContent=t;pop.append(p);});
   }else if(kind==='shapes'){
     head('Shapes','Drawn with whichever pencil or brush you have picked.');
@@ -778,6 +793,13 @@ function colorPop(){
 }
 function remember(){recent=[st.color,...recent.filter(c=>c!==st.color)].slice(0,6);}
 
+// ───────── Use as an app ─────────
+let installEvt=null;
+const isApp=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;});
+addEventListener('appinstalled',()=>{installEvt=null;toast('Drawing Studio is on your home screen.');});
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>navigator.serviceWorker.register('/studio-sw.js').catch(()=>{}));
+
 // ───────── Save, post, new ─────────
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600);}
 function download(){
@@ -785,6 +807,7 @@ function download(){
 }
 function postToCommunity(){
   commitFloat();
+  if(navigator.onLine===false){closePop();toast('You are offline. Your drawing is safe here. Post it when you are back online.');return;}
   for(const sc of [1,.75,.5]){
     try{sessionStorage.setItem('pendingPost',composite(sc).toDataURL('image/jpeg',.92));window.location.href='community.html?post=1';return;}catch(_){}
   }
