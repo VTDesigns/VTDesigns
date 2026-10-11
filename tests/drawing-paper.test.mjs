@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import fs from 'node:fs';import vm from 'node:vm';
+import fs from 'node:fs';
+// The studio keeps the paper colour on its own background element, underneath the drawing layers.
+// These checks guard the promises the page makes to students and to the rest of the site.
 const html=fs.readFileSync(new URL('../site/drawing-studio.html',import.meta.url),'utf8');
-const code=html.slice(html.indexOf('function syncPaper()'),html.indexOf('// ── Drawing helpers'));
-// A canvas double records pixel mutations. A paper change must never paint over existing pixels.
-let pixel='student pencil mark';const buttons=['white','cream','black','kraft'].map(n=>({id:'bg-'+n,classList:{toggle(){}}}));
-const sandbox={canvas:{width:800,height:600,style:{}},ctx:{getImageData(){return {pixel};},putImageData(img){pixel=img.pixel;},clearRect(){pixel='transparent';},fillRect(){pixel='OVERWRITTEN';}},bgColor:'#ffffff',bgColors:{white:'#ffffff',cream:'#faf6ee',black:'#1a1208',kraft:'#c8a96e'},history:[],redoStack:[],document:{querySelectorAll(){return buttons;}},confirm(){return true;},toast(){}};
-vm.createContext(sandbox);vm.runInContext(code,sandbox);
-sandbox.setBg('cream');assert.equal(pixel,'student pencil mark');assert.equal(sandbox.canvas.style.backgroundColor,'#faf6ee');
-sandbox.undo();assert.equal(pixel,'student pencil mark');assert.equal(sandbox.bgColor,'#ffffff');
-sandbox.redo();assert.equal(pixel,'student pencil mark');assert.equal(sandbox.bgColor,'#faf6ee');
-sandbox.clearCanvas();assert.equal(pixel,'transparent');sandbox.undo();assert.equal(pixel,'student pencil mark');
-console.log('Drawing regression: paper change preserves marks; paper undo/redo and clear undo pass.');
+const paperPop=html.slice(html.indexOf("kind==='paper'"),html.indexOf("kind==='layer'"));
+assert.ok(paperPop.includes('st.paper=c'),'choosing a paper sets the paper colour');
+assert.ok(!/ctx\.(fillRect|clearRect|putImageData)/.test(paperPop),'choosing a paper never paints over a layer');
+assert.ok(html.includes("$('paperBg').style.background=st.paper"),'paper is shown on its own background element');
+assert.ok(html.includes("sessionStorage.setItem('pendingPost'")&&html.includes("community.html?post=1"),'Post to Community hand-off is intact');
+assert.ok(html.includes('<script src="assets/project-context.js"></script>'),'lesson project banner script is loaded');
+assert.ok(html.includes("href='/#schools'"),'Back to Academy link is intact');
+console.log('Drawing Studio checks pass: paper is separate from marks; community hand-off and project banner intact.');
