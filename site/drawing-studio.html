@@ -64,6 +64,16 @@ nav{
 .paper canvas{pointer-events:none;}
 .paper svg{overflow:visible;pointer-events:none;}
 .paper svg .vp{pointer-events:all;cursor:grab;fill:var(--gold);stroke:#fff;}
+/* reference photo, beside the canvas */
+.refwin{left:104px;top:92px;width:300px;max-width:calc(100% - 32px);border-radius:8px;z-index:22;touch-action:none;box-shadow:0 6px 22px rgba(0,0,0,.35);}
+.refwin[hidden]{display:none;}
+.refwin header{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 6px 6px 12px;cursor:move;font-size:13px;color:var(--icon);}
+.refwin header span{flex:1;min-width:60px;font-weight:500;}
+.refwin header button{min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:12.5px;color:var(--ink);}
+.refwin header button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.refwin img{display:block;width:100%;border-radius:0 0 8px 8px;pointer-events:none;-webkit-user-drag:none;}
+.refwin i{position:absolute;right:-10px;bottom:-10px;width:28px;height:28px;border-radius:50%;background:var(--accent);border:3px solid #fff;cursor:nwse-resize;}
+.paper #traceImg{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;opacity:.35;pointer-events:none;}
 #xform{position:absolute;display:none;outline:calc(2px / var(--s)) dashed var(--accent);cursor:move;}
 #xform i{position:absolute;right:calc(-14px / var(--s));bottom:calc(-14px / var(--s));width:calc(28px / var(--s));height:calc(28px / var(--s));
   border-radius:50%;background:var(--accent);border:calc(3px / var(--s)) solid #fff;cursor:nwse-resize;}
@@ -174,6 +184,7 @@ nav{
   <div class="paper" id="paper">
     <div id="paperBg"></div>
     <canvas id="overlay"></canvas>
+    <img id="traceImg" alt="" hidden>
     <svg id="guides" xmlns="http://www.w3.org/2000/svg"></svg>
     <div id="xform"><i></i></div>
   </div>
@@ -199,6 +210,10 @@ nav{
   <button class="ui" id="doneBtn">Done moving</button>
   <div class="hint ui" id="hint"></div>
   <div id="toast" role="status"></div>
+  <div class="ui refwin" id="refWin" hidden role="region" aria-label="Reference photo">
+    <header><span>Reference</span><button id="refTrace" aria-pressed="false">Trace</button><button id="refPlace">Put on canvas</button><button id="refClose">Remove</button></header>
+    <img id="refImg" alt="Your reference photo"><i id="refGrip" aria-hidden="true"></i>
+  </div>
   <input type="file" id="file" accept="image/*" hidden>
 </main>
 
@@ -701,7 +716,25 @@ $('puckColor').onclick=e=>openPop('color',e.currentTarget);
 $('addLayer').onclick=()=>{commitFloat();const L=mkLayer();listEdit(()=>{st.layers.splice(st.layers.indexOf(st.active)+1,0,L);st.active=L;});};
 $('paperRow').onclick=e=>openPop('paper',e.currentTarget);
 $('doneBtn').onclick=commitFloat;
-$('file').onchange=e=>{if(e.target.files[0])importImage(e.target.files[0]);e.target.value='';};
+// "Add photo" opens the photo in its own window beside the canvas, to draw from.
+// "Trace" lays it faintly over the page; "Put on canvas" places it on a layer of the drawing.
+let refFile=null,refURL=null;
+$('file').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  if(refURL)URL.revokeObjectURL(refURL);refFile=f;refURL=URL.createObjectURL(f);
+  $('refImg').src=refURL;$('traceImg').src=refURL;$('refWin').hidden=false;
+  toast('Your photo is beside the canvas. Drag its title bar to move it, or the round handle to resize it.');};
+function closeRef(){$('refWin').hidden=true;$('traceImg').hidden=true;$('refTrace').classList.remove('on');$('refTrace').setAttribute('aria-pressed','false');}
+$('refClose').onclick=()=>{closeRef();if(refURL){URL.revokeObjectURL(refURL);refURL=null;refFile=null;}};
+$('refTrace').onclick=e=>{const on=$('traceImg').hidden;$('traceImg').hidden=!on;e.currentTarget.classList.toggle('on',on);e.currentTarget.setAttribute('aria-pressed',String(on));
+  if(on)toast('The photo shows faintly over your page so you can trace the big shapes. It is not part of your drawing.');};
+$('refPlace').onclick=()=>{if(refFile){importImage(refFile);closeRef();}};
+(()=>{const w=$('refWin');let g=null;
+  w.addEventListener('pointerdown',e=>{if(e.target.tagName==='BUTTON')return;w.setPointerCapture(e.pointerId);
+    g={grip:e.target.id==='refGrip',x:e.clientX,y:e.clientY,l:w.offsetLeft,t:w.offsetTop,wd:w.offsetWidth};});
+  w.addEventListener('pointermove',e=>{if(!g)return;const r=work.getBoundingClientRect();
+    if(g.grip)w.style.width=clamp(g.wd+e.clientX-g.x,140,r.width-24)+'px';
+    else{w.style.left=clamp(g.l+e.clientX-g.x,-g.wd+80,r.width-80)+'px';w.style.top=clamp(g.t+e.clientY-g.y,0,r.height-48)+'px';}});
+  const end=()=>{g=null;};w.addEventListener('pointerup',end);w.addEventListener('pointercancel',end);})();
 
 // ───────── Popovers ─────────
 function closePop(){pop.classList.remove('show');pop.dataset.kind='';}
@@ -725,7 +758,7 @@ function openPop(kind,anchor,ev){
     pop.append(opt('Keep my drawing',closePop));
   }else if(kind==='help'){
     head('How to use the studio');
-    ['Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo puts your reference picture on its own layer so you can draw beside it.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Your drawing is kept on this device, so it will be here when you come back.']
+    ['Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo opens your reference picture in its own window beside the canvas. Trace lays it faintly over the page; Put on canvas places it in your drawing.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Your drawing is kept on this device, so it will be here when you come back.']
       .forEach(t=>{const p=document.createElement('p');p.textContent=t;pop.append(p);});
   }else if(kind==='install'){
     head('Put the studio on your home screen','It opens like an app, full screen, and keeps working without internet.');
