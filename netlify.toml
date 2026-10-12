@@ -7,3 +7,13 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+
+# The older perspective app page was retired; send old links to the Perspective Lab.
+[[redirects]]
+  from = "/vaughn-tucker-academy-app"
+  to = "/perspective-lab"
+  status = 301
+[[redirects]]
+  from = "/vaughn-tucker-academy-app.html"
+  to = "/perspective-lab"
+  status = 301
