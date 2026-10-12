@@ -49,9 +49,8 @@
     if(!document.getElementById('vt-sub-css')){ var st = document.createElement('style'); st.id = 'vt-sub-css'; st.textContent = CSS; document.head.appendChild(st); }
     el = document.createElement('aside');
     el.className = 'vt-sub'; el.setAttribute('aria-labelledby', 'vt-sub-h');
-    var lead = context === 'saved'
-      ? 'Nice work. Get free lessons and painting techniques from my studio, plus news of new classes, by email.'
-      : 'Get free lessons and painting techniques from my studio, plus news of new classes, by email.';
+    var lead = (context === 'saved' ? 'Nice work. ' : '') +
+      'Joining is free, and so are all the drawing and painting tools. My lessons come both ways: some free, some paid courses. Subscribers get the free ones and hear first when a new course opens.';
     el.innerHTML =
       '<button type="button" class="vt-x" aria-label="Close">&times;</button>' +
       '<h2 id="vt-sub-h">Learn with me</h2>' +
@@ -59,9 +58,9 @@
       '<form novalidate>' +
         '<label for="vt-sub-email">Your email address</label>' +
         '<input id="vt-sub-email" type="email" name="EMAIL" autocomplete="email" placeholder="Your email address" required>' +
-        '<button type="submit" class="vt-go">Send me lessons</button>' +
+        '<button type="submit" class="vt-go">Join free</button>' +
       '</form>' +
-      '<small>Free. Unsubscribe whenever you like.</small>' +
+      '<small>Free to join. Unsubscribe whenever you like.</small>' +
       '<p class="vt-msg" role="status" aria-live="polite" hidden></p>' +
       '<button type="button" class="vt-later">Not now</button>';
     el.querySelector('p').textContent = lead;
@@ -94,7 +93,7 @@
     function cleanup(){ try{ delete window[cb]; }catch(_){ window[cb] = undefined; } if(s.parentNode) s.parentNode.removeChild(s); }
     window[cb] = function(r){
       if(done) return; done = true; clearTimeout(timer); cleanup();
-      btn.disabled = false; btn.textContent = 'Send me lessons';
+      btn.disabled = false; btn.textContent = 'Join free';
       var msg = String((r && r.msg) || '').replace(/<[^>]*>/g, '').replace(/^\d+\s*-\s*/, '');
       if(r && r.result === 'success'){ joined(); return; }
       if(/already subscribed/i.test(msg)){ joined(true); return; }
@@ -108,7 +107,7 @@
     var s = load(); s.joined = true; save(s);
     el.querySelector('form').hidden = true; el.querySelector('small').hidden = true; el.querySelector('.vt-later').hidden = true;
     el.querySelector('p').hidden = true;
-    message(already ? 'You are already on the list. Thank you for learning with me.' : 'Thank you! Check your inbox for an email to confirm, then your first lesson is on its way.');
+    message(already ? 'You are already on the list. Thank you for learning with me.' : 'Thank you! Check your inbox for an email to confirm. Then you will get free lessons and news of new courses.');
     setTimeout(hide, 7000);
   }
   function fallback(email){
@@ -116,7 +115,7 @@
     var f = document.createElement('form'); f.method = 'POST'; f.action = MC.replace('/post-json?', '/post?'); f.target = '_blank';
     [['EMAIL', email], [HONEYPOT, '']].forEach(function(p){ var i = document.createElement('input'); i.type = 'hidden'; i.name = p[0]; i.value = p[1]; f.appendChild(i); });
     document.body.appendChild(f); f.submit(); document.body.removeChild(f);
-    var b = el.querySelector('.vt-go'); b.disabled = false; b.textContent = 'Send me lessons';
+    var b = el.querySelector('.vt-go'); b.disabled = false; b.textContent = 'Join free';
     message('A Mailchimp page opened in a new tab to finish signing up.');
   }
 
