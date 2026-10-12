@@ -27,4 +27,8 @@ assert.ok(sw.includes("'/oil-studio'"),'offline helper covers the Oil Studio');
 assert.ok(!fs.existsSync(new URL('../site/vaughn-tucker-academy-app.html',import.meta.url)),'old perspective app page is retired');
 for(const f of fs.readdirSync(new URL('../site/',import.meta.url)).filter(f=>f.endsWith('.html')))
   assert.ok(!fs.readFileSync(new URL('../site/'+f,import.meta.url),'utf8').includes('vaughn-tucker-academy-app'),f+' no longer links to the retired page');
+// Replay: one shared script, loaded by both studios before their own code, and kept for offline use.
+assert.ok(fs.existsSync(new URL('../site/assets/replay.js',import.meta.url)),'replay script exists');
+for(const page of [html,oil])assert.ok(page.indexOf('src="/assets/replay.js"')>0&&page.indexOf('src="/assets/replay.js"')<page.indexOf('StudioReplay.create'),'studio loads the replay script before using it');
+assert.ok(sw.includes("'/assets/replay.js'"),'offline helper keeps the replay script');
 console.log('Drawing Studio checks pass: paper is separate from marks; community hand-off and project banner intact.');

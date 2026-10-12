@@ -226,6 +226,7 @@ nav{
   <input type="file" id="file" accept="image/*" hidden>
 </main>
 
+<script src="/assets/replay.js"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
@@ -453,6 +454,7 @@ function moveStroke(e){
       S.last=p;grow(S,p);
     }
   }
+  replay.drawing();
 }
 function endStroke(cancel){
   if(!S)return;const L=S.L,s=S;S=null;
@@ -793,7 +795,7 @@ function openPop(kind,anchor,ev){
   pop.textContent='';pop.dataset.kind=kind;const again=()=>{pop.dataset.kind='';openPop(kind,anchor,ev);};
   if(kind==='menu'){
     head('Your drawing');
-    pop.append(opt('Save to my device',download),opt('Post to Community',postToCommunity),opt('Start a new drawing…',()=>{pop.dataset.kind='';openPop('new',anchor);}),opt('How to use the studio',()=>{pop.dataset.kind='';openPop('help',anchor);}));
+    pop.append(opt('Save to my device',download),opt('Post to Community',postToCommunity),opt('Start a new drawing…',()=>{pop.dataset.kind='';openPop('new',anchor);}),opt('Replay and share my drawing',()=>{commitFloat();closePop();replay.open();}),opt('How to use the studio',()=>{pop.dataset.kind='';openPop('help',anchor);}));
     if(!isApp())pop.append(opt('Put the studio on my home screen',()=>{if(installEvt){const ev=installEvt;installEvt=null;closePop();ev.prompt();}else{pop.dataset.kind='';openPop('install',anchor);}}));
   }else if(kind==='new'){
     head('Start a new drawing','This clears the drawing you have open. Save it first if you want to keep it.');
@@ -801,7 +803,7 @@ function openPop(kind,anchor,ev){
     pop.append(opt('Keep my drawing',closePop));
   }else if(kind==='help'){
     head('How to use the studio');
-    ['Text: tap where the words should go, type, then drag them into place. Each piece of writing gets its own layer, so you can move it again later with Move.','Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo opens your reference picture in its own window beside the canvas. Trace lays it faintly over the page; Put on canvas places it in your drawing.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Your drawing is kept on this device, so it will be here when you come back.']
+    ['Text: tap where the words should go, type, then drag them into place. Each piece of writing gets its own layer, so you can move it again later with Move.','Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo opens your reference picture in its own window beside the canvas. Trace lays it faintly over the page; Put on canvas places it in your drawing.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Replay and share (in the Menu) shows your drawing being made, from the first line to the last, and turns it into a short video for YouTube, Shorts, Reels or TikTok.','Your drawing is kept on this device, so it will be here when you come back.']
       .forEach(t=>{const p=document.createElement('p');p.textContent=t;pop.append(p);});
   }else if(kind==='install'){
     head('Put the studio on your home screen','It opens like an app, full screen, and keeps working without internet.');
@@ -892,6 +894,17 @@ addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;});
 addEventListener('appinstalled',()=>{installEvt=null;toast('Drawing Studio is on your home screen.');});
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>navigator.serviceWorker.register('/studio-sw.js').catch(()=>{}));
 
+// ───────── Replay (shared with the Oil Studio: assets/replay.js) ─────────
+function snapshot(){
+  const k=Math.min(1,960/Math.max(st.W,st.H)),w=Math.round(st.W*k),h=Math.round(st.H*k),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+  x.fillStyle=st.paper;x.fillRect(0,0,w,h);
+  const under=overlay.previousElementSibling;   // a stroke in progress lives on the overlay, just above its layer
+  st.layers.forEach(L=>{if(L.visible){x.globalAlpha=L.opacity;x.drawImage(L.canvas,0,0,w,h);}
+    if(L.canvas===under){x.globalAlpha=parseFloat(overlay.style.opacity||'1')||1;x.drawImage(overlay,0,0,w,h);}});
+  x.globalAlpha=1;return c;
+}
+const replay=StudioReplay.create({snapshot,toast,noun:'drawing'});
+
 // ───────── Save, post, new ─────────
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600);}
 function download(){
@@ -906,6 +919,7 @@ function postToCommunity(){
   toast('This drawing is too large to post from here. Save it to your device and upload it instead.');
 }
 function newDoc(w,h,keep){
+  replay.reset();
   float=null;xform.style.display='none';$('doneBtn').style.display='none';
   st.W=w;st.H=h;overlay.width=w;overlay.height=h;st.layers=[];hist=[];redoS=[];layerSeq=1;
   if(!keep){const L=mkLayer();st.layers=[L];st.active=L;}
@@ -913,12 +927,13 @@ function newDoc(w,h,keep){
 }
 // keep the drawing on this device
 let db=null,saveT=null;
-function dirty(){clearTimeout(saveT);saveT=setTimeout(save,1200);}
+function dirty(){clearTimeout(saveT);saveT=setTimeout(save,1200);replay.changed();}
 function idb(){return new Promise((res,rej)=>{if(db)return res(db);const r=indexedDB.open('vtaa-studio',1);r.onupgradeneeded=()=>r.result.createObjectStore('doc');r.onsuccess=()=>res(db=r.result);r.onerror=()=>rej(r.error);});}
 async function save(){
   try{
     const d=await idb(),layers=await Promise.all(st.layers.map(L=>new Promise(r=>L.canvas.toBlob(b=>r({blob:b,opacity:L.opacity,visible:L.visible}),'image/png'))));
-    d.transaction('doc','readwrite').objectStore('doc').put({w:st.W,h:st.H,paper:st.paper,active:st.layers.indexOf(st.active),layers,color:st.color},'current');
+    const tx=d.transaction('doc','readwrite');tx.objectStore('doc').put({w:st.W,h:st.H,paper:st.paper,active:st.layers.indexOf(st.active),layers,color:st.color},'current');
+    if(replay.takeDirty())tx.objectStore('doc').put(replay.state(),'replay');
   }catch(_){}
 }
 async function restore(){
@@ -927,7 +942,10 @@ async function restore(){
     if(!doc||!doc.layers||!doc.layers.length)return false;
     newDoc(doc.w,doc.h,true);st.paper=doc.paper||'#ffffff';if(doc.color)st.color=doc.color;
     for(const s of doc.layers){const L=mkLayer();L.opacity=s.opacity;L.visible=s.visible;if(s.blob){const bmp=await createImageBitmap(s.blob);L.ctx.drawImage(bmp,0,0);}st.layers.push(L);}
-    st.active=st.layers[clamp(doc.active,0,st.layers.length-1)];syncDOM();syncPuck();return true;
+    st.active=st.layers[clamp(doc.active,0,st.layers.length-1)];syncDOM();syncPuck();
+    try{const rp=await new Promise(res=>{const r=d.transaction('doc').objectStore('doc').get('replay');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);});
+      replay.load(rp);}catch(_){}
+    return true;
   }catch(_){return false;}
 }
 
@@ -944,7 +962,7 @@ async function init(){
   }
   syncPuck();syncTools();updUndo();fit();
   new ResizeObserver(()=>fit()).observe(work);
-  window.__studio={st,view,hist};
+  window.__studio={st,view,hist,replay};
 }
 init();
 })();
