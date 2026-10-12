@@ -657,7 +657,7 @@ $('bSave').onclick=async()=>{
   let dl=null;try{dl=await Promise.race([window.claude&&window.claude.use?window.claude.use('downloads'):null,new Promise(r=>setTimeout(()=>r(null),2500))]);}catch(_){}
   if(dl){try{await dl.save({filename:'my-oil-painting.png',data:blob});toast('Painting saved.');return;}catch(err){if(err&&err.code==='declined')return;}}
   const url=URL.createObjectURL(blob);
-  if(!window.claude){const a=document.createElement('a');a.href=url;a.download='my-oil-painting.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),8000);toast('Painting saved to your device.');return;}
+  if(!window.claude){const a=document.createElement('a');a.href=url;a.download='my-oil-painting.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),8000);toast('Painting saved to your device.');if(window.VTSubscribe)VTSubscribe.prompt('saved');return;}
   openDlg(d=>{const im=mk('img');im.src=url;im.alt='Your painting';const f=mk('div','','foot'),ok=mk('button','Done','btn go');ok.onclick=()=>{closeDlg();URL.revokeObjectURL(url);};f.append(ok);
     d.append(mk('h2','Your painting'),mk('p','Press and hold the picture (or right-click it), then choose Save.'),im,f);});
 };
@@ -678,5 +678,6 @@ init();
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>navigator.serviceWorker.register('/studio-sw.js').catch(()=>{}));
 })();
 </script>
+<script src="/assets/subscribe.js" data-mode="manual" defer></script>
 </body>
 </html>
