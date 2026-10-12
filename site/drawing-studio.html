@@ -139,17 +139,6 @@ nav{
 
 .hint{left:50%;bottom:8px;transform:translateX(-50%);border-radius:16px;padding:6px 14px;font-size:13px;max-width:calc(100% - 24px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;}
 #doneBtn{left:50%;bottom:48px;transform:translateX(-50%);display:none;border:0;border-radius:22px;padding:0 22px;height:44px;background:var(--accent);color:#fff;font-weight:500;z-index:20;}
-/* replay */
-.replay{position:absolute;inset:0;z-index:45;background:rgba(18,13,6,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;cursor:default;}
-.replay[hidden]{display:none;}
-.replay h3{font:700 20px 'Playfair Display',serif;color:var(--white);}
-.replay canvas{max-width:100%;max-height:calc(100% - 150px);background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.5);border-radius:2px;}
-.rp-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;width:min(720px,100%);}
-.rp-bar input{flex:1 1 200px;accent-color:var(--gold);height:30px;}
-.rp-bar button{min-height:42px;padding:0 16px;border-radius:21px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:var(--white);font-size:14px;}
-.rp-bar button.on{background:var(--gold);border-color:var(--gold);color:var(--ink);}
-.rp-bar .main{background:var(--accent);border-color:var(--accent);}
-.rp-note{color:rgba(255,255,255,.7);font-size:13px;text-align:center;max-width:520px;}
 #toast{position:absolute;left:50%;top:92px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:18px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:40;}
 #toast.show{opacity:1;}
 #tLayers{display:none;}
@@ -209,22 +198,11 @@ nav{
   <div class="pop ui" id="pop"></div>
   <button class="ui" id="doneBtn">Done moving</button>
   <div class="hint ui" id="hint"></div>
-  <div class="ui replay" id="replay" hidden role="dialog" aria-label="Replay of your drawing">
-    <h3>Watch your drawing come together</h3>
-    <canvas id="rpCv"></canvas>
-    <div class="rp-bar">
-      <button id="rpPlay" class="main" aria-label="Play or pause">Pause</button>
-      <input type="range" id="rpPos" min="0" max="0" value="0" aria-label="Position in the replay">
-      <button id="rpSpeed" aria-label="Replay speed">1×</button>
-      <button id="rpVideo">Save as video</button>
-      <button id="rpClose">Back to drawing</button>
-    </div>
-    <p class="rp-note" id="rpNote"></p>
-  </div>
   <div id="toast" role="status"></div>
   <input type="file" id="file" accept="image/*" hidden>
 </main>
 
+<script src="/assets/replay.js"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
@@ -452,7 +430,7 @@ function moveStroke(e){
       S.last=p;grow(S,p);
     }
   }
-  if(performance.now()-capT>200){capT=performance.now();grabFrame();}
+  replay.drawing();
 }
 function endStroke(cancel){
   if(!S)return;const L=S.L,s=S;S=null;
@@ -741,7 +719,7 @@ function openPop(kind,anchor,ev){
   pop.textContent='';pop.dataset.kind=kind;const again=()=>{pop.dataset.kind='';openPop(kind,anchor,ev);};
   if(kind==='menu'){
     head('Your drawing');
-    pop.append(opt('Save to my device',download),opt('Post to Community',postToCommunity),opt('Start a new drawing…',()=>{pop.dataset.kind='';openPop('new',anchor);}),opt('Replay my drawing',openReplay),opt('How to use the studio',()=>{pop.dataset.kind='';openPop('help',anchor);}));
+    pop.append(opt('Save to my device',download),opt('Post to Community',postToCommunity),opt('Start a new drawing…',()=>{pop.dataset.kind='';openPop('new',anchor);}),opt('Replay and share my drawing',()=>{commitFloat();closePop();replay.open();}),opt('How to use the studio',()=>{pop.dataset.kind='';openPop('help',anchor);}));
     if(!isApp())pop.append(opt('Put the studio on my home screen',()=>{if(installEvt){const ev=installEvt;installEvt=null;closePop();ev.prompt();}else{pop.dataset.kind='';openPop('install',anchor);}}));
   }else if(kind==='new'){
     head('Start a new drawing','This clears the drawing you have open. Save it first if you want to keep it.');
@@ -749,7 +727,7 @@ function openPop(kind,anchor,ev){
     pop.append(opt('Keep my drawing',closePop));
   }else if(kind==='help'){
     head('How to use the studio');
-    ['Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo puts your reference picture on its own layer so you can draw beside it.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Replay (in the Menu) shows your drawing being made, from the first line to the last. You can save it as a short video to share.','Your drawing is kept on this device, so it will be here when you come back.']
+    ['Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo puts your reference picture on its own layer so you can draw beside it.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Replay and share (in the Menu) shows your drawing being made, from the first line to the last, and turns it into a short video for YouTube, Shorts, Reels or TikTok.','Your drawing is kept on this device, so it will be here when you come back.']
       .forEach(t=>{const p=document.createElement('p');p.textContent=t;pop.append(p);});
   }else if(kind==='install'){
     head('Put the studio on your home screen','It opens like an app, full screen, and keeps working without internet.');
@@ -829,70 +807,16 @@ addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;});
 addEventListener('appinstalled',()=>{installEvt=null;toast('Drawing Studio is on your home screen.');});
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>navigator.serviceWorker.register('/studio-sw.js').catch(()=>{}));
 
-// ───────── Replay: a small picture of the drawing is kept after every change, and every moment while drawing ─────────
-const RW=720;let frames=[],capT=0,capBusy=false,capAgain=false,capStep=1,capCount=0,framesDirty=false;
+// ───────── Replay (shared with the Oil Studio: assets/replay.js) ─────────
 function snapshot(){
-  const h=Math.round(RW*st.H/st.W),c=document.createElement('canvas');c.width=RW;c.height=h;const x=c.getContext('2d');
-  x.fillStyle=st.paper;x.fillRect(0,0,RW,h);
-  const under=overlay.previousElementSibling;
-  st.layers.forEach(L=>{if(L.visible){x.globalAlpha=L.opacity;x.drawImage(L.canvas,0,0,RW,h);}
-    if(L.canvas===under){x.globalAlpha=parseFloat(overlay.style.opacity||'1')||1;x.drawImage(overlay,0,0,RW,h);}});
+  const k=Math.min(1,960/Math.max(st.W,st.H)),w=Math.round(st.W*k),h=Math.round(st.H*k),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+  x.fillStyle=st.paper;x.fillRect(0,0,w,h);
+  const under=overlay.previousElementSibling;   // a stroke in progress lives on the overlay, just above its layer
+  st.layers.forEach(L=>{if(L.visible){x.globalAlpha=L.opacity;x.drawImage(L.canvas,0,0,w,h);}
+    if(L.canvas===under){x.globalAlpha=parseFloat(overlay.style.opacity||'1')||1;x.drawImage(overlay,0,0,w,h);}});
   x.globalAlpha=1;return c;
 }
-function grabFrame(){
-  if(!st.layers.length)return;
-  if(capBusy){capAgain=true;return;}capBusy=true;
-  snapshot().toBlob(b=>{capBusy=false;
-    if(b&&(++capCount%capStep===0)){frames.push(b);framesDirty=true;
-      if(frames.length>600){frames=frames.filter((_,i)=>i%2===1||i===frames.length-1);capStep*=2;}}
-    if(capAgain){capAgain=false;grabFrame();}},'image/jpeg',.72);
-}
-let rp=null;
-async function openReplay(){
-  commitFloat();closePop();
-  const last=await new Promise(r=>snapshot().toBlob(r,'image/jpeg',.85));
-  const list=frames.concat(last?[last]:[]);
-  if(list.length<4){toast('Draw a little more first. The replay records as you go.');return;}
-  const cv=$('rpCv'),first=await createImageBitmap(list[0]);cv.width=first.width;cv.height=first.height;
-  rp={list,i:0,playing:true,speed:1,timer:0,bmp:{}};
-  $('rpPos').max=list.length-1;$('rpSpeed').textContent='1×';$('rpNote').textContent='';
-  $('rpVideo').hidden=!(window.MediaRecorder&&cv.captureStream);
-  $('replay').hidden=false;drawRp(0);tickRp();
-}
-const rpFps=()=>clamp(rp.list.length/12,6,30)*rp.speed;   // about 12 seconds at normal speed
-async function drawRp(i){
-  const b=await createImageBitmap(rp.list[i]);$('rpCv').getContext('2d').drawImage(b,0,0,$('rpCv').width,$('rpCv').height);b.close&&b.close();
-  rp.i=i;$('rpPos').value=i;
-}
-function tickRp(){
-  clearTimeout(rp.timer);$('rpPlay').textContent=rp.playing?'Pause':'Play';
-  if(!rp.playing)return;
-  if(rp.i>=rp.list.length-1){rp.playing=false;$('rpPlay').textContent='Play again';return;}
-  rp.timer=setTimeout(async()=>{await drawRp(rp.i+1);tickRp();},1000/rpFps());
-}
-$('rpPlay').onclick=()=>{if(rp.i>=rp.list.length-1)drawRp(0);rp.playing=!rp.playing||rp.i>=rp.list.length-1;tickRp();};
-$('rpPos').oninput=e=>{rp.playing=false;tickRp();drawRp(+e.target.value);};
-$('rpSpeed').onclick=e=>{rp.speed=rp.speed>=4?1:rp.speed*2;e.currentTarget.textContent=rp.speed+'×';};
-$('rpClose').onclick=()=>{if(rp){clearTimeout(rp.timer);rp.playing=false;}$('replay').hidden=true;};
-$('rpVideo').onclick=async()=>{
-  const cv=$('rpCv'),btn=$('rpVideo');if(btn.disabled)return;
-  const type=['video/mp4','video/webm;codecs=vp9','video/webm'].find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t));
-  if(!type){toast('This browser cannot make videos. Try Safari or Chrome.');return;}
-  btn.disabled=true;btn.textContent='Making your video…';clearTimeout(rp.timer);rp.playing=false;$('rpPlay').textContent='Play';
-  try{
-    const rec=new MediaRecorder(cv.captureStream(30),{mimeType:type}),parts=[];
-    rec.ondataavailable=e=>{if(e.data.size)parts.push(e.data);};
-    const done=new Promise(r=>rec.onstop=r);rec.start();
-    const fps=clamp(rp.list.length/12,6,30);
-    for(let i=0;i<rp.list.length;i++){await drawRp(i);$('rpNote').textContent='Recording '+Math.round(100*i/(rp.list.length-1))+'%';await new Promise(r=>setTimeout(r,1000/fps));}
-    await new Promise(r=>setTimeout(r,1800));rec.stop();await done;
-    const blob=new Blob(parts,{type:type.split(';')[0]}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url;a.download='my-drawing-replay.'+(type.startsWith('video/mp4')?'mp4':'webm');document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
-    $('rpNote').textContent='Video saved to your device.';
-  }catch(_){$('rpNote').textContent='The video could not be made on this device.';}
-  btn.disabled=false;btn.textContent='Save as video';
-};
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('replay').hidden)$('rpClose').click();});
+const replay=StudioReplay.create({snapshot,toast,noun:'drawing'});
 
 // ───────── Save, post, new ─────────
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600);}
@@ -908,7 +832,7 @@ function postToCommunity(){
   toast('This drawing is too large to post from here. Save it to your device and upload it instead.');
 }
 function newDoc(w,h,keep){
-  frames=[];capStep=1;capCount=0;framesDirty=true;
+  replay.reset();
   float=null;xform.style.display='none';$('doneBtn').style.display='none';
   st.W=w;st.H=h;overlay.width=w;overlay.height=h;st.layers=[];hist=[];redoS=[];layerSeq=1;
   if(!keep){const L=mkLayer();st.layers=[L];st.active=L;}
@@ -916,13 +840,13 @@ function newDoc(w,h,keep){
 }
 // keep the drawing on this device
 let db=null,saveT=null;
-function dirty(){clearTimeout(saveT);saveT=setTimeout(save,1200);setTimeout(grabFrame,0);}
+function dirty(){clearTimeout(saveT);saveT=setTimeout(save,1200);replay.changed();}
 function idb(){return new Promise((res,rej)=>{if(db)return res(db);const r=indexedDB.open('vtaa-studio',1);r.onupgradeneeded=()=>r.result.createObjectStore('doc');r.onsuccess=()=>res(db=r.result);r.onerror=()=>rej(r.error);});}
 async function save(){
   try{
     const d=await idb(),layers=await Promise.all(st.layers.map(L=>new Promise(r=>L.canvas.toBlob(b=>r({blob:b,opacity:L.opacity,visible:L.visible}),'image/png'))));
     const tx=d.transaction('doc','readwrite');tx.objectStore('doc').put({w:st.W,h:st.H,paper:st.paper,active:st.layers.indexOf(st.active),layers,color:st.color},'current');
-    if(framesDirty){framesDirty=false;tx.objectStore('doc').put({frames:frames.slice(),capStep},'replay');}
+    if(replay.takeDirty())tx.objectStore('doc').put(replay.state(),'replay');
   }catch(_){}
 }
 async function restore(){
@@ -933,7 +857,7 @@ async function restore(){
     for(const s of doc.layers){const L=mkLayer();L.opacity=s.opacity;L.visible=s.visible;if(s.blob){const bmp=await createImageBitmap(s.blob);L.ctx.drawImage(bmp,0,0);}st.layers.push(L);}
     st.active=st.layers[clamp(doc.active,0,st.layers.length-1)];syncDOM();syncPuck();
     try{const rp=await new Promise(res=>{const r=d.transaction('doc').objectStore('doc').get('replay');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);});
-      if(rp&&Array.isArray(rp.frames)){frames=rp.frames;capStep=rp.capStep||1;}}catch(_){}
+      replay.load(rp);}catch(_){}
     return true;
   }catch(_){return false;}
 }
@@ -951,7 +875,7 @@ async function init(){
   }
   syncPuck();syncTools();updUndo();fit();
   new ResizeObserver(()=>fit()).observe(work);
-  window.__studio={st,view,hist,get frames(){return frames;}};
+  window.__studio={st,view,hist,replay};
 }
 init();
 })();
