@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/assets/studio-app/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/studio-app/icon-192.png">
 <meta name="description" content="A free sketchbook for Academy students: pencils, pens, brushes, layers, perspective guides and a place for your reference photo.">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;700&family=Caveat:wght@500;700&family=Cormorant+Garamond:wght@600;700&family=Cinzel:wght@400;700&family=Bebas+Neue&family=Fredoka:wght@400;600&family=Patrick+Hand&family=Kaushan+Script&family=Great+Vibes&family=Permanent+Marker&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -145,7 +145,16 @@ nav{
 #sv{width:100%;height:140px;border-radius:5px;display:block;touch-action:none;cursor:crosshair;}
 #hue{background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);border-radius:6px;-webkit-appearance:none;appearance:none;height:16px!important;margin:12px 0 4px;}
 .go{display:block;width:100%;min-height:44px;border:0;border-radius:5px;background:var(--accent);color:#fff;font-weight:500;font-size:14px;margin-top:8px;}
-#textIn{width:100%;font:16px 'DM Sans',sans-serif;padding:9px;border:1px solid #999;border-radius:5px;-webkit-user-select:text;user-select:text;}
+#textIn{width:100%;box-sizing:border-box;font:16px 'DM Sans',sans-serif;padding:9px;border:1px solid #999;border-radius:5px;resize:vertical;min-height:64px;-webkit-user-select:text;user-select:text;}
+.fonts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px;}
+.fonts button{min-height:44px;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:19px;line-height:1.1;color:var(--ink);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.fonts button.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}
+.tcol{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.tcol button{width:30px;height:30px;border-radius:50%;border:1px solid rgba(0,0,0,.25);}
+.tcol button.on{outline:2px solid var(--accent);outline-offset:2px;}
+.trow{display:flex;gap:6px;margin-top:8px;}
+.trow .go{flex:1;margin-top:0;}
+.trow .opt{flex:0 0 auto;width:auto;text-align:center;border:1px solid var(--line);}
 
 .hint{left:50%;bottom:8px;transform:translateX(-50%);border-radius:16px;padding:6px 14px;font-size:13px;max-width:calc(100% - 24px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;}
 #doneBtn{left:50%;bottom:48px;transform:translateX(-50%);display:none;border:0;border-radius:22px;padding:0 22px;height:44px;background:var(--accent);color:#fff;font-weight:500;z-index:20;}
@@ -242,7 +251,7 @@ const PAPERS=[['White','#ffffff'],['Cream','#f5f0e8'],['Kraft','#c8a878'],['Grey
 const SIZES={Landscape:[1600,1200],Portrait:[1200,1600],Square:[1400,1400]};
 
 const st={W:1600,H:1200,paper:'#ffffff',color:'#3a0d0d',brush:'pencil',mode:'draw',shape:'free',steady:false,sym:'off',persp:0,
-  vps:[{x:1150,y:560},{x:250,y:560}],font:'serif',textSize:70,layers:[],active:null};
+  vps:[{x:1150,y:560},{x:250,y:560}],font:'Playfair Display',textSize:70,tBold:false,layers:[],active:null};
 const view={s:1,x:0,y:0};
 let layerSeq=1,scratch=document.createElement('canvas'),sctx;
 const B=()=>BRUSHES.find(b=>b.id===st.brush);
@@ -517,7 +526,8 @@ function drawFloat(){
   Object.assign(xform.style,{display:'block',left:f.x+'px',top:f.y+'px',width:f.w+'px',height:f.h+'px'});
 }
 function commitFloat(){
-  if(!float)return;const f=float;float=null;
+  if(!float)return;const f=float;float=null;textEdit=null;$('doneBtn').textContent='Done moving';
+  if(!f.w){octx.clearRect(0,0,st.W,st.H);xform.style.display='none';$('doneBtn').style.display='none';if(st.mode==='move'){st.mode='draw';syncTools();}return;}
   f.L.ctx.imageSmoothingQuality='high';f.L.ctx.drawImage(f.cv,f.x,f.y,f.w,f.h);endEdit(f.L);
   octx.clearRect(0,0,st.W,st.H);xform.style.display='none';$('doneBtn').style.display='none';
   if(st.mode==='move'){st.mode='draw';syncTools();}
@@ -534,18 +544,51 @@ function importImage(file){
   };
   img.onerror=()=>toast('That file could not be opened as a picture.');img.src=url;
 }
-let textAt=null;
-function placeText(){
-  const v=$('textIn').value.trim(),L=st.active;closePop();if(!v||!L||!textAt)return;
-  beginEdit(L);const px=st.textSize;
-  L.ctx.font=(st.font==='hand'?'700 '+px+"px 'Caveat',cursive":'400 '+px+"px 'Playfair Display',serif");
-  L.ctx.fillStyle=st.color;L.ctx.textBaseline='middle';L.ctx.fillText(v,textAt.x,textAt.y);endEdit(L);
+// ───────── Words: each piece of text gets its own layer and stays movable until it is placed ─────────
+const FONTS=[['Playfair Display','serif','Book'],['Cormorant Garamond','serif','Elegant'],['Cinzel','serif','Roman'],['DM Sans','sans-serif','Clean'],
+ ['Bebas Neue','sans-serif','Poster'],['Fredoka','sans-serif','Rounded'],['Caveat','cursive','Handwriting'],['Patrick Hand','cursive','Neat hand'],
+ ['Kaushan Script','cursive','Brush script'],['Great Vibes','cursive','Calligraphy'],['Permanent Marker','cursive','Marker'],['Special Elite','monospace','Typewriter']];
+let textEdit=null;
+const fontCss=(px)=>{const f=FONTS.find(x=>x[0]===st.font)||FONTS[0];return (st.tBold?'700 ':'400 ')+px+"px '"+f[0]+"',"+f[1];};
+function startText(p){
+  commitFloat();
+  const L=mkLayer('Words');
+  listEdit(()=>{st.layers.splice(st.layers.indexOf(st.active)+1,0,L);st.active=L;});
+  textEdit={L,x:p.x,y:p.y,text:''};
+}
+async function renderText(){
+  const t=textEdit;if(!t)return;
+  const lines=t.text.replace(/\s+$/,'').split('\n');
+  if(!t.text.trim()){if(float){octx.clearRect(0,0,st.W,st.H);xform.style.display='none';float.w=float.h=0;}return;}
+  const px=st.textSize,font=fontCss(px);
+  try{await document.fonts.load(font,t.text);}catch(_){}
+  if(textEdit!==t)return;
+  const m=document.createElement('canvas').getContext('2d');m.font=font;
+  const lh=Math.round(px*1.25),pad=Math.round(px*.25);
+  const w=Math.ceil(Math.max(...lines.map(l=>m.measureText(l).width)))+pad*2,h=lh*lines.length+pad*2;
+  const cv=document.createElement('canvas');cv.width=Math.max(1,w);cv.height=Math.max(1,h);const x=cv.getContext('2d');
+  x.font=font;x.fillStyle=st.color;x.textBaseline='middle';lines.forEach((l,i)=>x.fillText(l,pad,pad+lh*i+lh/2));
+  if(float&&float.L===t.L){const k=(float.resetScale||!float.w)?1:float.w/float.cv.width;float.resetScale=false;float.cv=cv;float.w=cv.width*k;float.h=cv.height*k;drawFloat();}
+  else{startFloat(t.L,cv,t.x,t.y-cv.height/2,cv.width,cv.height);st.mode='move';}
+  $('doneBtn').textContent='Place words';
+}
+function finishText(){
+  if(!textEdit)return;
+  if(!textEdit.text.trim()){cancelText();return;}
+  commitFloat();closePop();st.mode='text';syncTools();
+}
+function cancelText(){
+  const had=textEdit;textEdit=null;
+  if(float){float=null;octx.clearRect(0,0,st.W,st.H);xform.style.display='none';$('doneBtn').style.display='none';}
+  if(pop.dataset.kind==='text')closePop();
+  if(had)undo();   // takes away the empty layer made for these words
+  st.mode='text';syncTools();
 }
 
 // ───────── Pointer input ─────────
 work.addEventListener('pointerdown',e=>{
   if(e.target.closest('.ui'))return;
-  if(pop.classList.contains('show')){closePop();if(st.mode!=='draw')return;}
+  if(pop.classList.contains('show')&&!(textEdit&&pop.dataset.kind==='text')){closePop();if(st.mode!=='draw')return;}
   if(e.pointerType==='pen')penSeen=true;
   try{work.setPointerCapture(e.pointerId);}catch(_){}
   if(e.target.classList&&e.target.classList.contains('vp')){vpDrag={id:e.pointerId,i:+e.target.dataset.i};return;}
@@ -570,7 +613,7 @@ work.addEventListener('pointerdown',e=>{
   }
   if(st.mode==='pick'){pickAt(p);setMode('draw');return;}
   if(st.mode==='fill'){fillAt(p);return;}
-  if(st.mode==='text'){textAt=p;openPop('text',null,e);return;}
+  if(st.mode==='text'){startText(p);openPop('text',null,e);return;}
   beginStroke(e);
 });
 work.addEventListener('pointermove',e=>{
@@ -665,7 +708,7 @@ function toolClick(id,btn){
   else if(id==='layers')$('layers').classList.toggle('open');
   else openPop(id,btn);
 }
-const HINTS={fill:'Tap inside a closed shape to fill it with your colour.',pick:'Tap anywhere on your drawing to pick up that colour.',text:'Tap where the words should start.',move:'Drag to move. Pull the round handle to resize. Tap Done when it sits right.'};
+const HINTS={fill:'Tap inside a closed shape to fill it with your colour.',pick:'Tap anywhere on your drawing to pick up that colour.',text:'Tap where the words should start.',move:'Drag to move. Pull the round handle to resize. Tap the orange button when it sits right.'};
 function syncTools(){
   const on=(id,v)=>{const b=$('t-'+id);if(b)b.classList.toggle('on',!!v);};
   ['fill','pick','text','move'].forEach(m=>on(m,st.mode===m));
@@ -715,7 +758,7 @@ function setColor(c){st.color=c;syncPuck();}
 $('puckColor').onclick=e=>openPop('color',e.currentTarget);
 $('addLayer').onclick=()=>{commitFloat();const L=mkLayer();listEdit(()=>{st.layers.splice(st.layers.indexOf(st.active)+1,0,L);st.active=L;});};
 $('paperRow').onclick=e=>openPop('paper',e.currentTarget);
-$('doneBtn').onclick=commitFloat;
+$('doneBtn').onclick=()=>{if(textEdit)finishText();else commitFloat();};
 // "Add photo" opens the photo in its own window beside the canvas, to draw from.
 // "Trace" lays it faintly over the page; "Put on canvas" places it on a layer of the drawing.
 let refFile=null,refURL=null;
@@ -758,7 +801,7 @@ function openPop(kind,anchor,ev){
     pop.append(opt('Keep my drawing',closePop));
   }else if(kind==='help'){
     head('How to use the studio');
-    ['Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo opens your reference picture in its own window beside the canvas. Trace lays it faintly over the page; Put on canvas places it in your drawing.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Your drawing is kept on this device, so it will be here when you come back.']
+    ['Text: tap where the words should go, type, then drag them into place. Each piece of writing gets its own layer, so you can move it again later with Move.','Pick a pencil, pen or brush on the left. The little picture shows the mark it makes.','Drag up or down on the round size button to make your tool bigger or smaller. Drag sideways to make it lighter or stronger.','Use layers like sheets of tracing paper: sketch on one, ink on another, colour underneath.','Add photo opens your reference picture in its own window beside the canvas. Trace lays it faintly over the page; Put on canvas places it in your drawing.','Perspective gives you vanishing points. Every line you pull will aim at them.','Two fingers move and zoom the page. A quick two-finger tap undoes your last stroke.','Your drawing is kept on this device, so it will be here when you come back.']
       .forEach(t=>{const p=document.createElement('p');p.textContent=t;pop.append(p);});
   }else if(kind==='install'){
     head('Put the studio on your home screen','It opens like an app, full screen, and keeps working without internet.');
@@ -792,11 +835,21 @@ function openPop(kind,anchor,ev){
     act('Wipe this layer clean',()=>{beginEdit(L);L.ctx.clearRect(0,0,st.W,st.H);endEdit(L);renderLayers();},'warn');
     if(st.layers.length>1)act('Delete this layer',()=>listEdit(()=>{st.layers.splice(i,1);st.active=st.layers[Math.max(0,i-1)];}),'warn');
   }else if(kind==='text'){
-    head('Add words');
-    const inp=document.createElement('input');inp.id='textIn';inp.placeholder='Type here';inp.setAttribute('aria-label','Words to add');inp.onkeydown=e=>{if(e.key==='Enter')placeText();};
-    pop.append(inp,opt('Book lettering',()=>{st.font='serif';const v=inp.value;again();$('textIn').value=v;},st.font==='serif'),opt('Handwriting',()=>{st.font='hand';const v=inp.value;again();$('textIn').value=v;},st.font==='hand'));
-    const go=document.createElement('button');go.className='go';go.textContent='Place on drawing';go.onclick=placeText;pop.append(go);
-    go.before(...slider('Letter size',20,300,2,st.textSize,v=>Math.round(v),v=>{st.textSize=v;}));
+    head('Add words','Type, then drag the words where you want them. Pull the round handle to make them bigger or smaller.');
+    const inp=document.createElement('textarea');inp.id='textIn';inp.rows=2;inp.placeholder='Type here';inp.setAttribute('aria-label','Words to add');
+    inp.value=textEdit?textEdit.text:'';inp.oninput=()=>{if(textEdit){textEdit.text=inp.value;renderText();}};
+    const grid=document.createElement('div');grid.className='fonts';grid.setAttribute('role','group');grid.setAttribute('aria-label','Lettering style');
+    FONTS.forEach(([fam,fb,label])=>{const b=document.createElement('button');b.textContent=label;b.style.fontFamily="'"+fam+"',"+fb;b.setAttribute('aria-label',label+' lettering');
+      b.className=st.font===fam?'on':'';b.onclick=()=>{st.font=fam;[...grid.children].forEach(c=>c.classList.toggle('on',c===b));renderText();};grid.append(b);});
+    const sub=t=>{const l=document.createElement('label');l.textContent=t;return l;};
+    const cols=document.createElement('div');cols.className='tcol';
+    [st.color,'#1b1a18','#ffffff','#4e3323','#d2301f','#233f9b','#56762a','#c8963e'].filter((c,i,a)=>a.indexOf(c)===i).forEach(c=>{const b=document.createElement('button');b.style.background=c;b.setAttribute('aria-label','Colour '+c);b.className=c===st.color?'on':'';
+      b.onclick=()=>{setColor(c);[...cols.children].forEach(x=>x.classList.toggle('on',x===b));renderText();};cols.append(b);});
+    const bold=opt('Bold',()=>{st.tBold=!st.tBold;bold.classList.toggle('on',st.tBold);renderText();},st.tBold);bold.style.cssText='width:auto;display:inline-block;margin-top:6px;border:1px solid var(--line)';
+    const row=document.createElement('div');row.className='trow';
+    const go=document.createElement('button');go.className='go';go.textContent='Place words';go.onclick=finishText;
+    row.append(go,opt('Remove',cancelText,false,'warn'));
+    pop.append(inp,sub('Lettering'),grid,...slider('Letter size',16,400,2,st.textSize,v=>Math.round(v),v=>{st.textSize=v;if(float&&textEdit)float.resetScale=true;renderText();}),bold,sub('Colour'),cols,row);
     setTimeout(()=>inp.focus(),30);
   }else if(kind==='color'){colorPop();}
   pop.classList.add('show');
@@ -805,6 +858,7 @@ function openPop(kind,anchor,ev){
     if(anchor.closest('.layers')){x=r.left-wr.left-pw-8;y=r.top-wr.top;}
     else{x=r.left-wr.left+r.width/2-pw/2;y=r.bottom-wr.top+8;}
   }else{x=ev.clientX-wr.left+12;y=ev.clientY-wr.top+12;}
+  if(kind==='text'){x=wr.width-pw-(wr.width>720?140:8);y=wr.width>720?84:8;}   // keep the words panel to the side, clear of the words
   pop.style.left=clamp(x,8,wr.width-pw-8)+'px';pop.style.top=clamp(y,8,Math.max(8,wr.height-ph-8))+'px';
 }
 function hsv2rgb(h,s,v){const f=n=>{const k=(n+h/60)%6;return v-v*s*Math.max(0,Math.min(k,4-k,1));};return [f(5)*255,f(3)*255,f(1)*255];}
