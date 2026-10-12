@@ -715,7 +715,6 @@ footer{
     <a href="#schools">Schools</a>
     <a href="lessons.html">Lessons</a>
     <a href="idea-studio.html">Idea Studio</a>
-    <a href="living-studio.html">Living Studio</a>
     <a href="automated-lesson.html">Guided Lesson</a>
     <a href="drawing-studio.html">Studio</a>
     <a href="community.html">Community</a>
@@ -878,6 +877,7 @@ footer{
         <div class="school-tag">Available Now</div>
         <p class="school-desc">Vaughn's signature medium. Caribbean light, tropical scenes, and the slow, luminous building of oil paint. Start with the Jamaican Road Study.</p>
         <a href="automated-lesson.html" class="school-lessons">Start Learning</a>
+        <a href="oil-studio.html" class="school-lessons" style="margin-top:12px;">Open the Oil Studio</a>
       </div>
 
       <div class="school-card">
@@ -1028,8 +1028,8 @@ function handleJoin(){
   form.submit();
   document.body.removeChild(form);
 
-  // Redirect to academy app after a short delay
-  setTimeout(()=>{ window.location.href='vaughn-tucker-academy-app.html'; }, 2000);
+  // Take the new member to the lessons after a short delay
+  setTimeout(()=>{ window.location.href='lessons.html'; }, 2000);
 }
 // Also allow Enter key on email field
 document.addEventListener('DOMContentLoaded',()=>{

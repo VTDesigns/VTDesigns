@@ -52,6 +52,10 @@ nav{
 .nav-title{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--gold);letter-spacing:0.05em;white-space:nowrap;}
 .nav-back{font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.55);text-decoration:none;white-space:nowrap;}
 .nav-back:hover{color:var(--gold);}
+.nav-switch{display:flex;border:1px solid rgba(255,255,255,0.18);border-radius:6px;overflow:hidden;flex-shrink:0;}
+.nav-switch>*{display:flex;align-items:center;min-height:36px;padding:0 13px;font-size:0.82rem;color:rgba(255,255,255,0.6);text-decoration:none;white-space:nowrap;}
+.nav-switch .on{background:rgba(255,255,255,0.1);color:var(--gold);font-weight:500;}
+.nav-switch a:hover{color:var(--white);}
 
 /* WORKSPACE */
 .work{flex:1;position:relative;overflow:hidden;background:var(--desk);touch-action:none;cursor:crosshair;}
@@ -141,7 +145,8 @@ nav{
 
 @media (max-width:720px){
   nav{padding:0 12px;}
-  .nav-title{display:none;}
+  .nav-title,.nav-back{display:none;}
+  .nav-logo{overflow:hidden;text-overflow:ellipsis;}
   .top{left:6px;right:6px;top:6px;gap:6px;}
   .puck{width:62px;padding:4px;gap:5px;}
   .puck button{width:54px;height:54px;}
@@ -161,7 +166,7 @@ nav{
 <!-- NAV -->
 <nav>
   <a class='nav-logo' href='/'>Vaughn Tucker <span>Art Academy</span></a>
-  <div class="nav-title">✦ Drawing Studio</div>
+  <div class="nav-switch" role="navigation" aria-label="Studio tools"><span class="on" aria-current="page">Draw</span><a href="/oil-studio">Paint in oils</a></div>
   <a class='nav-back' href='/#schools'>← Back to Academy</a>
 </nav>
 

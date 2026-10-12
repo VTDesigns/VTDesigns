@@ -1,10 +1,11 @@
-/* Drawing Studio offline helper.
-   It only looks after the Drawing Studio's own files, so the rest of the site behaves exactly as before.
-   The studio page is always fetched fresh when there is internet; the saved copy is used only when offline. */
-const CACHE = 'vtaa-studio-v1';
-const STUDIO = ['/drawing-studio', '/assets/project-context.js', '/studio.webmanifest',
+/* Studio offline helper (Drawing Studio and Oil Studio).
+   It only looks after the two studios' own files, so the rest of the site behaves exactly as before.
+   A studio page is always fetched fresh when there is internet; the saved copy is used only when offline. */
+const CACHE = 'vtaa-studio-v2';
+const STUDIO = ['/drawing-studio', '/oil-studio', '/assets/project-context.js', '/studio.webmanifest', '/oil-studio.webmanifest',
+  '/assets/oil-app/icon-192.png', '/assets/oil-app/icon-512.png', '/assets/oil-app/apple-touch-icon.png',
   '/assets/studio-app/icon-192.png', '/assets/studio-app/icon-512.png', '/assets/studio-app/apple-touch-icon.png'];
-const isStudioPage = u => u.origin === location.origin && /^\/drawing-studio(\.html)?\/?$/.test(u.pathname);
+const pageKey = u => { const m = u.origin === location.origin && /^\/(drawing-studio|oil-studio)(\.html)?\/?$/.exec(u.pathname); return m ? '/' + m[1] : null; };
 const isStudioFile = u => u.origin === location.origin && STUDIO.includes(u.pathname);
 const isFont = u => u.hostname === 'fonts.googleapis.com' || u.hostname === 'fonts.gstatic.com';
 
@@ -17,11 +18,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
-  if (isStudioPage(u)) {
+  const key = pageKey(u);
+  if (key) {
     e.respondWith(fetch(e.request).then(r => {
-      if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put('/drawing-studio', copy)); }
+      if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(key, copy)); }
       return r;
-    }).catch(() => caches.match('/drawing-studio')));
+    }).catch(() => caches.match(key)));
   } else if (isStudioFile(u)) {
     e.respondWith(fetch(e.request).then(r => {
       if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(u.pathname, copy)); }

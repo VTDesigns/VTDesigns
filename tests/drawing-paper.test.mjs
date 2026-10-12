@@ -17,4 +17,14 @@ for(const i of mf.icons)assert.ok(fs.existsSync(new URL('../site'+i.src,import.m
 assert.ok(html.includes('rel="manifest" href="/studio.webmanifest"')&&html.includes("register('/studio-sw.js')"),'page links the app settings and offline helper');
 const sw=fs.readFileSync(new URL('../site/studio-sw.js',import.meta.url),'utf8');
 assert.ok(sw.includes("'/drawing-studio'")&&!/respondWith\(caches\.match\(e\.request\)\)\s*;?\s*}\s*\)\s*;?\s*$/.test(sw),'offline helper covers the studio only');
+// Oil Studio: page, app settings and icons exist; both studios link to each other; the retired page is gone and nothing links to it.
+const oil=fs.readFileSync(new URL('../site/oil-studio.html',import.meta.url),'utf8');
+const omf=JSON.parse(fs.readFileSync(new URL('../site/oil-studio.webmanifest',import.meta.url),'utf8'));
+assert.equal(omf.start_url,'/oil-studio');
+for(const i of omf.icons)assert.ok(fs.existsSync(new URL('../site'+i.src,import.meta.url)),'icon exists: '+i.src);
+assert.ok(oil.includes('href="/drawing-studio"')&&html.includes('href="/oil-studio"'),'the two studios link to each other');
+assert.ok(sw.includes("'/oil-studio'"),'offline helper covers the Oil Studio');
+assert.ok(!fs.existsSync(new URL('../site/vaughn-tucker-academy-app.html',import.meta.url)),'old perspective app page is retired');
+for(const f of fs.readdirSync(new URL('../site/',import.meta.url)).filter(f=>f.endsWith('.html')))
+  assert.ok(!fs.readFileSync(new URL('../site/'+f,import.meta.url),'utf8').includes('vaughn-tucker-academy-app'),f+' no longer links to the retired page');
 console.log('Drawing Studio checks pass: paper is separate from marks; community hand-off and project banner intact.');
