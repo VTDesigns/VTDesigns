@@ -808,7 +808,7 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
 // ───────── Save, post, new ─────────
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600);}
 function download(){
-  commitFloat();closePop();const a=document.createElement('a');a.download='my-artwork.png';a.href=composite().toDataURL('image/png');a.click();toast('Artwork saved to your device.');
+  commitFloat();closePop();const a=document.createElement('a');a.download='my-artwork.png';a.href=composite().toDataURL('image/png');a.click();toast('Artwork saved to your device.');if(window.VTSubscribe)VTSubscribe.prompt('saved');
 }
 function postToCommunity(){
   commitFloat();
@@ -863,5 +863,6 @@ init();
 })();
 </script>
 <script src="assets/project-context.js"></script>
+<script src="/assets/subscribe.js" data-mode="manual" defer></script>
 </body>
 </html>
