@@ -136,6 +136,8 @@ nav{
 .pop p{font-size:13px;line-height:1.45;color:var(--ink2);margin-bottom:8px;}
 .pop label{display:flex;justify-content:space-between;font-size:13px;margin:8px 0 2px;}
 .pop input[type=range]{width:100%;height:30px;accent-color:var(--accent);}
+.qsizes{display:flex;gap:6px;margin:6px 0 4px;}.qsizes button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-height:52px;padding:6px 2px;border:1px solid #ddd5c8;border-radius:10px;background:#fff;font-size:11px;color:var(--ink2);cursor:pointer;}.qsizes button.on{border-color:var(--accent);color:var(--accent);}.qsizes i{display:block;border-radius:50%;background:currentColor;}
+.pop p.small{font-size:12px;margin:2px 0 0;}
 .opt{display:block;width:100%;text-align:left;min-height:42px;padding:8px 10px;border:0;border-radius:5px;background:none;font-size:14px;}
 .opt:hover{background:var(--panel2);}
 .opt.on{background:#fff;box-shadow:inset 0 0 0 2px var(--accent);}
@@ -235,15 +237,15 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 
 // ───────── Brushes ─────────
 const BRUSHES=[
- {id:'pencil',name:'Pencil',kind:'grain',size:3.4,op:.9,min:1,max:24,dens:1.1,alpha:.75,grain:1.1},
- {id:'sketch',name:'Soft pencil',kind:'grain',size:14,op:.7,min:4,max:60,dens:.8,alpha:.4,grain:1.6},
- {id:'ink',name:'Ink pen',kind:'round',size:4,op:1,min:1,max:40},
- {id:'marker',name:'Marker',kind:'chisel',size:22,op:.55,min:6,max:80,ang:-.9},
- {id:'nib',name:'Dip pen',kind:'chisel',size:12,op:1,min:4,max:50,ang:.7},
- {id:'brush',name:'Paint brush',kind:'stamp',size:26,op:.9,min:4,max:140,hard:.7,alpha:.55,step:.1},
- {id:'wash',name:'Watercolor',kind:'stamp',size:70,op:.4,min:10,max:260,hard:.25,alpha:.1,step:.12},
- {id:'air',name:'Airbrush',kind:'stamp',size:60,op:.6,min:10,max:260,hard:0,alpha:.05,step:.1},
- {id:'eraser',name:'Eraser',kind:'round',size:26,op:1,min:2,max:200,erase:true},
+ {id:'pencil',name:'Pencil',kind:'grain',size:3.4,op:.9,min:.5,max:80,pr:.7,dens:1.1,alpha:.75,grain:1.1},
+ {id:'sketch',name:'Soft pencil',kind:'grain',size:14,op:.7,min:1,max:200,pr:.7,dens:.8,alpha:.4,grain:1.6},
+ {id:'ink',name:'Ink pen',kind:'round',size:4,op:1,min:.5,max:120,pr:.7},
+ {id:'marker',name:'Marker',kind:'chisel',size:22,op:.55,min:2,max:200,pr:.7,ang:-.9},
+ {id:'nib',name:'Dip pen',kind:'chisel',size:12,op:1,min:1,max:120,pr:.7,ang:.7},
+ {id:'brush',name:'Paint brush',kind:'stamp',size:26,op:.9,min:1,max:400,pr:.7,hard:.7,alpha:.55,step:.1},
+ {id:'wash',name:'Watercolor',kind:'stamp',size:70,op:.4,min:4,max:600,pr:.7,hard:.25,alpha:.1,step:.12},
+ {id:'air',name:'Airbrush',kind:'stamp',size:60,op:.6,min:4,max:600,pr:.7,hard:0,alpha:.05,step:.1},
+ {id:'eraser',name:'Eraser',kind:'round',size:26,op:1,min:1,max:600,pr:.7,erase:true},
 ];
 const PIGMENTS=[['Ivory black','#1b1a18'],['Burnt umber','#4e3323'],['Burnt sienna','#8a3f1f'],['Yellow ochre','#c8963e'],['Naples yellow','#f0d58a'],['Titanium white','#ffffff'],
  ['Cadmium yellow','#f6c915'],['Cadmium orange','#ec7a1c'],['Cadmium red','#d2301f'],['Alizarin crimson','#8e1230'],['Dioxazine purple','#4b2a6b'],['Ultramarine','#233f9b'],
@@ -271,7 +273,7 @@ function stamp(col,hard){
 // Draw one piece of a stroke from a to c. A = base alpha, pen = real pressure available
 function drawSeg(ctx,b,col,A,a,c,s,pen){
   const dx=c.x-a.x,dy=c.y-a.y,d=Math.hypot(dx,dy),size=b.size;
-  const wf=p=>pen?(.3+.9*p):1;
+  const pr=b.pr??.7,wf=p=>pen?Math.max(.05,1-pr+pr*1.2857*p):1;
   if(b.kind==='round'){
     ctx.globalAlpha=A;ctx.strokeStyle=col;ctx.lineCap='round';ctx.lineWidth=Math.max(.6,size*wf((a.p+c.p)/2));
     ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(c.x,c.y+(d===0?.01:0));ctx.stroke();
@@ -286,8 +288,8 @@ function drawSeg(ctx,b,col,A,a,c,s,pen){
     const put=t=>{
       const f=d?t/d:0,x=a.x+dx*f,y=a.y+dy*f,p=a.p+(c.p-a.p)*f,r=size*wf(p)/2;
       if(grain){
-        const n=Math.ceil(size*b.dens),pa=pen?(.35+.65*p):.8;
-        for(let i=0;i<n;i++){const an=rnd()*6.283,rr=r*Math.sqrt(rnd());ctx.globalAlpha=A*b.alpha*pa*(.4+.6*rnd());ctx.fillRect(x+Math.cos(an)*rr,y+Math.sin(an)*rr,b.grain,b.grain);}
+        const gs=b.grain*Math.sqrt(Math.max(1,size/30)),n=Math.ceil(size*b.dens*Math.max(1,size/30)**.35),pa=pen?(.35+.65*p):.8;
+        for(let i=0;i<n;i++){const an=rnd()*6.283,rr=r*Math.sqrt(rnd());ctx.globalAlpha=A*b.alpha*pa*(.4+.6*rnd());ctx.fillRect(x+Math.cos(an)*rr,y+Math.sin(an)*rr,gs,gs);}
       }else{ctx.globalAlpha=A*b.alpha;ctx.drawImage(img,x-r,y-r,r*2,r*2);}
     };
     let t=s.rem;
@@ -822,7 +824,18 @@ function openPop(kind,anchor,ev){
     [[0,'Off'],[1,'One vanishing point'],[2,'Two vanishing points']].forEach(([k,n])=>pop.append(opt(n,()=>{st.persp=k;if(k){st.shape='free';if(st.mode!=='draw')setMode('draw');}syncTools();closePop();},st.persp===k)));
   }else if(kind==='brush'){
     const b=B();head(b.name);
-    pop.append(...slider('Size',b.min,b.max,.1,b.size,v=>v.toFixed(1),v=>{b.size=v;syncPuck();}),...slider('Strength',5,100,1,Math.round(b.op*100),v=>v+'%',v=>{b.op=v/100;syncPuck();}));
+    // Size slider moves on a curve: fine steps for thin lines, big jumps for huge brushes.
+    const L0=Math.log(b.min),L1=Math.log(b.max),toS=t=>{const v=Math.exp(L0+(L1-L0)*t/1000);return v<10?Math.round(v*10)/10:Math.round(v);},fmtS=v=>v<10?v.toFixed(1):String(Math.round(v));
+    const [sl,sr]=slider('Size',0,1000,1,Math.round((Math.log(b.size)-L0)/(L1-L0)*1000),t=>fmtS(toS(t)),t=>{b.size=toS(t);syncPuck();sizeBtns();});
+    const quick=document.createElement('div');quick.className='qsizes';
+    const QS=[['Fine',0],['Small',.25],['Medium',.45],['Large',.7],['Huge',1]].map(([n,t])=>[n,toS(t*1000)]);
+    function sizeBtns(){quick.querySelectorAll('button').forEach(x=>x.classList.toggle('on',Math.abs(+x.dataset.v-b.size)<.05*b.size));}
+    QS.forEach(([n,v])=>{const q=document.createElement('button');q.type='button';q.dataset.v=v;q.innerHTML='<i></i>'+n;const dot=Math.round(4+18*Math.log(v/b.min)/(L1-L0));q.firstChild.style.cssText='width:'+dot+'px;height:'+dot+'px';
+      q.onclick=()=>{b.size=v;sr.value=Math.round((Math.log(v)-L0)/(L1-L0)*1000);sl.lastChild.textContent=fmtS(v);syncPuck();sizeBtns();};quick.append(q);});
+    sizeBtns();
+    pop.append(sl,sr,quick,...slider('Strength',5,100,1,Math.round(b.op*100),v=>v+'%',v=>{b.op=v/100;syncPuck();}));
+    {pop.append(...slider('Pencil pressure',0,100,1,Math.round((b.pr??.7)*100),v=>v===0?'Off':v+'%',v=>{b.pr=v/100;}));
+      const ph=document.createElement('p');ph.className='small';ph.textContent='How much pressing harder with an Apple Pencil makes the line thicker. Off gives an even line.';pop.append(ph);}
   }else if(kind==='paper'){
     head('Paper');PAPERS.forEach(([n,c])=>pop.append(opt(n,()=>{st.paper=c;syncDOM();dirty();closePop();},st.paper===c)));
   }else if(kind==='layer'){
