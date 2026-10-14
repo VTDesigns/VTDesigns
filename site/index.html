@@ -11,973 +11,292 @@ try { if (!sessionStorage.getItem("vtIntroSeen")) { location.replace("art-academ
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vaughn Tucker Art Academy</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<meta name="description" content="Learn to draw and paint with Vaughn Tucker. A Kids area for ages 5 to 15, an Adult Studio, and free drawing and oil painting studios.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/academy.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --cream:#f5f0e8;
-  --warm:#ede4d0;
-  --ink:#1a1208;
-  --ink2:#3d2c14;
-  --accent:#b85c1a;
-  --accent2:#7a3d0e;
-  --gold:#c9943a;
-  --green:#2d5a27;
-  --blue:#1a3a5c;
-  --white:#fdfaf4;
-}
+/* ── Two doors ── */
+.doors{padding:clamp(32px,5vw,56px) 0 clamp(48px,7vw,80px)}
+.doors-head{text-align:center;margin-bottom:28px}
+.doors-head h1{font-size:clamp(1.8rem,4.6vw,3.1rem);font-weight:900;margin-bottom:8px}
+.doors-head h1 em{color:var(--accent)}
+.doors-head p{font-size:1.2rem;color:var(--ink2)}
+.door-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.door{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:440px;border-radius:24px;overflow:hidden;text-decoration:none;color:var(--white);box-shadow:0 4px 10px rgba(26,18,8,.1),0 24px 50px -20px rgba(26,18,8,.45);transition:transform .2s,box-shadow .2s;isolation:isolate}
+.door:hover{transform:translateY(-4px);box-shadow:0 6px 14px rgba(26,18,8,.12),0 30px 60px -20px rgba(26,18,8,.5)}
+.door .bg{position:absolute;inset:0;z-index:-1}
+.door .bg img,.door .bg svg{width:100%;height:100%;object-fit:cover;display:block}
+.door .shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(20,14,6,.88) 0%,rgba(20,14,6,.55) 38%,rgba(20,14,6,0) 68%)}
+.door.kids .shade{background:linear-gradient(to top,rgba(22,52,92,.9) 0%,rgba(22,52,92,.5) 36%,rgba(22,52,92,0) 62%)}
+.door .inner{padding:28px 30px 30px}
+.door .who{display:inline-block;font-weight:700;font-size:.95rem;letter-spacing:.04em;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:5px 14px;border-radius:999px;margin-bottom:12px}
+.door h2{color:var(--white);font-size:clamp(2.2rem,4.5vw,3rem);margin-bottom:6px}
+.door p{font-size:1.1rem;color:rgba(253,250,244,.92);max-width:420px;margin-bottom:18px}
+.door .btn{background:var(--white);color:var(--ink)}
+.door.kids .btn{background:var(--sun);color:#3a2600;font-size:1.2rem}
+.door:hover .btn{background:var(--gold);color:var(--ink)}
+.parents-line{text-align:center;margin-top:22px;font-size:1.05rem}
+.parents-line a{color:var(--accent2);font-weight:600}
+@media(max-width:760px){.door-grid{grid-template-columns:1fr}.door{min-height:340px}}
 
-html{scroll-behavior:smooth}
-body{
-  font-family:'DM Sans',sans-serif;
-  background:var(--cream);
-  color:var(--ink);
-  overflow-x:hidden;
-}
+/* ── Jump straight in ── */
+.jump{background:var(--white);border-top:1px solid rgba(26,18,8,.06);border-bottom:1px solid rgba(26,18,8,.06)}
+.jump .head{margin-bottom:24px}
+.pic.draw{background:linear-gradient(160deg,#fff7e8,#f6e3c4)}
+.pic.paint{background:linear-gradient(160deg,#f3e6da,#e4c9ad)}
 
-/* ── Grain texture overlay ── */
-body::after{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  mix-blend-mode:multiply;
-}
+/* ── Parents and schools ── */
+.parents{background:var(--warm)}
+.parents .grid{display:grid;grid-template-columns:1fr 1.3fr;gap:clamp(28px,5vw,64px);align-items:start}
+.facts{list-style:none;display:grid;gap:14px}
+.facts li{background:var(--white);border-radius:14px;padding:16px 18px;border-left:4px solid var(--accent)}
+.facts b{display:block;font-size:1.05rem;margin-bottom:2px}
+.facts span{color:var(--muted)}
+@media(max-width:820px){.parents .grid{grid-template-columns:1fr}}
 
-/* ══ NAV ══ */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:18px 48px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:rgba(245,240,232,0.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(26,18,8,0.1);
-}
-.nav-logo{
-  font-family:'Playfair Display',serif;
-  font-size:1.1rem;font-weight:700;
-  letter-spacing:0.02em;
-  color:var(--ink);
-}
-.nav-logo span{color:var(--accent);font-style:italic;}
-.nav-links{display:flex;gap:32px;align-items:center;}
-.nav-links a{
-  font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--ink2);text-decoration:none;opacity:0.7;transition:opacity 0.2s;
-  font-weight:500;
-}
-.nav-links a:hover{opacity:1;}
-.nav-cta{
-  background:var(--accent);color:var(--white);
-  padding:10px 22px;font-size:0.82rem;letter-spacing:0.1em;
-  text-transform:uppercase;font-weight:500;text-decoration:none;
-  transition:background 0.2s;border:none;cursor:pointer;
-}
-.nav-cta:hover{background:var(--accent2);}
+/* ── Teacher ── */
+.teacher .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.teacher figure{position:relative}
+.teacher figure img{width:100%;height:auto;border:8px solid var(--white);box-shadow:0 18px 44px -14px rgba(26,18,8,.4);transform:rotate(-1.5deg)}
+.teacher figcaption{font-family:'Caveat',cursive;font-size:1.15rem;color:var(--muted);margin-top:10px;text-align:center}
+.teacher p{color:var(--ink2);margin-bottom:14px}
+@media(max-width:820px){.teacher .grid{grid-template-columns:1fr}}
 
-/* ══ HERO ══ */
-.hero{
-  min-height:100vh;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  padding-top:70px;
-  position:relative;
-  overflow:hidden;
-}
+/* ── Join ── */
+.join{background:var(--ink);color:var(--white)}
+.join .box{max-width:640px;margin:0 auto;text-align:center}
+.join h2{color:var(--white)}
+.join h2 em{color:var(--gold)}
+.join .lead{color:rgba(253,250,244,.78);margin:0 auto 26px}
+#joinForm{display:grid;gap:12px;text-align:left}
+#joinForm .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#joinForm label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#joinForm input{min-height:52px;padding:0 16px;border-radius:12px;border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:var(--white);font:inherit;width:100%;min-width:0}
+#joinForm input:focus{border-color:var(--gold);outline:none}
+#joinForm input::placeholder{color:rgba(253,250,244,.55)}
+#joinForm .btn{width:100%}
+#joinMsg{min-height:22px;text-align:center;font-style:italic;color:var(--gold)}
+.join small{display:block;margin-top:14px;color:rgba(253,250,244,.6);font-size:.92rem}
+@media(max-width:520px){#joinForm .row{grid-template-columns:1fr}}
 
-/* Left — text */
-.hero-left{
-  display:flex;flex-direction:column;justify-content:center;
-  padding:80px 60px 80px 72px;
-  position:relative;z-index:2;
-}
+/* ── Articles ── */
+.articles .tiles{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.articles .tile .txt{padding:24px}
 
-.hero-eyebrow{
-  font-family:'Caveat',cursive;
-  font-size:1.15rem;color:var(--accent);
-  letter-spacing:0.05em;margin-bottom:20px;
-  display:flex;align-items:center;gap:10px;
-}
-.hero-eyebrow::before{
-  content:'';display:block;width:32px;height:1.5px;background:var(--accent);
-}
-
-.hero-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.8rem,4.5vw,4.2rem);
-  font-weight:900;line-height:1.05;
-  letter-spacing:-0.02em;
-  color:var(--ink);
-  margin-bottom:28px;
-}
-.hero-title em{
-  font-style:italic;color:var(--accent);
-  display:block;
-}
-
-.hero-tagline{
-  font-size:1.18rem;
-  line-height:1.7;
-  color:var(--ink2);
-  max-width:480px;
-  margin-bottom:16px;
-  font-weight:300;
-}
-
-.hero-tagline strong{
-  font-weight:500;
-  background:linear-gradient(120deg,var(--gold) 0%,var(--accent) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-
-.hero-sub{
-  font-family:'Caveat',cursive;
-  font-size:1.3rem;
-  color:var(--green);
-  margin-bottom:44px;
-  letter-spacing:0.02em;
-}
-
-.hero-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
-.btn-primary{
-  background:var(--ink);color:var(--white);
-  padding:16px 36px;font-size:0.9rem;
-  letter-spacing:0.1em;text-transform:uppercase;font-weight:500;
-  text-decoration:none;transition:all 0.25s;display:inline-block;
-  border:2px solid var(--ink);
-}
-.btn-primary:hover{background:var(--accent);border-color:var(--accent);}
-.btn-secondary{
-  border:2px solid var(--ink2);color:var(--ink2);
-  padding:16px 36px;font-size:0.9rem;
-  letter-spacing:0.1em;text-transform:uppercase;font-weight:500;
-  text-decoration:none;transition:all 0.25s;display:inline-block;
-  opacity:0.65;
-}
-.btn-secondary:hover{opacity:1;border-color:var(--accent);color:var(--accent);}
-
-.hero-proof{
-  margin-top:52px;
-  display:flex;align-items:center;gap:20px;
-  padding-top:32px;
-  border-top:1px solid rgba(26,18,8,0.12);
-}
-.proof-item{text-align:center;}
-.proof-num{
-  font-family:'Playfair Display',serif;
-  font-size:1.8rem;font-weight:900;color:var(--accent);
-  line-height:1;
-}
-.proof-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;opacity:0.5;margin-top:3px;}
-.proof-divider{width:1px;height:36px;background:rgba(26,18,8,0.15);}
-
-/* Right — artwork collage */
-.hero-right{
-  position:relative;
-  overflow:hidden;
-}
-.hero-right::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to right,var(--cream) 0%,transparent 18%);
-  z-index:3;pointer-events:none;
-}
-
-.artwork-stack{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-}
-
-.art-card{
-  position:absolute;
-  border:6px solid var(--white);
-  box-shadow:0 20px 60px rgba(26,18,8,0.25),0 4px 16px rgba(26,18,8,0.15);
-  overflow:hidden;
-  transition:transform 0.5s ease;
-}
-.art-card img{display:block;width:100%;height:100%;object-fit:cover;}
-
-.art-card:nth-child(1){
-  width:340px;height:260px;
-  top:15%;left:10%;
-  transform:rotate(-3deg);
-  animation:float1 6s ease-in-out infinite;
-}
-.art-card:nth-child(2){
-  width:280px;height:220px;
-  bottom:12%;right:5%;
-  transform:rotate(2.5deg);
-  animation:float2 7s ease-in-out infinite;
-}
-
-@keyframes float1{
-  0%,100%{transform:rotate(-3deg) translateY(0)}
-  50%{transform:rotate(-3deg) translateY(-12px)}
-}
-@keyframes float2{
-  0%,100%{transform:rotate(2.5deg) translateY(0)}
-  50%{transform:rotate(2.5deg) translateY(-10px)}
-}
-
-/* Artist tag on artwork */
-.art-tag{
-  position:absolute;bottom:0;left:0;right:0;
-  background:rgba(26,18,8,0.75);
-  color:var(--white);
-  font-family:'Caveat',cursive;
-  font-size:0.85rem;padding:6px 10px;
-  letter-spacing:0.04em;
-}
-
-/* Background decorative elements */
-.hero-bg-circle{
-  position:absolute;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(184,92,26,0.06) 0%,transparent 70%);
-}
-.hero-bg-circle:nth-child(1){width:600px;height:600px;top:-100px;right:-100px;}
-.hero-bg-circle:nth-child(2){width:400px;height:400px;bottom:-50px;right:200px;}
-
-/* Diagonal accent line */
-.hero-right::after{
-  content:'';position:absolute;
-  top:0;bottom:0;left:-1px;
-  width:2px;
-  background:linear-gradient(to bottom,transparent,var(--accent),transparent);
-  z-index:4;
-}
-
-/* ══ DIFFERENCE SECTION ══ */
-.diff-section{
-  padding:120px 72px;
-  position:relative;
-  background:var(--ink);
-  color:var(--white);
-  overflow:hidden;
-}
-.diff-section::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--accent),var(--gold),var(--accent));
-}
-
-.diff-inner{max-width:1100px;margin:0 auto;}
-
-.diff-header{
-  display:grid;grid-template-columns:1fr 1fr;gap:80px;
-  margin-bottom:80px;align-items:end;
-}
-.diff-eyebrow{
-  font-family:'Caveat',cursive;
-  color:var(--gold);font-size:1.1rem;margin-bottom:16px;
-}
-.diff-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2rem,3.5vw,3rem);
-  font-weight:900;line-height:1.1;
-  color:var(--white);
-}
-.diff-title em{color:var(--gold);font-style:italic;}
-.diff-body{
-  font-size:1rem;line-height:1.85;
-  color:rgba(253,250,244,0.7);
-  font-weight:300;
-}
-.diff-body strong{color:var(--white);font-weight:500;}
-
-/* Contrast cards */
-.contrast-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:2px;
-  border:1px solid rgba(255,255,255,0.08);
-}
-.contrast-col{padding:40px;}
-.contrast-col.old{background:rgba(255,255,255,0.03);}
-.contrast-col.new{background:rgba(184,92,26,0.12);border-left:2px solid var(--accent);}
-.contrast-label{
-  font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;
-  margin-bottom:24px;opacity:0.45;font-weight:500;
-}
-.contrast-col.new .contrast-label{color:var(--gold);opacity:0.8;}
-.contrast-item{
-  display:flex;gap:12px;align-items:flex-start;
-  margin-bottom:18px;font-size:0.92rem;line-height:1.6;
-  color:rgba(253,250,244,0.65);
-}
-.contrast-item.good{color:rgba(253,250,244,0.9);}
-.ci-mark{font-size:1rem;flex-shrink:0;margin-top:1px;}
-
-/* ══ SCHOOLS ══ */
-.schools-section{
-  padding:120px 72px;
-  background:var(--white);
-}
-.schools-inner{max-width:1100px;margin:0 auto;}
-.section-eyebrow{
-  font-family:'Caveat',cursive;
-  color:var(--accent);font-size:1.1rem;margin-bottom:12px;
-  display:flex;align-items:center;gap:10px;
-}
-.section-eyebrow::before{content:'';display:block;width:24px;height:1.5px;background:var(--accent);}
-.section-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(1.8rem,3vw,2.8rem);
-  font-weight:900;line-height:1.1;margin-bottom:16px;
-}
-.section-sub{
-  font-size:1rem;color:var(--ink2);opacity:0.65;
-  max-width:540px;line-height:1.75;margin-bottom:64px;font-weight:300;
-}
-
-.schools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;}
-.school-card{
-  padding:48px 44px;
-  position:relative;overflow:hidden;
-  background:var(--cream);
-  transition:all 0.35s;
-  cursor:pointer;
-}
-.school-card:hover{background:var(--warm);transform:translateY(-3px);box-shadow:0 12px 40px rgba(26,18,8,0.1);}
-.school-card::before{
-  content:'';position:absolute;top:0;left:0;width:3px;height:0;
-  background:var(--card-accent,var(--accent));
-  transition:height 0.35s ease;
-}
-.school-card:hover::before{height:100%;}
-
-.school-card:nth-child(1){--card-accent:#1a3a5c;}
-.school-card:nth-child(2){--card-accent:#b85c1a;}
-.school-card:nth-child(3){--card-accent:#6b2d8b;}
-.school-card:nth-child(4){--card-accent:#1a5c3a;}
-
-.school-icon{font-size:2.2rem;margin-bottom:20px;display:block;}
-.school-name{
-  font-family:'Playfair Display',serif;
-  font-size:1.5rem;font-weight:700;margin-bottom:10px;
-}
-.school-tag{
-  display:inline-block;
-  font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;
-  padding:3px 10px;margin-bottom:16px;font-weight:500;
-  background:rgba(26,18,8,0.07);color:var(--ink2);
-}
-.school-desc{
-  font-size:0.92rem;line-height:1.75;color:var(--ink2);
-  opacity:0.72;font-weight:300;margin-bottom:24px;
-}
-.school-lessons{
-  font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;
-  color:var(--accent);font-weight:500;
-  display:flex;align-items:center;gap:6px;
-}
-.school-lessons::after{content:'→';}
-.school-coming{
-  font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;
-  color:var(--ink2);opacity:0.4;font-weight:500;
-  display:inline-block;margin-top:8px;
-}
-
-/* ══ PRICING ══ */
-.pricing-section{
-  padding:120px 72px;
-  background:var(--cream);
-  position:relative;
-}
-.pricing-inner{max-width:1100px;margin:0 auto;}
-.pricing-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:0;
-  border:1px solid rgba(26,18,8,0.12);
-  margin-top:64px;
-}
-.plan{
-  padding:48px 36px;
-  border-right:1px solid rgba(26,18,8,0.1);
-  position:relative;transition:all 0.3s;
-}
-.plan:last-child{border-right:none;}
-.plan.featured{
-  background:var(--ink);color:var(--white);
-  transform:scaleY(1.02);
-  box-shadow:0 0 0 2px var(--ink),0 20px 60px rgba(26,18,8,0.2);
-  z-index:2;
-}
-.plan-badge{
-  font-size:0.65rem;text-transform:uppercase;letter-spacing:0.14em;
-  background:var(--accent);color:var(--white);
-  padding:4px 12px;display:inline-block;margin-bottom:24px;font-weight:500;
-}
-.plan-name{
-  font-family:'Playfair Display',serif;
-  font-size:1.4rem;font-weight:700;margin-bottom:8px;
-}
-.plan.featured .plan-name{color:var(--white);}
-.plan-price{
-  font-family:'Playfair Display',serif;
-  font-size:3rem;font-weight:900;line-height:1;
-  color:var(--accent);margin-bottom:6px;
-}
-.plan.featured .plan-price{color:var(--gold);}
-.plan-period{font-size:0.78rem;opacity:0.45;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:32px;}
-.plan-features{list-style:none;margin-bottom:36px;}
-.plan-features li{
-  font-size:0.88rem;line-height:1.6;
-  padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.07);
-  display:flex;gap:10px;align-items:flex-start;color:var(--ink2);opacity:0.8;
-}
-.plan.featured .plan-features li{color:rgba(253,250,244,0.75);border-color:rgba(255,255,255,0.08);}
-.plan-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
-.plan.featured .plan-features li::before{color:var(--gold);}
-.plan-btn{
-  display:block;text-align:center;padding:14px;
-  font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;
-  font-weight:500;text-decoration:none;transition:all 0.2s;
-  border:2px solid var(--ink);color:var(--ink);
-}
-.plan-btn:hover{background:var(--accent);border-color:var(--accent);color:var(--white);}
-.plan.featured .plan-btn{background:var(--accent);border-color:var(--accent);color:var(--white);}
-.plan.featured .plan-btn:hover{background:var(--gold);border-color:var(--gold);color:var(--ink);}
-
-/* ══ ARTIST SECTION ══ */
-.artist-section{
-  padding:120px 72px;
-  background:var(--warm);
-  display:grid;grid-template-columns:1fr 1fr;gap:100px;
-  align-items:center;
-}
-.artist-images{position:relative;height:460px;}
-.artist-img{
-  position:absolute;
-  border:6px solid var(--white);
-  box-shadow:0 16px 48px rgba(26,18,8,0.2);
-  overflow:hidden;
-}
-.artist-img:nth-child(1){
-  width:300px;height:320px;top:0;left:0;
-  transform:rotate(-2deg);
-}
-.artist-img:nth-child(2){
-  width:260px;height:280px;bottom:0;right:0;
-  transform:rotate(3deg);
-}
-.artist-img img{width:100%;height:100%;object-fit:cover;display:block;}
-.artist-accent{
-  position:absolute;
-  width:120px;height:120px;
-  background:var(--accent);
-  top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:-1;
-}
-
-.artist-content .section-eyebrow{margin-bottom:8px;}
-.artist-name{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(1.8rem,3vw,2.6rem);
-  font-weight:900;line-height:1.1;margin-bottom:24px;
-}
-.artist-name em{font-style:italic;color:var(--accent);}
-.artist-bio{
-  font-size:0.98rem;line-height:1.9;color:var(--ink2);
-  font-weight:300;margin-bottom:32px;
-}
-.artist-creds{display:flex;flex-direction:column;gap:10px;}
-.cred{
-  display:flex;align-items:center;gap:12px;
-  font-size:0.88rem;color:var(--ink2);opacity:0.75;
-}
-.cred::before{
-  content:'';width:6px;height:6px;border-radius:50%;
-  background:var(--accent);flex-shrink:0;
-}
-
-/* ══ FOOTER CONTACT ══ */
-.footer-contact{
-  padding-top:32px;border-top:1px solid rgba(255,255,255,0.1);
-  display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap;
-}
-.footer-contact-info{flex:1;min-width:240px;}
-.footer-contact-info h3{
-  font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;
-  color:var(--white);margin-bottom:10px;
-}
-.footer-contact-info p{
-  font-size:0.88rem;line-height:1.7;color:rgba(253,250,244,0.55);margin-bottom:16px;
-}
-.footer-contact-info a.email-link{
-  color:var(--gold);text-decoration:none;font-size:0.9rem;
-  transition:color 0.2s;display:inline-flex;align-items:center;gap:8px;
-}
-.footer-contact-info a.email-link:hover{color:var(--white);}
-.donate-wrapper{
-  margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08);
-}
-.donate-wrapper p{
-  font-size:0.82rem;line-height:1.6;color:rgba(253,250,244,0.45);margin-bottom:14px;
-  font-style:italic;
-}
-.donate-btn{
-  display:inline-block;padding:14px 32px;
-  background:linear-gradient(135deg,var(--gold),var(--accent));
-  color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;
-  letter-spacing:0.1em;text-transform:uppercase;font-weight:600;
-  text-decoration:none;cursor:pointer;transition:all 0.3s;
-  border:none;
-}
-.donate-btn:hover{
-  background:linear-gradient(135deg,var(--accent),var(--gold));
-  transform:translateY(-2px);
-  box-shadow:0 4px 16px rgba(201,148,58,0.3);
-}
-.footer-contact-form{flex:1.2;min-width:280px;}
-.footer-contact-form h3{
-  font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;
-  color:var(--white);margin-bottom:14px;
-}
-.footer-contact-form input,
-.footer-contact-form textarea{
-  width:100%;padding:12px 14px;background:rgba(255,255,255,0.08);
-  border:1.5px solid rgba(255,255,255,0.18);color:var(--white);
-  font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;
-  margin-bottom:12px;transition:border-color 0.2s;
-}
-.footer-contact-form input:focus,
-.footer-contact-form textarea:focus{border-color:var(--gold);}
-.footer-contact-form textarea{min-height:100px;resize:vertical;}
-.footer-contact-form button{
-  padding:14px 32px;background:var(--accent);border:none;color:var(--white);
-  font-family:'DM Sans',sans-serif;font-size:0.82rem;letter-spacing:0.1em;
-  text-transform:uppercase;font-weight:500;cursor:pointer;transition:background 0.2s;
-}
-.footer-contact-form button:hover{background:var(--gold);color:var(--ink);}
-#contactMsg{
-  font-size:0.8rem;color:var(--gold);text-align:center;
-  min-height:18px;font-style:italic;margin-top:8px;
-}
-
-/* ══ FOOTER ══ */
-footer{
-  padding:60px 72px 40px;
-  background:var(--ink);
-  color:var(--white);
-  display:flex;flex-direction:column;gap:32px;
-}
-.footer-top{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,0.1);
-}
-.footer-brand{
-  font-family:'Playfair Display',serif;
-  font-size:1.3rem;font-weight:700;color:var(--white);
-}
-.footer-brand span{color:var(--gold);font-style:italic;}
-.footer-tagline{
-  font-family:'Caveat',cursive;
-  color:rgba(253,250,244,0.4);font-size:0.95rem;margin-top:6px;
-}
-.footer-links{display:flex;gap:28px;}
-.footer-links a{
-  color:rgba(253,250,244,0.45);font-size:0.8rem;
-  letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;
-  transition:color 0.2s;
-}
-.footer-links a:hover{color:var(--gold);}
-.footer-bottom{
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:0.78rem;color:rgba(253,250,244,0.3);
-}
-
-/* ══ ANIMATIONS ══ */
-.fade-up{
-  opacity:0;transform:translateY(28px);
-  animation:fadeUp 0.8s ease forwards;
-}
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-.fade-up:nth-child(1){animation-delay:0.1s}
-.fade-up:nth-child(2){animation-delay:0.25s}
-.fade-up:nth-child(3){animation-delay:0.4s}
-.fade-up:nth-child(4){animation-delay:0.55s}
-.fade-up:nth-child(5){animation-delay:0.7s}
-
-@media(max-width:900px){
-  nav{padding:16px 24px;}
-  .nav-links{display:none;}
-  .hero{grid-template-columns:1fr;}
-  .hero-left{padding:60px 28px 40px;}
-  .hero-right{height:320px;}
-  .diff-header,.contrast-grid,.schools-grid,.pricing-grid,.artist-section{grid-template-columns:1fr;}
-  .diff-section,.schools-section,.pricing-section,.artist-section{padding:80px 28px;}
-  .plan.featured{transform:none;}
-}
-
-/* ══ ARTICLES ══ */
-.articles-section{
-  padding:100px 48px;
-  background:var(--warm);
-}
-.articles-inner{max-width:1100px;margin:0 auto;}
-.articles-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:2px;
-  margin-top:48px;
-}
-.article-card{
-  background:var(--white);
-  padding:36px;
-  position:relative;
-  overflow:hidden;
-  transition:transform 0.2s,box-shadow 0.2s;
-  text-decoration:none;
-  display:block;
-}
-.article-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(26,18,8,0.1);}
-.article-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--accent),var(--gold));
-  transform:scaleX(0);transform-origin:left;transition:transform 0.3s;
-}
-.article-card:hover::before{transform:scaleX(1);}
-.article-tag{
-  font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;
-  color:var(--accent);font-weight:500;margin-bottom:14px;
-  display:flex;align-items:center;gap:8px;
-}
-.article-tag::before{content:'';display:block;width:20px;height:1px;background:var(--accent);}
-.article-card-title{
-  font-family:'Playfair Display',serif;
-  font-size:1.4rem;font-weight:700;
-  color:var(--ink);line-height:1.25;margin-bottom:14px;
-}
-.article-excerpt{
-  font-size:0.88rem;line-height:1.7;
-  color:var(--ink2);opacity:0.7;margin-bottom:20px;
-}
-.article-read{
-  font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;
-  color:var(--accent);font-weight:500;
-}
-@media(max-width:640px){.articles-grid{grid-template-columns:1fr;}.articles-section{padding:80px 28px;}}
-
-.nav-logo{text-decoration:none;white-space:nowrap;}
-.nav-links{gap:20px;}
-.nav-cta,.btn-primary,.btn-secondary,.school-lessons,.article-card,.donate-btn{border-radius:6px;}
-.nav-cta:focus-visible,.btn-primary:focus-visible,.btn-secondary:focus-visible,.school-lessons:focus-visible,.article-card:focus-visible,.donate-btn:focus-visible,.footer-links a:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
-.lesson-preview{padding:74px 72px;background:linear-gradient(135deg,var(--white),var(--warm));border-top:1px solid rgba(26,18,8,.08);border-bottom:1px solid rgba(26,18,8,.08);}
-.lesson-preview-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:48px;align-items:center;}
-.lesson-preview .section-sub{margin-bottom:0;}
-.lesson-preview-card{background:var(--ink);color:var(--white);padding:32px;box-shadow:0 18px 48px rgba(26,18,8,.18);border-left:4px solid var(--gold);}
-.lesson-preview-card h3{font-family:'Playfair Display',serif;font-size:1.8rem;line-height:1.1;margin:8px 0 18px;color:var(--white);}
-.preview-kicker{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700;}
-.preview-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 22px;}
-.preview-meta span{padding:10px 8px;background:rgba(255,255,255,.08);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;text-align:center;color:rgba(253,250,244,.72);}
-.lesson-preview-card .btn-primary{background:var(--gold);border-color:var(--gold);color:var(--ink);width:100%;text-align:center;padding-inline:18px;}
-@media(max-width:900px){.lesson-preview{padding:64px 28px}.lesson-preview-inner{grid-template-columns:1fr}.lesson-preview-card{padding:26px}.nav-logo{font-size:1rem}.nav-cta{padding:10px 14px;font-size:.72rem}.hero-proof{flex-wrap:wrap}.preview-meta{grid-template-columns:1fr}}
-
-/* ══ PHONE MENU + SMALL SCREEN FIXES ══ */
-.menu-toggle{display:none;background:none;border:1.5px solid rgba(26,18,8,.25);border-radius:6px;width:42px;height:40px;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);}
-.menu-toggle svg{display:block}
-.menu-toggle:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
-.nav-right{display:flex;align-items:center;gap:10px;}
-.hero{overflow:hidden;}
-.contact-hp{display:none;}
-.footer-contact-form button:disabled{opacity:.6;cursor:default;}
-@media(max-width:900px){
-  .menu-toggle{display:inline-flex;}
-  nav.menu-open .nav-links{
-    display:flex;flex-direction:column;align-items:stretch;gap:0;
-    position:absolute;top:100%;left:0;right:0;
-    background:var(--cream);border-bottom:1px solid rgba(26,18,8,.12);
-    box-shadow:0 16px 32px rgba(26,18,8,.12);padding:8px 24px 16px;
-  }
-  nav.menu-open .nav-links a{padding:14px 0;border-bottom:1px solid rgba(26,18,8,.08);opacity:1;font-size:.9rem;}
-  nav.menu-open .nav-links a:last-child{border-bottom:none;}
-}
-@media(max-width:640px){
-  footer{padding:48px 24px 32px;}
-  .footer-top{flex-direction:column;gap:20px;}
-  .footer-links{flex-wrap:wrap;gap:14px 22px;}
-  .footer-contact{gap:36px;}
-  .footer-contact-info,.footer-contact-form{min-width:0;flex-basis:100%;}
-  .footer-bottom{flex-direction:column;gap:8px;text-align:center;}
-  #joinForm > div{grid-template-columns:1fr !important;}
-  #joinForm input{min-width:0;width:100%;}
-  .pricing-inner > div[style*="repeat(3,1fr)"]{grid-template-columns:1fr !important;}
-  .pricing-inner > div[style*="repeat(3,1fr)"] > div{border-left:none !important;}
-}
-@media(max-width:400px){.nav-cta{display:none;}}
+/* ── Contact (in the footer) ── */
+.contact{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;padding:32px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.contact h3{color:var(--white);font-size:1.25rem;margin-bottom:10px}
+.contact p{color:rgba(253,250,244,.65);margin-bottom:14px}
+.contact .email{color:var(--gold)!important}
+.donate{display:inline-block;margin-top:8px;padding:12px 24px;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--accent));color:var(--white)!important;font-weight:600}
+.contact form{display:grid;gap:10px}
+.contact input,.contact textarea{width:100%;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);color:var(--white);font:inherit}
+.contact input:focus,.contact textarea:focus{border-color:var(--gold);outline:none}
+.contact textarea{min-height:110px;resize:vertical}
+.contact button{justify-self:start}
+.contact button:disabled{opacity:.6}
+#contactMsg{color:var(--gold);font-style:italic;min-height:20px}
+.contact-hp{display:none}
+@media(max-width:760px){.contact{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PB27M425" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager -->
+<a class="skip" href="#main">Skip to the page</a>
 
-<!-- NAV -->
-<nav aria-label="Main navigation">
-  <a class="nav-logo" href="index.html">Vaughn Tucker <span>Art Academy</span></a>
-  <div class="nav-links" id="navLinks">
-    <a href="art-academy-intro.html">Welcome</a>
-    <a href="#schools">Schools</a>
-    <a href="lessons.html">Lessons</a>
-    <a href="idea-studio.html">Idea Studio</a>
-    <a href="automated-lesson.html">Guided Lesson</a>
-    <a href="drawing-studio.html">Studio</a>
-    <a href="community.html">Community</a>
-    <a href="#artist">Artist</a>
-  </div>
-  <div class="nav-right">
-    <a href="living-studio.html" class="nav-cta">Living Studio</a>
-    <button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+<header class="topbar">
+  <div class="wrap">
+    <a class="logo" href="index.html">Vaughn Tucker <span>Art Academy</span></a>
+    <nav class="menu" id="menu" aria-label="Main menu">
+      <a href="kids.html">Kids</a>
+      <a href="adults.html">Grown-ups</a>
+      <a href="drawing-studio.html">Draw</a>
+      <a href="oil-studio.html">Paint</a>
+      <a href="lessons.html">Lessons</a>
+      <a href="#artist">About</a>
+    </nav>
+    <a class="join-btn" href="#join">Join free</a>
+    <button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
   </div>
-</nav>
+</header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg-circle"></div>
-  <div class="hero-bg-circle"></div>
+<main id="main">
 
-  <div class="hero-left">
-    <div class="hero-eyebrow fade-up">Fine Art Education — Reimagined</div>
-
-    <h1 class="hero-title fade-up">
-      Vaughn Tucker<br>
-      <em>Art Academy</em>
-    </h1>
-
-    <p class="hero-tagline fade-up">
-      Not a video. Not a template.<br>
-      <strong>Real paintings. Real technique. Real artist.</strong>
-    </p>
-
-    <p class="hero-sub fade-up">
-      "Learn art the way it was always meant — through the work itself."
-    </p>
-
-    <div class="hero-actions fade-up">
-      <a href="kingstown-lesson.html" class="btn-primary">Start Your First Lesson</a>
-      <a href="#join" class="btn-secondary">Join Free</a>
+<!-- TWO DOORS: who is learning today? -->
+<section class="doors" id="schools" aria-labelledby="doorsTitle">
+  <div class="wrap">
+    <div class="doors-head">
+      <h1 id="doorsTitle">Learn to draw and paint <em style="white-space:nowrap">with Vaughn Tucker</em></h1>
+      <p>Who is learning today?</p>
     </div>
-
-    <div class="hero-proof fade-up">
-      <div class="proof-item">
-        <div class="proof-num">Free</div>
-        <div class="proof-label">During Founding Year</div>
-      </div>
-      <div class="proof-divider"></div>
-      <div class="proof-item">
-        <div class="proof-num">4</div>
-        <div class="proof-label">Art Schools</div>
-      </div>
-      <div class="proof-divider"></div>
-      <div class="proof-item">
-        <div class="proof-num">Real</div>
-        <div class="proof-label">Original Paintings</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="hero-right">
-    <div class="artwork-stack">
-      <div class="art-card">
-        <img src="assets/artwork/b87cb540d16246c6.jpg" alt="Old House — Oil painting by Vaughn Tucker">
-        <div class="art-tag">✦ Oil on canvas — "Old House" by Vaughn Tucker</div>
-      </div>
-      <div class="art-card">
-        <img src="assets/artwork/8b6fc0e96ca39649.jpg" alt="Building study — Pencil sketch by Vaughn Tucker">
-        <div class="art-tag">✦ Pencil study — architectural perspective</div>
-      </div>
-      <div class="art-card" style="width:240px;height:190px;top:55%;left:52%;transform:rotate(-1.5deg);animation:float1 8s ease-in-out infinite;">
-        <img src="assets/artwork/6d911c5fe2008dae.jpg" alt="To St. Elizabeth — Acrylic by Vaughn Tucker">
-        <div class="art-tag">✦ Acrylic — "To St. Elizabeth"</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHY DIFFERENT -->
-<section class="lesson-preview" aria-label="Featured guided lesson">
-  <div class="lesson-preview-inner">
-    <div>
-      <div class="section-eyebrow">Start with a real painting</div>
-      <h2 class="section-title">A complete guided lesson is ready now.</h2>
-      <p class="section-sub">The Jamaican Road Study turns one of Vaughn's paintings into a step-by-step studio session with drawing practice, timed phases, notes, quick checks, and a printable certificate.</p>
-    </div>
-    <div class="lesson-preview-card">
-      <div class="preview-kicker">Automated Lesson</div>
-      <h3>Jamaican Road Study</h3>
-      <div class="preview-meta">
-        <span>6 phases</span>
-        <span>45 minutes</span>
-        <span>Auto-saved</span>
-      </div>
-      <a href="automated-lesson.html" class="btn-primary">Open the Lesson</a>
-    </div>
-  </div>
-</section>
-
-<section class="diff-section" id="difference">
-  <div class="diff-inner">
-    <div class="diff-header">
-      <div>
-        <div class="diff-eyebrow">This isn't your typical tutorial</div>
-        <h2 class="diff-title">You learn from<br><em>the work itself</em></h2>
-      </div>
-      <div class="diff-body">
-        Every lesson is built around <strong>an original painting by Vaughn Tucker</strong> — a working fine artist with decades of experience in oil, acrylic, watercolor, and pencil. You don't watch someone describe art. You step inside a real painting and learn how it was made, stroke by stroke.
-        <br><br>
-        The interactive canvas lets you <strong>toggle perspective guides on and off</strong>, drag vanishing points, sketch directly over the artwork, and save your progress. It's not passive. It never was.
-      </div>
-    </div>
-
-    <div class="contrast-grid">
-      <div class="contrast-col old">
-        <div class="contrast-label">Every other tutorial</div>
-        <div class="contrast-item"><span class="ci-mark">✗</span>Generic stock images as examples</div>
-        <div class="contrast-item"><span class="ci-mark">✗</span>Watch a video, pause, try to copy</div>
-        <div class="contrast-item"><span class="ci-mark">✗</span>One medium, one style, one teacher's eye</div>
-        <div class="contrast-item"><span class="ci-mark">✗</span>No interaction with the artwork itself</div>
-        <div class="contrast-item"><span class="ci-mark">✗</span>Limited opportunities to apply what you learn</div>
-      </div>
-      <div class="contrast-col new">
-        <div class="contrast-label">Vaughn Tucker Art Academy</div>
-        <div class="contrast-item good"><span class="ci-mark">✦</span>Vaughn's original paintings are the lessons</div>
-        <div class="contrast-item good"><span class="ci-mark">✦</span>Interactive — draw directly on the artwork</div>
-        <div class="contrast-item good"><span class="ci-mark">✦</span>Four mediums: Oil, Acrylic, Watercolor, Pencil</div>
-        <div class="contrast-item good"><span class="ci-mark">✦</span>Toggle guides, move vanishing points, feel it</div>
-        <div class="contrast-item good"><span class="ci-mark">✦</span>Optional personal critique from Vaughn — $45</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCHOOLS -->
-<section class="schools-section" id="schools">
-  <div class="schools-inner">
-    <div class="section-eyebrow">Four schools. One vision.</div>
-    <h2 class="section-title">Choose Your Medium</h2>
-    <p class="section-sub">Each school is built around Vaughn's original artwork in that medium. Study the original, follow illustrated stages, and make your own work.</p>
-
-    <div class="schools-grid">
-      <div class="school-card">
-        <span class="school-icon">✏</span>
-        <div class="school-name">Drawing & Perspective</div>
-        <div class="school-tag">Available Now</div>
-        <p class="school-desc">Learn the basics with clear construction diagrams, then apply them to Vaughn's original artwork in a guided Kingstown project.</p>
-        <a href="kingstown-lesson.html" class="school-lessons" style="text-decoration:none;cursor:pointer;display:block;">Start Learning</a>
-      </div>
-
-      <div class="school-card">
-        <span class="school-icon">🎨</span>
-        <div class="school-name">Acrylic Painting</div>
-        <div class="school-tag">Available Now</div>
-        <p class="school-desc">Bold color, confident brushwork, decisive strokes. Taught through Vaughn's <em>"To St. Elizabeth"</em> — a Jamaican road disappearing into a tunnel, painted in acrylic on 12×16 canvas.</p>
-        <a href="art-materials.html" class="school-lessons" style="text-decoration:none;cursor:pointer;display:block;">Start Learning</a>
-      </div>
-
-      <div class="school-card">
-        <span class="school-icon">🖌</span>
-        <div class="school-name">Oil Painting</div>
-        <div class="school-tag">Available Now</div>
-        <p class="school-desc">Vaughn's signature medium. Caribbean light, tropical scenes, and the slow, luminous building of oil paint. Start with the Jamaican Road Study.</p>
-        <a href="automated-lesson.html" class="school-lessons">Start Learning</a>
-        <a href="oil-studio.html" class="school-lessons" style="margin-top:12px;">Open the Oil Studio</a>
-      </div>
-
-      <div class="school-card">
-        <span class="school-icon">💧</span>
-        <div class="school-name">Watercolor</div>
-        <div class="school-tag">Coming Soon</div>
-        <p class="school-desc">Transparency, flow, and light. Watercolor demands a different way of seeing — and Vaughn's watercolor works will teach you exactly how to see it.</p>
-        <span class="school-coming">In Development</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- JOIN / EMAIL CAPTURE -->
-<section class="pricing-section" id="join">
-  <div class="pricing-inner">
-
-    <!-- Free launch banner -->
-    <div style="text-align:center;margin-bottom:72px;">
-      <div class="section-eyebrow" style="justify-content:center;">Founding Year — Free Access</div>
-      <h2 class="section-title" style="max-width:640px;margin:0 auto 20px;">
-        Start Learning.<br>Join Free.
-      </h2>
-      <p class="section-sub" style="margin:0 auto 0;max-width:520px;text-align:center;">
-        Join free during our founding year. Start with free drawing and guided painting lessons. The full Perspective Lab is $12, and a personal artwork critique from Vaughn is $45. Paid offerings are clearly marked before checkout.
-      </p>
-    </div>
-
-    <!-- What you get free -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:80px;border:1px solid rgba(26,18,8,0.1);">
-      <div style="padding:36px 32px;background:var(--white);">
-        <div style="font-size:2rem;margin-bottom:14px;">✏</div>
-        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:10px;">Drawing School</div>
-        <div style="font-size:0.88rem;line-height:1.7;color:var(--ink2);opacity:0.75;">Free perspective fundamentals and a seven-stage Kingstown drawing project. The extended interactive lab is sold separately.</div>
-        <div style="margin-top:14px;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);font-weight:600;">Open Now ✦</div>
-      </div>
-      <div style="padding:36px 32px;background:var(--white);border-left:2px solid rgba(26,18,8,0.06);">
-        <div style="font-size:2rem;margin-bottom:14px;">🎨</div>
-        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:10px;">Acrylic School</div>
-        <div style="font-size:0.88rem;line-height:1.7;color:var(--ink2);opacity:0.75;">Learn from "To St. Elizabeth" — a Jamaican road in acrylic. Bold colour, confident strokes, tropical light.</div>
-        <div style="margin-top:14px;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);font-weight:600;">Open Now ✦</div>
-      </div>
-      <div style="padding:36px 32px;background:var(--white);border-left:2px solid rgba(26,18,8,0.06);">
-        <div style="font-size:2rem;margin-bottom:14px;">🖌 💧</div>
-        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:10px;">Oil Painting &amp; Watercolor</div>
-        <div style="font-size:0.88rem;line-height:1.7;color:var(--ink2);opacity:0.75;">The free Jamaican Road Study is available now. Watercolor lessons are in development.</div>
-        <div style="margin-top:14px;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#888;font-weight:500;">Oil available · Watercolor coming soon</div>
-      </div>
-    </div>
-
-    <!-- Email capture card -->
-    <div style="background:var(--ink);padding:64px 72px;position:relative;overflow:hidden;max-width:860px;margin:0 auto;">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--gold),var(--accent));"></div>
-      <div style="position:absolute;right:-40px;bottom:-40px;width:240px;height:240px;border-radius:50%;background:rgba(201,148,58,0.05);"></div>
-
-      <div style="font-family:'Caveat',cursive;color:var(--gold);font-size:1.1rem;margin-bottom:16px;">Reserve your free place</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--white);line-height:1.15;margin-bottom:14px;">
-        Join as a Founding Member.<br><em style="color:var(--gold);">Free During Our Founding Year.</em>
-      </h3>
-      <p style="font-size:0.95rem;line-height:1.8;color:rgba(253,250,244,0.65);max-width:480px;margin-bottom:36px;font-weight:300;">
-        Enter your name and email. I will send you the link to the academy and let you know personally when new schools and paintings are added.
-      </p>
-
-      <!-- Email form -->
-      <div style="display:flex;flex-direction:column;gap:14px;max-width:480px;" id="joinForm">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <input id="joinFirst" type="text" placeholder="First name"
-            style="padding:14px 16px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.18);
-            color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.92rem;outline:none;
-            transition:border-color 0.2s;"
-            onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'">
-          <input id="joinLast" type="text" placeholder="Last name"
-            style="padding:14px 16px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.18);
-            color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.92rem;outline:none;
-            transition:border-color 0.2s;"
-            onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'">
+    <div class="door-grid">
+      <a class="door kids" href="kids.html">
+        <div class="bg" aria-hidden="true">
+          <svg viewBox="0 0 600 440" preserveAspectRatio="xMidYMid slice">
+            <rect width="600" height="440" fill="#7cc3ec"/>
+            <circle cx="470" cy="96" r="54" fill="#ffd34d"/>
+            <g stroke="#ffd34d" stroke-width="8" stroke-linecap="round"><path d="M470 18v-10M548 96h12M525 41l9-9M525 151l9 9M415 41l-9-9"/></g>
+            <path d="M-20 300 Q120 190 260 270 T560 230 L640 260 V460 H-20Z" fill="#5fae4e"/>
+            <path d="M-20 350 Q160 270 330 330 T640 300 V460 H-20Z" fill="#3f8f3a"/>
+            <path d="M-20 400 Q200 350 380 390 T640 380 V460 H-20Z" fill="#2d6f2b"/>
+            <g transform="translate(110 70) rotate(28)"><rect width="34" height="190" rx="6" fill="#f2b632"/><rect y="150" width="34" height="18" fill="#e9e1d0"/><path d="M0 190 L17 232 L34 190Z" fill="#f0d9b5"/><path d="M11 216 L17 232 L23 216Z" fill="#3a2a1a"/><rect width="34" height="22" rx="6" fill="#e2747a"/></g>
+            <g fill="#fff" opacity=".9"><ellipse cx="250" cy="80" rx="44" ry="18"/><ellipse cx="285" cy="70" rx="34" ry="20"/></g>
+          </svg>
         </div>
-        <input id="joinEmail" type="email" placeholder="Your email address"
-          style="padding:14px 16px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.18);
-          color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.92rem;outline:none;
-          transition:border-color 0.2s;"
-          onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'">
-        <button onclick="handleJoin()"
-          style="padding:16px;background:var(--accent);border:none;color:var(--white);
-          font-family:'DM Sans',sans-serif;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;
-          font-weight:500;cursor:pointer;transition:background 0.2s;"
-          onmouseover="this.style.background='var(--gold)';this.style.color='var(--ink)'"
-          onmouseout="this.style.background='var(--accent)';this.style.color='var(--white)'">
-          Enter the Academy — Free ✦
-        </button>
-        <p id="joinMsg" style="font-size:0.8rem;color:rgba(253,250,244,0.4);text-align:center;min-height:18px;font-style:italic;"></p>
-      </div>
-
-      <p style="margin-top:24px;font-size:0.72rem;color:rgba(253,250,244,0.25);letter-spacing:0.06em;">
-        No spam. No selling your data. Just art. Unsubscribe any time.
-      </p>
+        <div class="shade" aria-hidden="true"></div>
+        <div class="inner">
+          <span class="who">Ages 5 to 15</span>
+          <h2>Kids</h2>
+          <p>Draw, paint and try fun projects. Big buttons, no reading needed to start.</p>
+          <span class="btn">Let's draw!</span>
+        </div>
+      </a>
+      <a class="door" id="difference" href="adults.html">
+        <div class="bg" aria-hidden="true"><img src="assets/artwork/b87cb540d16246c6.jpg" alt=""></div>
+        <div class="shade" aria-hidden="true"></div>
+        <div class="inner">
+          <span class="who">Teens 16+ and adults</span>
+          <h2>Adult Studio</h2>
+          <p>Learn from Vaughn's own paintings: guided lessons, perspective, oil and acrylic.</p>
+          <span class="btn">Enter the Adult Studio</span>
+        </div>
+      </a>
     </div>
-
+    <p class="parents-line">Parent, teacher or homeschool family? <a href="#parents">See how the Academy works for you</a></p>
   </div>
 </section>
+
+<!-- JUMP STRAIGHT IN -->
+<section class="jump" aria-labelledby="jumpTitle">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Free for everyone, no sign-up</p>
+      <h2 id="jumpTitle">Or jump straight in</h2>
+    </div>
+    <div class="tiles">
+      <a class="tile" href="drawing-studio.html">
+        <div class="pic draw" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><path d="M14 86 C34 60 50 98 72 70 S104 52 108 40" fill="none" stroke="#3d2c14" stroke-width="5" stroke-linecap="round"/><g transform="translate(78 8) rotate(40)"><rect width="16" height="70" rx="3" fill="#b85c1a"/><path d="M0 70 L8 88 L16 70Z" fill="#f0d9b5"/><path d="M5 81 L8 88 L11 81Z" fill="#3d2c14"/></g></svg>
+        </div>
+        <div class="txt"><span class="tag free">Free</span><h3>Draw</h3><p>Pencils, pens, markers and watercolour on your screen.</p><span class="go">Open the Drawing Studio →</span></div>
+      </a>
+      <a class="tile" href="oil-studio.html">
+        <div class="pic paint" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><path d="M20 80 Q50 50 100 66" fill="none" stroke="#b85c1a" stroke-width="16" stroke-linecap="round" opacity=".85"/><path d="M24 92 Q60 72 98 86" fill="none" stroke="#1a3a5c" stroke-width="12" stroke-linecap="round" opacity=".8"/><g transform="translate(70 4) rotate(35)"><rect x="5" width="8" height="54" rx="3" fill="#7a3d0e"/><rect x="2" y="50" width="14" height="10" fill="#c9943a"/><path d="M2 60 Q9 82 16 60Z" fill="#c9943a"/></g></svg>
+        </div>
+        <div class="txt"><span class="tag free">Free</span><h3>Paint in oils</h3><p>Mix colours and blend wet paint, like a real canvas.</p><span class="go">Open the Oil Studio →</span></div>
+      </a>
+      <a class="tile" href="lessons.html">
+        <div class="pic"><img src="assets/artwork/6d911c5fe2008dae.jpg" alt="To St. Elizabeth, an acrylic painting by Vaughn Tucker"></div>
+        <div class="txt"><span class="tag">Lessons</span><h3>All lessons</h3><p>Step-by-step projects and videos from Vaughn's paintings.</p><span class="go">See the lessons →</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PARENTS AND SCHOOLS -->
+<section class="parents" id="parents" aria-labelledby="parentsTitle">
+  <div class="wrap grid">
+    <div>
+      <p class="eyebrow">For parents, teachers and homeschools</p>
+      <h2 id="parentsTitle">A safe, simple place to learn art</h2>
+      <p class="lead">Children can start drawing right away. Here is what you should know.</p>
+      <p style="margin-top:22px"><a class="btn btn-dark" href="#contact">Ask about using it with your class</a></p>
+    </div>
+    <ul class="facts">
+      <li><b>The drawing and painting tools are free</b><span>No account and no password. Drawings stay on your own device.</span></li>
+      <li><b>Children under 13 need a parent's email</b><span>If your child wants to join the email list, please sign up with your own email address.</span></li>
+      <li><b>Sharing is up to you</b><span>Children should ask a grown-up before posting a picture to the student gallery or making a video to share.</span></li>
+      <li><b>Lessons are free and paid</b><span>Many lessons are free. Paid courses and critiques are always clearly marked, with prices shown before checkout.</span></li>
+      <li><b>Homeschools and schools</b><span>Using the Academy with a group of students? Send a message and Vaughn will help you set it up.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- TEACHER -->
+<section class="teacher" id="artist" aria-labelledby="artistTitle">
+  <div class="wrap grid">
+    <figure>
+      <img src="assets/artwork/8b6fc0e96ca39649.jpg" alt="Pencil perspective drawing of a house by Vaughn Tucker" width="2000" height="1572" loading="lazy">
+      <figcaption>A pencil study by Vaughn</figcaption>
+    </figure>
+    <div>
+      <p class="eyebrow">Your teacher</p>
+      <h2 id="artistTitle">Vaughn Tucker</h2>
+      <p>Born in St. Ann, Jamaica, Vaughn Tucker is a self-taught fine artist who paints in oil, acrylic, watercolour and pencil. His paintings capture Caribbean light, community and the beauty of everyday places.</p>
+      <p>He teaches art at school and on his YouTube channel, <em>Vaughn Tucker Art</em>. This Academy is where his own paintings become your classroom.</p>
+      <p style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn-line" href="welcome-article.html">Read Vaughn's welcome letter</a><a class="btn btn-line" href="originals-for-sale.html">Original paintings</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN (the one sign-up on the page) -->
+<section class="join" id="join" aria-labelledby="joinTitle">
+  <div class="wrap box">
+    <p class="eyebrow" style="color:var(--gold)">Free to join</p>
+    <h2 id="joinTitle">Learn with me. <em>It's free.</em></h2>
+    <p class="lead">Get free lessons by email, hear first when new lessons open, and unlock longer HD videos in the studios.</p>
+    <div id="joinForm">
+      <div class="row">
+        <label for="joinFirst">First name</label><input id="joinFirst" type="text" placeholder="First name" autocomplete="given-name">
+        <label for="joinLast">Last name</label><input id="joinLast" type="text" placeholder="Last name (optional)" autocomplete="family-name">
+      </div>
+      <label for="joinEmail">Email address</label><input id="joinEmail" type="email" placeholder="Email address" autocomplete="email">
+      <button class="btn btn-orange" type="button" onclick="handleJoin()">Join free</button>
+      <p id="joinMsg" role="status"></p>
+    </div>
+    <small>Under 13? Please ask a parent to sign up with their email. No spam, and you can unsubscribe any time.</small>
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<section class="articles" id="articles" aria-labelledby="articlesTitle">
+  <div class="wrap">
+    <p class="eyebrow">Art and faith</p>
+    <h2 id="articlesTitle">From the Academy</h2>
+    <div class="tiles">
+      <a class="tile" href="creativity-image-of-god.html"><div class="txt"><span class="tag">Art &amp; Faith</span><h3>Creativity and the Image of God</h3><p>Every human being is creative because we are made in the image of a creative God, and every painting can be an act of worship.</p><span class="go">Read →</span></div></a>
+      <a class="tile" href="welcome-article.html"><div class="txt"><span class="tag">Welcome</span><h3>A Letter from Vaughn Tucker</h3><p>Why I built this academy, what I believe about art and beauty, and what I hope every student will discover here.</p><span class="go">Read →</span></div></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div><div class="foot-brand">Vaughn Tucker <span>Art Academy</span></div><div style="font-family:'Caveat',cursive;color:rgba(253,250,244,.55);font-size:1.1rem">The hills are alive.</div></div>
+      <nav class="foot-links" aria-label="More links">
+        <a href="kids.html">Kids</a><a href="adults.html">Adult Studio</a><a href="lessons.html">Lessons</a><a href="community.html">Student gallery</a><a href="originals-for-sale.html">Originals for sale</a><a href="https://www.youtube.com/channel/UC3uzWQMzWj23fplcIZ5iQgg" target="_blank" rel="noopener">YouTube</a>
+      </nav>
+    </div>
+    <div class="contact" id="contact">
+      <div>
+        <h3>Get in touch</h3>
+        <p>Have a question, want to use the Academy with your class, or want to commission a painting? I'd love to hear from you.</p>
+        <a href="mailto:info@vaughntuckerartacademy.com" class="email">info@vaughntuckerartacademy.com</a>
+        <p style="margin-top:20px">Enjoying the free lessons? Your support keeps the Academy growing.</p>
+        <a href="https://www.paypal.com/donate/?business=vaughntuckerart%40gmail.com&item_name=Support+Vaughn+Tucker+Art+Academy&currency_code=USD" target="_blank" rel="noopener" class="donate">♥ Support the Academy</a>
+      </div>
+      <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="contactForm">
+        <h3>Send a message</h3>
+        <input type="hidden" name="form-name" value="contact">
+        <p class="contact-hp"><label>Leave this empty: <input name="bot-field"></label></p>
+        <input id="contactName" name="name" type="text" placeholder="Your name" aria-label="Your name" autocomplete="name">
+        <input id="contactEmail" name="email" type="email" placeholder="Your email" aria-label="Your email" autocomplete="email">
+        <textarea id="contactMessage" name="message" placeholder="Your message" aria-label="Your message"></textarea>
+        <button class="btn btn-orange" type="submit">Send message</button>
+        <p id="contactMsg" role="status"></p>
+      </form>
+    </div>
+    <div class="foot-bottom">© 2026 Vaughn Tucker Art Academy. All rights reserved.</div>
+  </div>
+</footer>
 
 <script>
 function handleJoin(){
@@ -985,157 +304,27 @@ function handleJoin(){
   const last=document.getElementById('joinLast').value.trim();
   const email=document.getElementById('joinEmail').value.trim();
   const msg=document.getElementById('joinMsg');
-  if(!first){msg.style.color='#e07050';msg.textContent='Please enter your first name.';return;}
-  if(!email||!email.includes('@')){msg.style.color='#e07050';msg.textContent='Please enter a valid email address.';return;}
-
-  // Store in localStorage so they feel welcomed
+  if(!first){msg.style.color='#f0a080';msg.textContent='Please enter your first name.';return;}
+  if(!email||!email.includes('@')){msg.style.color='#f0a080';msg.textContent='Please enter a valid email address.';return;}
   localStorage.setItem('vtaa_member',JSON.stringify({first,last,email,joined:new Date().toISOString()}));
-
-  // Show success message
   msg.style.color='var(--gold)';
   msg.textContent='Welcome, '+first+'! Signing you up...';
-  document.getElementById('joinForm').style.opacity='0.5';
-  document.getElementById('joinForm').style.pointerEvents='none';
-
-  // Submit to Mailchimp via hosted form redirect
-  const mcURL='https://vaughntuckerartacademy.us5.list-manage.com/subscribe/post?u=559886487deac33ef98a51cc9&id=f7754c0807&f_id=001f40edf0';
+  const box=document.getElementById('joinForm');box.style.opacity='0.5';box.style.pointerEvents='none';
+  // Submit to Mailchimp via hosted form
   const form=document.createElement('form');
   form.method='POST';
-  form.action=mcURL;
+  form.action='https://vaughntuckerartacademy.us5.list-manage.com/subscribe/post?u=559886487deac33ef98a51cc9&id=f7754c0807&f_id=001f40edf0';
   form.target='_blank';
-
-  // Email (required)
-  const emailField=document.createElement('input');
-  emailField.type='hidden'; emailField.name='EMAIL'; emailField.value=email;
-  form.appendChild(emailField);
-
-  // First name
-  const fnField=document.createElement('input');
-  fnField.type='hidden'; fnField.name='FNAME'; fnField.value=first;
-  form.appendChild(fnField);
-
-  // Last name
-  const lnField=document.createElement('input');
-  lnField.type='hidden'; lnField.name='LNAME'; lnField.value=last;
-  form.appendChild(lnField);
-
-  // Honeypot (anti-bot)
-  const hp=document.createElement('input');
-  hp.type='hidden'; hp.name='b_559886487deac33ef98a51cc9_f7754c0807'; hp.value='';
-  form.appendChild(hp);
-
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-
-  // Take the new member to the lessons after a short delay
-  setTimeout(()=>{ window.location.href='lessons.html'; }, 2000);
+  [['EMAIL',email],['FNAME',first],['LNAME',last],['b_559886487deac33ef98a51cc9_f7754c0807','']].forEach(function(p){
+    const i=document.createElement('input');i.type='hidden';i.name=p[0];i.value=p[1];form.appendChild(i);
+  });
+  document.body.appendChild(form);form.submit();document.body.removeChild(form);
+  // joining here also unlocks the studios' member extras on this device
+  try{const s=JSON.parse(localStorage.getItem('vtaaSubscribe')||'{}');s.joined=true;localStorage.setItem('vtaaSubscribe',JSON.stringify(s));}catch(e){}
+  setTimeout(function(){ msg.textContent='Thank you, '+first+'! Check your inbox to confirm.'; box.style.opacity='1'; }, 1500);
 }
-// Also allow Enter key on email field
-document.addEventListener('DOMContentLoaded',()=>{
-  const emailInput=document.getElementById('joinEmail');
-  if(emailInput) emailInput.addEventListener('keydown',e=>{ if(e.key==='Enter') handleJoin(); });
-});
-</script>
+document.getElementById('joinEmail').addEventListener('keydown',function(e){ if(e.key==='Enter') handleJoin(); });
 
-<!-- ARTIST -->
-<section class="artist-section" id="artist">
-  <div class="artist-images">
-    <div class="artist-accent"></div>
-    <div class="artist-img">
-      <img src="assets/artwork/b87cb540d16246c6.jpg" alt="Oil painting by Vaughn Tucker">
-    </div>
-    <div class="artist-img">
-      <img src="assets/artwork/8b6fc0e96ca39649.jpg" alt="Pencil sketch by Vaughn Tucker">
-    </div>
-  </div>
-
-  <div class="artist-content">
-    <div class="section-eyebrow">Your Teacher</div>
-    <h2 class="artist-name">Vaughn Tucker —<br><em>Fine Artist</em></h2>
-    <p class="artist-bio">
-      Born in St. Ann, Jamaica, Vaughn Tucker is a self-taught fine artist whose work spans oil, acrylic, watercolor, and pencil. His paintings capture Caribbean light, community, and the beauty of the everyday — scenes that draw you in and teach you to see differently.
-      <br><br>
-      His YouTube channel, <em>Vaughn Tucker Art</em>, brings his teaching to a global audience. This academy is the next step — an interactive experience where his original artwork becomes your classroom.
-    </p>
-    <div class="artist-creds">
-      <div class="cred">Award-winning fine artist</div>
-      <div class="cred">Self-taught — oil, acrylic, watercolor & pencil</div>
-      <div class="cred">YouTube: Vaughn Tucker Art</div>
-      <div class="cred">Originally from St. Ann, Jamaica</div>
-    </div>
-  </div>
-</section>
-
-<!-- ARTICLES -->
-<section class="articles-section" id="articles">
-  <div class="articles-inner">
-    <div class="section-eyebrow">Art &amp; Faith · Technique · Reflection</div>
-    <h2 class="section-title" style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:var(--ink);margin-top:12px;">From the Academy</h2>
-    <div class="articles-grid">
-      <a href="creativity-image-of-god.html" class="article-card">
-        <div class="article-tag">Art &amp; Faith</div>
-        <div class="article-card-title">Creativity and the Image of God</div>
-        <div class="article-excerpt">When God first reveals Himself in Scripture, He reveals Himself as a Creator. Every human being is creative because we are made in His image — and every painting can be an act of worship.</div>
-        <div class="article-read">Read Article →</div>
-      </a>
-      <a href="welcome-article.html" class="article-card">
-        <div class="article-tag">Welcome</div>
-        <div class="article-card-title">A Letter from Vaughn Tucker</div>
-        <div class="article-excerpt">Why I built this academy, what I believe about art and beauty, and what I hope every student will discover through their time here.</div>
-        <div class="article-read">Read Article →</div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-top">
-    <div>
-      <div class="footer-brand">Vaughn Tucker <span>Art Academy</span></div>
-      <div class="footer-tagline">A new way to learn art.</div>
-    </div>
-    <div class="footer-links">
-      <a href="#schools">Schools</a>
-      <a href="#join">Join Free</a>
-      <a href="#artist">The Artist</a>
-      <a href="#contact">Contact</a>
-      <a href="originals-for-sale.html">Originals for Sale</a>
-      <a href="https://www.youtube.com/channel/UC3uzWQMzWj23fplcIZ5iQgg" target="_blank">YouTube</a>
-    </div>
-  </div>
-
-  <!-- CONTACT -->
-  <div class="footer-contact" id="contact">
-    <div class="footer-contact-info">
-      <h3>Get in Touch</h3>
-      <p>Have a question about the academy, want to commission a painting, or just want to say hello? I'd love to hear from you.</p>
-      <a href="mailto:info@vaughntuckerartacademy.com" class="email-link">✉ info@vaughntuckerartacademy.com</a>
-      <div class="donate-wrapper">
-        <p>Enjoying the free lessons? Your support helps keep the academy running and growing.</p>
-        <a href="https://www.paypal.com/donate/?business=vaughntuckerart%40gmail.com&item_name=Support+Vaughn+Tucker+Art+Academy&currency_code=USD" target="_blank" class="donate-btn">♥ Support the Academy</a>
-      </div>
-    </div>
-    <form class="footer-contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="contactForm">
-      <h3>Send a Message</h3>
-      <input type="hidden" name="form-name" value="contact">
-      <p class="contact-hp"><label>Leave this empty: <input name="bot-field"></label></p>
-      <input id="contactName" name="name" type="text" placeholder="Your name" aria-label="Your name" autocomplete="name">
-      <input id="contactEmail" name="email" type="email" placeholder="Your email" aria-label="Your email" autocomplete="email">
-      <textarea id="contactMessage" name="message" placeholder="Your message..." aria-label="Your message"></textarea>
-      <button type="submit">Send Message ✦</button>
-      <p id="contactMsg" role="status"></p>
-    </form>
-  </div>
-
-  <div class="footer-bottom">
-    <span>© 2026 Vaughn Tucker Art Academy. All rights reserved.</span>
-    <span style="font-family:'Caveat',cursive;font-size:1rem;opacity:0.4;">Made with paint &amp; pixels ✦</span>
-  </div>
-</footer>
-
-<script>
 // Contact form: sends the message to Netlify Forms, which emails it to the academy.
 document.getElementById('contactForm').addEventListener('submit',function(e){
   e.preventDefault();
@@ -1145,40 +334,24 @@ document.getElementById('contactForm').addEventListener('submit',function(e){
   const message=document.getElementById('contactMessage').value.trim();
   const msg=document.getElementById('contactMsg');
   const button=form.querySelector('button[type="submit"]');
-  if(!name){msg.style.color='#e07050';msg.textContent='Please enter your name.';return;}
-  if(!email||!email.includes('@')){msg.style.color='#e07050';msg.textContent='Please enter a valid email.';return;}
-  if(!message){msg.style.color='#e07050';msg.textContent='Please enter a message.';return;}
+  if(!name){msg.style.color='#f0a080';msg.textContent='Please enter your name.';return;}
+  if(!email||!email.includes('@')){msg.style.color='#f0a080';msg.textContent='Please enter a valid email.';return;}
+  if(!message){msg.style.color='#f0a080';msg.textContent='Please enter a message.';return;}
   button.disabled=true;
   msg.style.color='var(--gold)';msg.textContent='Sending...';
-  fetch('/',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:new URLSearchParams(new FormData(form)).toString()
-  }).then(function(res){
+  fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(form)).toString()})
+  .then(function(res){
     if(!res.ok) throw new Error(res.status);
     form.reset();
     msg.style.color='var(--gold)';
     msg.textContent='Thank you, '+name+'! Your message was sent. I will get back to you soon.';
   }).catch(function(){
-    msg.style.color='#e07050';
+    msg.style.color='#f0a080';
     msg.textContent='Sorry, the message could not be sent. Please email info@vaughntuckerartacademy.com instead.';
   }).finally(function(){button.disabled=false;});
 });
-
-// Phone menu: show and hide the page links
-(function(){
-  const nav=document.querySelector('nav');
-  const toggle=nav.querySelector('.menu-toggle');
-  function setOpen(open){
-    nav.classList.toggle('menu-open',open);
-    toggle.setAttribute('aria-expanded',open);
-    toggle.setAttribute('aria-label',open?'Close menu':'Open menu');
-  }
-  toggle.addEventListener('click',function(){setOpen(!nav.classList.contains('menu-open'));});
-  nav.querySelectorAll('.nav-links a').forEach(function(a){a.addEventListener('click',function(){setOpen(false);});});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});
-})();
 </script>
-<script src="/assets/subscribe.js" defer></script>
+<script src="assets/academy.js" defer></script>
+<script src="/assets/subscribe.js" data-mode="manual" defer></script>
 </body>
 </html>
