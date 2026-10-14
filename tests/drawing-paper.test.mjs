@@ -37,3 +37,10 @@ console.log('Drawing Studio checks pass: paper is separate from marks; community
  for(const m of list.matchAll(/min:([\d.]+),max:([\d.]+)/g))assert.ok(+m[2]/+m[1]>=60,'each brush has a wide size range');
  assert.ok(html.includes("Math.exp(L0+(L1-L0)*t/1000)"),'size slider is curved for fine control');
  assert.ok(html.includes("['Fine',0],['Small'")&&html.includes("'Pencil pressure'"),'quick sizes and pressure control are offered');}
+// Visitor and free-member levels for replay videos (shared by both studios).
+{const rp=fs.readFileSync(new URL('../site/assets/replay.js',import.meta.url),'utf8'),sub=fs.readFileSync(new URL('../site/assets/subscribe.js',import.meta.url),'utf8');
+ assert.ok(rp.includes("const total = m ? ui.len : 15"),'visitors make 15-second videos; members choose 30 or 60');
+ assert.ok(rp.includes("(m ? HD : SD)[f]")&&rp.includes("x.scale(k, k)"),'members get HD videos');
+ assert.ok(rp.includes("VTSubscribe.unlock(")&&sub.includes("isMember:")&&sub.includes("unlock: unlock"),'locked options offer free signup');
+ assert.ok(sub.includes('Under 13? Please ask a parent'),'children are asked to use a parent email');
+ assert.ok(sub.includes(".vt-sub [hidden]{display:none!important;}"),'sign-up form hides after joining');}

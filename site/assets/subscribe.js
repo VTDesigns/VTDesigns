@@ -2,7 +2,9 @@
    Content pages: a small card slides up once the visitor has read part of the page (or after a while).
    Studio pages (data-mode="manual" on the script tag): it never interrupts painting; the studio calls
    VTSubscribe.prompt() after a drawing or painting is saved.
-   "Not now" hides it for two weeks; signing up hides it for good. Uses the Academy's Mailchimp list. */
+   "Not now" hides it for two weeks; signing up hides it for good. Uses the Academy's Mailchimp list.
+   Free members: once someone joins, this device remembers it (no password). The studios call
+   VTSubscribe.isMember() to unlock member extras, and VTSubscribe.unlock(fn) to offer joining right away. */
 (function(){
   'use strict';
   var MC = 'https://vaughntuckerartacademy.us5.list-manage.com/subscribe/post-json?u=559886487deac33ef98a51cc9&id=f7754c0807&f_id=001f40edf0';
@@ -27,6 +29,7 @@
     'box-shadow:0 2px 6px rgba(27,42,74,.10),0 16px 40px -8px rgba(27,42,74,.35);border-top:4px solid #C9A84C;' +
     'transform:translateY(24px);opacity:0;transition:transform .45s ease,opacity .45s ease;}' +
   '.vt-sub.vt-in{transform:none;opacity:1;}' +
+  '.vt-sub [hidden]{display:none!important;}' +
   '.vt-sub h2{margin:0 36px 6px 0;font:600 26px/1.15 "Cormorant Garamond",Garamond,Georgia,serif;color:#1B2A4A;}' +
   '.vt-sub p{margin:0 0 14px;font-size:16px;line-height:24px;color:#1B2A4A;}' +
   '.vt-sub form{display:flex;flex-wrap:wrap;gap:8px;margin:0;}' +
@@ -44,23 +47,26 @@
   '@media (max-width:600px){.vt-sub{left:16px;right:16px;bottom:16px;width:auto;max-width:none;}}' +
   '@media (prefers-reduced-motion:reduce){.vt-sub{transition:none;transform:none;}}';
 
-  var el = null, shown = false;
+  var el = null, shown = false, onJoin = null;
   function build(context){
     if(!document.getElementById('vt-sub-css')){ var st = document.createElement('style'); st.id = 'vt-sub-css'; st.textContent = CSS; document.head.appendChild(st); }
     el = document.createElement('aside');
     el.className = 'vt-sub'; el.setAttribute('aria-labelledby', 'vt-sub-h');
-    var lead = (context === 'saved' ? 'Nice work. ' : '') +
-      'Joining is free, and so are all the drawing and painting tools. My lessons come both ways: some free, some paid courses. Subscribers get the free ones and hear first when a new course opens.';
+    var unlock = context === 'unlock';
+    var lead = unlock ?
+      'Join free to make longer videos (30 or 60 seconds) in HD, with your name on them. You will also get my free lessons and hear first when a new course opens.' :
+      ((context === 'saved' || context === 'video' ? 'Nice work. ' : '') +
+      'Joining is free, and so are all the drawing and painting tools. My lessons come both ways: some free, some paid courses. Subscribers get the free ones and hear first when a new course opens.');
     el.innerHTML =
       '<button type="button" class="vt-x" aria-label="Close">&times;</button>' +
-      '<h2 id="vt-sub-h">Learn with me</h2>' +
+      '<h2 id="vt-sub-h">' + (unlock ? 'Unlock longer HD videos' : 'Learn with me') + '</h2>' +
       '<p></p>' +
       '<form novalidate>' +
         '<label for="vt-sub-email">Your email address</label>' +
         '<input id="vt-sub-email" type="email" name="EMAIL" autocomplete="email" placeholder="Your email address" required>' +
         '<button type="submit" class="vt-go">Join free</button>' +
       '</form>' +
-      '<small>Free to join. Unsubscribe whenever you like.</small>' +
+      '<small>Free to join. Unsubscribe whenever you like.' + (unlock ? ' Under 13? Please ask a parent to type in their email.' : '') + '</small>' +
       '<p class="vt-msg" role="status" aria-live="polite" hidden></p>' +
       '<button type="button" class="vt-later">Not now</button>';
     el.querySelector('p').textContent = lead;
@@ -78,7 +84,14 @@
     build(context || 'page');
   }
   function hide(){ if(!el) return; el.classList.remove('vt-in'); var e = el; setTimeout(function(){ if(e.parentNode) e.parentNode.removeChild(e); }, 450); el = null; }
-  function snooze(){ var s = load(); s.until = Date.now() + SNOOZE_DAYS * 864e5; save(s); hide(); }
+  function snooze(){ var s = load(); if(!onJoin){ s.until = Date.now() + SNOOZE_DAYS * 864e5; save(s); } onJoin = null; hide(); }
+  // Offer joining now, because the visitor asked for a member extra. Shown even if "Not now" was pressed before.
+  function unlock(fn){
+    if(load().joined){ if(fn) fn(); return; }
+    if(el){ var old = el; el = null; if(old.parentNode) old.parentNode.removeChild(old); }
+    onJoin = fn || null; shown = true; build('unlock');
+    var i = el.querySelector('input[type=email]'); setTimeout(function(){ try{ i.focus(); }catch(_){ } }, 350);
+  }
 
   function message(text, isErr){
     var m = el.querySelector('.vt-msg'); m.hidden = false; m.textContent = text; m.classList.toggle('vt-err', !!isErr);
@@ -105,9 +118,11 @@
   }
   function joined(already){
     var s = load(); s.joined = true; save(s);
+    var fn = onJoin; onJoin = null; if(fn) try{ fn(); }catch(_){}
+    try{ window.dispatchEvent(new Event('vtaa-joined')); }catch(_){}
     el.querySelector('form').hidden = true; el.querySelector('small').hidden = true; el.querySelector('.vt-later').hidden = true;
     el.querySelector('p').hidden = true;
-    message(already ? 'You are already on the list. Thank you for learning with me.' : 'Thank you! Check your inbox for an email to confirm. Then you will get free lessons and news of new courses.');
+    message((already ? 'You are already on the list. Thank you for learning with me.' : 'Thank you! Check your inbox for an email to confirm. Then you will get free lessons and news of new courses.') + (fn ? ' Longer HD videos are now unlocked on this device.' : ''));
     setTimeout(hide, 7000);
   }
   function fallback(email){
@@ -116,7 +131,10 @@
     [['EMAIL', email], [HONEYPOT, '']].forEach(function(p){ var i = document.createElement('input'); i.type = 'hidden'; i.name = p[0]; i.value = p[1]; f.appendChild(i); });
     document.body.appendChild(f); f.submit(); document.body.removeChild(f);
     var b = el.querySelector('.vt-go'); b.disabled = false; b.textContent = 'Join free';
-    message('A Mailchimp page opened in a new tab to finish signing up.');
+    // count them as joined on this device: they have reached Mailchimp's own sign-up page with their email
+    var s = load(); s.joined = true; save(s); var fn = onJoin; onJoin = null; if(fn) try{ fn(); }catch(_){}
+    try{ window.dispatchEvent(new Event('vtaa-joined')); }catch(_){}
+    message('A Mailchimp page opened in a new tab to finish signing up.' + (fn ? ' Longer HD videos are now unlocked on this device.' : ''));
   }
 
   function auto(){
@@ -137,6 +155,10 @@
     if(b && input && /@/.test(input.value)){ var s = load(); s.joined = true; save(s); }
   }, true);
 
-  window.VTSubscribe = { prompt: function(context){ setTimeout(function(){ show(context || 'saved'); }, 1200); } };
+  window.VTSubscribe = {
+    prompt: function(context){ setTimeout(function(){ show(context || 'saved'); }, 1200); },
+    isMember: function(){ return !!load().joined; },
+    unlock: unlock
+  };
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auto); else auto();
 })();
