@@ -44,3 +44,7 @@ console.log('Drawing Studio checks pass: paper is separate from marks; community
  assert.ok(rp.includes("VTSubscribe.unlock(")&&sub.includes("isMember:")&&sub.includes("unlock: unlock"),'locked options offer free signup');
  assert.ok(sub.includes('Under 13? Please ask a parent'),'children are asked to use a parent email');
  assert.ok(sub.includes(".vt-sub [hidden]{display:none!important;}"),'sign-up form hides after joining');}
+// Finished videos open the device's share menu (Save Video to Photos, YouTube, Instagram…), with a file download as the fallback.
+{const rp=fs.readFileSync(new URL('../site/assets/replay.js',import.meta.url),'utf8');
+ assert.ok(rp.includes('navigator.share({files:[f]')&&rp.includes('Save to Photos or share'),'videos can be saved to Photos or shared');
+ assert.ok(rp.includes("data-a=\"file\"")&&rp.includes('function download('),'saving as a file is still offered');}
