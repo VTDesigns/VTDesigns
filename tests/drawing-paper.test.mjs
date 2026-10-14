@@ -32,3 +32,8 @@ assert.ok(fs.existsSync(new URL('../site/assets/replay.js',import.meta.url)),'re
 for(const page of [html,oil])assert.ok(page.indexOf('src="/assets/replay.js"')>0&&page.indexOf('src="/assets/replay.js"')<page.indexOf('StudioReplay.create'),'studio loads the replay script before using it');
 assert.ok(sw.includes("'/assets/replay.js'"),'offline helper keeps the replay script');
 console.log('Drawing Studio checks pass: paper is separate from marks; community hand-off and project banner intact.');
+// Brush sizes: every tool reaches from very fine to very large, the size slider is curved, and pen pressure can be adjusted.
+{const list=html.slice(html.indexOf('const BRUSHES=['),html.indexOf('];',html.indexOf('const BRUSHES=[')));
+ for(const m of list.matchAll(/min:([\d.]+),max:([\d.]+)/g))assert.ok(+m[2]/+m[1]>=60,'each brush has a wide size range');
+ assert.ok(html.includes("Math.exp(L0+(L1-L0)*t/1000)"),'size slider is curved for fine control');
+ assert.ok(html.includes("['Fine',0],['Small'")&&html.includes("'Pencil pressure'"),'quick sizes and pressure control are offered');}
