@@ -48,6 +48,10 @@
 .sr-perks{border:1px solid rgba(201,148,58,.45);border-radius:10px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;}
 .sr-perks p{flex:1 1 220px;}
 .sr-perks[hidden],.sr-row[hidden]{display:none;}
+.sr-ready{border:1px solid #c9943a;border-radius:10px;padding:12px;display:grid;gap:10px;background:rgba(201,148,58,.1);}
+.sr-ready[hidden]{display:none;}
+.sr-ready p{color:#fdfaf4;font-size:14px;}
+.sr-ready button.go{font-size:16px;min-height:48px;padding:0 22px;}
 .sr-note{font-size:13px;color:rgba(253,250,244,.75);text-align:center;min-height:1.2em;}
 @media (prefers-reduced-motion:reduce){.sr-veil *{transition:none!important;}}`;
 
@@ -99,6 +103,10 @@
           <div class="sr-row" data-g="name"><b>Your name</b><input type="text" data-f="name" maxlength="40" placeholder="Optional, shown as: by Maria" aria-label="Your name shown on the video"></div>
           <div class="sr-perks" data-g="perks"><p>Free members make 30 and 60 second videos in HD, with their name on them.</p><button class="go" data-a="join">Join free to unlock</button></div>
           <div class="sr-row"><button class="go" data-a="make">Make video</button><span class="sr-q" style="font-size:13px;color:rgba(253,250,244,.7)"></span></div>
+          <div class="sr-ready" data-g="ready" hidden>
+            <p><b>Your video is ready.</b> Tap below, then choose <b>Save Video</b> to put it in your Photos, or pick YouTube, Instagram, TikTok, WhatsApp or Messages to post it.</p>
+            <div class="sr-row"><button class="go" data-a="share">Save to Photos or share</button><button data-a="file">Save as a file instead</button></div>
+          </div>
         </section>
         <div class="sr-note" role="status"></div>
       </div>`;
@@ -106,7 +114,9 @@
       const q = s => v.querySelector(s);
       ui = {v, cv:q('.sr-stage canvas'), play:q('[data-a=play]'), pos:q('input[type=range]'), speed:q('[data-a=speed]'), note:q('.sr-note'),
             title:q('[data-f=title]'), name:q('[data-f=name]'), make:q('[data-a=make]'), fmt:'tall', len:15,
-            nameRow:q('[data-g=name]'), perks:q('[data-g=perks]'), qual:q('.sr-q')};
+            nameRow:q('[data-g=name]'), perks:q('[data-g=perks]'), qual:q('.sr-q'), ready:q('[data-g=ready]'), video:null};
+      q('[data-a=share]').onclick = shareVideo;
+      q('[data-a=file]').onclick = () => { if(ui.video){ download(ui.video.blob, ui.video.file); ui.note.textContent = 'Saved as a file: ' + ui.video.file + '. On iPad it is in the Files app, under Downloads.'; } };
       try{ ui.name.value = localStorage.getItem('vtaaVideoName') || ''; }catch(_){}
       ui.name.oninput = () => { try{ localStorage.setItem('vtaaVideoName', ui.name.value.trim()); }catch(_){} };
       q('[data-a=join]').onclick = () => window.VTSubscribe && VTSubscribe.unlock(levels);
@@ -201,6 +211,7 @@
     async function makeVideo(){
       const type = ['video/mp4;codecs=avc1.42E01E', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t));
       if(!type){ ui.note.textContent = 'This browser cannot make videos. Try Safari or Chrome.'; return; }
+      ui.ready.hidden = true; ui.video = null;
       const m = member(), f = ui.fmt, F = FORMATS[f], title = ui.title.value.trim(), name = m ? ui.name.value.trim() : '';
       const total = m ? ui.len : 15, k = (m ? HD : SD)[f], outroS = 2.5, introS = (title || name) ? 1.2 : 0.4;
       clearTimeout(p.timer); p.playing = false; ui.play.textContent = 'Play';
@@ -234,8 +245,16 @@
         holder.replaceChild(keep, c);
         const blob = new Blob(parts, {type:type.split(';')[0]}), ext = type.startsWith('video/mp4') ? 'mp4' : 'webm';
         const file = 'vtaa-' + noun + '-' + F.file + (m ? '-hd' : '') + '.' + ext;
-        await save(blob, file);
-        ui.note.textContent = 'Video saved: ' + file + (ext === 'webm' ? '. YouTube accepts this file; for Instagram, make it in Safari for an MP4.' : '');
+        ui.video = {blob, file};
+        if(opts.save){ await opts.save(blob, file); ui.note.textContent = 'Video saved: ' + file; }
+        else if(canShareFile(blob, file)){
+          // A phone or tablet only lets a page open the share menu straight after a tap, so we ask for one more tap.
+          ui.note.textContent = ''; ui.ready.hidden = false; ui.ready.querySelector('[data-a=share]').focus();
+          ui.ready.scrollIntoView({block:'nearest', behavior:'smooth'});
+        }else{
+          download(blob, file);
+          ui.note.textContent = 'Video saved: ' + file + (ext === 'webm' ? '. YouTube accepts this file; for Instagram, make it in Safari for an MP4.' : '');
+        }
         if(!m && window.VTSubscribe) VTSubscribe.prompt('video');   // a gentle invitation after a visitor's video
       }catch(err){
         ui.note.textContent = 'The video could not be made on this device.';
@@ -243,8 +262,24 @@
       }
       ui.make.disabled = false; ui.make.textContent = label;
     }
-    async function save(blob, name){
-      if(opts.save){ await opts.save(blob, name); return; }
+    function videoFile(blob, name){ try{ return new File([blob], name, {type: blob.type || 'video/mp4'}); }catch(_){ return null; } }
+    function canShareFile(blob, name){
+      const f = videoFile(blob, name);
+      try{ return !!(f && navigator.canShare && navigator.share && navigator.canShare({files:[f]})); }catch(_){ return false; }
+    }
+    async function shareVideo(){
+      if(!ui.video) return;
+      const f = videoFile(ui.video.blob, ui.video.file);
+      try{
+        await navigator.share({files:[f], title:'My ' + noun + ' · ' + BRAND, text:'Made at ' + URL_TXT});
+        ui.ready.hidden = true; ui.note.textContent = 'Done. If you chose Save Video, it is in your Photos.';
+      }catch(err){
+        if(err && err.name === 'AbortError') return;   // they closed the share menu; the buttons stay so they can try again
+        download(ui.video.blob, ui.video.file);
+        ui.note.textContent = 'Sharing did not open, so the video was saved as a file: ' + ui.video.file + '.';
+      }
+    }
+    function download(blob, name){
       const url = URL.createObjectURL(blob), a = document.createElement('a');
       a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 15000);
     }
