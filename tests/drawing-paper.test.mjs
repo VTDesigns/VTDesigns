@@ -48,3 +48,9 @@ console.log('Drawing Studio checks pass: paper is separate from marks; community
 {const rp=fs.readFileSync(new URL('../site/assets/replay.js',import.meta.url),'utf8');
  assert.ok(rp.includes('navigator.share({files:[f]')&&rp.includes('Save to Photos or share'),'videos can be saved to Photos or shared');
  assert.ok(rp.includes("data-a=\"file\"")&&rp.includes('function download('),'saving as a file is still offered');}
+// Home page: two doors (Kids and Adult Studio), the anchors other pages link to, and one sign-up.
+{const home=fs.readFileSync(new URL('../site/index.html',import.meta.url),'utf8');
+ assert.ok(home.includes('href="kids.html"')&&home.includes('href="adults.html"'),'home page has the Kids and Adult Studio doors');
+ for(const id of ['schools','join','artist','contact','difference','parents'])assert.ok(home.includes(`id="${id}"`),'home page keeps the #'+id+' link target');
+ for(const f of ['kids.html','adults.html'])assert.ok(fs.existsSync(new URL('../site/'+f,import.meta.url)),f+' exists');
+ assert.ok(home.includes('subscribe.js" data-mode="manual"'),'no sign-up pop-up on top of the home page sign-up form');}
