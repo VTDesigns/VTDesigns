@@ -48,3 +48,9 @@ console.log('Drawing Studio checks pass: paper is separate from marks; community
 {const rp=fs.readFileSync(new URL('../site/assets/replay.js',import.meta.url),'utf8');
  assert.ok(rp.includes('navigator.share({files:[f]')&&rp.includes('Save to Photos or share'),'videos can be saved to Photos or shared');
  assert.ok(rp.includes("data-a=\"file\"")&&rp.includes('function download('),'saving as a file is still offered');}
+// Video-shaped pages: both studios offer a YouTube (16:9) and a Shorts (9:16) page, and a tall picture fills a tall video.
+{const oil=fs.readFileSync(new URL('../site/oil-studio.html',import.meta.url),'utf8'),rp=fs.readFileSync(new URL('../site/assets/replay.js',import.meta.url),'utf8');
+ for(const [page,w,h] of [[html,1920,1080],[oil,1600,900]]){
+  assert.ok(page.includes(`'YouTube video (wide)':[${w},${h}]`)&&page.includes(`'Shorts video (tall)':[${h},${w}]`),'YouTube and Shorts pages are offered');
+  assert.equal(w*9,h*16,'the YouTube page is exactly 16:9');}
+ assert.ok(rp.includes("f === 'tall' && tallArt"),'a Shorts-shaped picture gets the taller frame in tall videos');}

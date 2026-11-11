@@ -164,7 +164,11 @@
       const list = frames.concat(last ? [last] : []);
       if(list.length < 4){ toast(`Keep going a little longer first. The replay records your ${noun} as you work.`); return; }
       if(!ui) build();
-      const first = await createImageBitmap(list[0]); ui.cv.width = first.width; ui.cv.height = first.height; if(first.close) first.close();
+      const first = await createImageBitmap(list[0]); ui.cv.width = first.width; ui.cv.height = first.height;
+      // a YouTube- or Shorts-shaped picture starts with the matching video shape chosen
+      const shape = first.width / first.height > 1.5 ? 'wide' : first.height / first.width > 1.5 ? 'tall' : '';
+      if(shape){ const b = ui.v.querySelector('[data-g=fmt] [data-k=' + shape + ']'); if(b) b.click(); }
+      if(first.close) first.close();
       p = {list, i:0, playing:true, speed:1, timer:0};
       ui.pos.max = list.length - 1; ui.speed.textContent = '1×'; ui.note.textContent = '';
       const canRecord = !!(window.MediaRecorder && HTMLCanvasElement.prototype.captureStream);
@@ -179,13 +183,15 @@
       for(const w of words){ const t = line ? line + ' ' + w : w; if(x.measureText(t).width > maxW && line){ lines.push(line); line = w; } else line = t; }
       if(line) lines.push(line); return lines.slice(0, 2);
     }
-    function layout(f){
+    function layout(f, tallArt){
+      // a Shorts-shaped picture gets a taller frame so it fills more of a tall video
+      if(f === 'tall' && tallArt) return {art:[60, 225, 600, 870], title:{x:360, y:170, size:46, align:'center', maxW:640}, brand:{x:360, y:1152, size:38, align:'center'}, url:{x:360, y:1202, size:28, align:'center'}};
       if(f === 'wide')   return {art:[40, 64, 1200, 590], title:{x:40, y:44, size:30, align:'left', maxW:1200}, brand:{x:40, y:694, size:22, align:'left'}, url:{x:1240, y:694, size:20, align:'right'}};
       if(f === 'square') return {art:[60, 140, 960, 790], title:{x:540, y:84, size:40, align:'center', maxW:960}, brand:{x:540, y:996, size:34, align:'center'}, url:{x:540, y:1042, size:26, align:'center'}};
       return                {art:[36, 300, 648, 720], title:{x:360, y:170, size:46, align:'center', maxW:640}, brand:{x:360, y:1120, size:38, align:'center'}, url:{x:360, y:1172, size:28, align:'center'}};
     }
     function paint(x, f, bmp, title, outro, name){
-      const F = FORMATS[f], L = layout(f);
+      const F = FORMATS[f], L = layout(f, bmp.height / bmp.width > 1.5);
       x.fillStyle = '#14100a'; x.fillRect(0, 0, F.w, F.h);
       const [ax, ay, aw, ah] = L.art, k = Math.min(aw / bmp.width, ah / bmp.height), w = bmp.width * k, h = bmp.height * k;
       const dx = ax + (aw - w) / 2, dy = ay + (ah - h) / 2;
