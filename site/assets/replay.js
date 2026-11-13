@@ -18,7 +18,25 @@
   };
   const HD = {wide:1.5, tall:1.5, square:1};          // members: 1920×1080, 1080×1920, 1080×1080
   const SD = {wide:1, tall:1, square:720/1080};       // visitors: 1280×720, 720×1280, 720×720
-  const member = () => !!(window.VTSubscribe && window.VTSubscribe.isMember());
+  /* Owner mode: Vaughn opens a studio once with his private ?owner=… link and that device has no video limits
+     (every length, HD, no sign-up). Only a fingerprint of the code is kept here, so the code cannot be read from this file.
+     ?owner=off turns it back off on that device. */
+  const OWNER_KEY = 'vtaaOwner', OWNER_HASH = 'bedc944f9187e896675afdf4170055be3121d11bea70444d2383fa280d50e1be';
+  let owner = false, ownerNote = '';
+  const sha = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
+  const ownerReady = (async () => {
+    try{
+      const u = new URL(location.href), code = u.searchParams.get('owner');
+      if(code !== null){
+        u.searchParams.delete('owner'); history.replaceState(null, '', u.pathname + u.search + u.hash);
+        if(code === 'off'){ localStorage.removeItem(OWNER_KEY); ownerNote = 'Owner mode is off on this device.'; }
+        else if(await sha(code) === OWNER_HASH){ localStorage.setItem(OWNER_KEY, code); ownerNote = 'Owner mode is on for this device: no video limits.'; }
+        else ownerNote = 'That owner link is not right. Check it and try again.';
+      }
+      const saved = localStorage.getItem(OWNER_KEY); owner = !!saved && await sha(saved) === OWNER_HASH;
+    }catch(_){ owner = false; }
+  })();
+  const member = () => owner || !!(window.VTSubscribe && window.VTSubscribe.isMember());
   const clamp = (v,a,b) => v<a?a:v>b?b:v;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -47,7 +65,7 @@
 .sr-veil button .tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:9px;background:rgba(201,148,58,.22);color:#e8c38a;font-size:11px;}
 .sr-perks{border:1px solid rgba(201,148,58,.45);border-radius:10px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;}
 .sr-perks p{flex:1 1 220px;}
-.sr-perks[hidden],.sr-row[hidden]{display:none;}
+.sr-perks[hidden],.sr-row[hidden],.sr-veil button[hidden]{display:none;}
 .sr-ready{border:1px solid #c9943a;border-radius:10px;padding:12px;display:grid;gap:10px;background:rgba(201,148,58,.1);}
 .sr-ready[hidden]{display:none;}
 .sr-ready p{color:#fdfaf4;font-size:14px;}
@@ -59,6 +77,7 @@
     let frames = [], step = 1, count = 0, busy = false, again = false, dirty = false, lastT = 0, ui = null, p = null;
     const toast = opts.toast || (()=>{});
     const noun = opts.noun || 'drawing';
+    ownerReady.then(() => { if(ownerNote){ toast(ownerNote); ownerNote = ''; } });
 
     function small(){
       const src = opts.snapshot(); if(!src || !src.width) return null;
@@ -123,7 +142,7 @@
       const fmtRow = q('[data-g=fmt]'), lenRow = q('[data-g=len]');
       Object.entries(FORMATS).forEach(([k,f]) => { const b = document.createElement('button'); b.textContent = f.label; b.dataset.k = k;
         b.onclick = () => { ui.fmt = k; [...fmtRow.querySelectorAll('button')].forEach(x => x.classList.toggle('on', x === b)); }; fmtRow.append(b); });
-      [15,30,60].forEach(s => { const b = document.createElement('button'); b.dataset.s = s;
+      [15,30,60,120,180].forEach(s => { const b = document.createElement('button'); b.dataset.s = s;
         b.onclick = () => {
           if(s > 15 && !member()){ if(window.VTSubscribe) VTSubscribe.unlock(() => { levels(); b.click(); }); return; }
           ui.len = s; [...lenRow.querySelectorAll('button')].forEach(x => x.classList.toggle('on', x === b)); }; lenRow.append(b); });
@@ -143,10 +162,13 @@
     function levels(){
       if(!ui) return; const m = member();
       [...ui.lenRow.querySelectorAll('button')].forEach(b => { const s = +b.dataset.s, locked = s > 15 && !m;
-        b.innerHTML = s + ' seconds' + (locked ? '<span class="tag">free members</span>' : ''); b.classList.toggle('lock', locked); });
+        b.hidden = s > 60 && !owner;   // 2 and 3 minute videos are for the owner only
+        b.innerHTML = (s > 60 ? (s / 60) + ' minutes' : s + ' seconds') + (locked ? '<span class="tag">free members</span>' : ''); b.classList.toggle('lock', locked); });
+      if(!owner && ui.len > 60) ui.len = 60;
+      [...ui.lenRow.querySelectorAll('button')].forEach(x => x.classList.toggle('on', +x.dataset.s === ui.len));
       if(!m && ui.len > 15){ ui.len = 15; [...ui.lenRow.querySelectorAll('button')].forEach(x => x.classList.toggle('on', x.dataset.s === '15')); }
       ui.nameRow.hidden = !m; ui.perks.hidden = m;
-      ui.qual.textContent = m ? 'HD quality' : 'Standard quality';
+      ui.qual.textContent = owner ? 'HD quality, no limits (owner)' : m ? 'HD quality' : 'Standard quality';
     }
     async function show(i){
       const b = await createImageBitmap(p.list[i]); const x = ui.cv.getContext('2d');
@@ -160,11 +182,16 @@
       p.timer = setTimeout(async () => { await show(p.i + 1); tick(); }, 1000 / fps());
     }
     async function open(){
+      await ownerReady;
       let last = null; try{ const c = small(); if(c) last = await new Promise(r => c.toBlob(r, 'image/jpeg', .9)); }catch(_){}
       const list = frames.concat(last ? [last] : []);
       if(list.length < 4){ toast(`Keep going a little longer first. The replay records your ${noun} as you work.`); return; }
       if(!ui) build();
-      const first = await createImageBitmap(list[0]); ui.cv.width = first.width; ui.cv.height = first.height; if(first.close) first.close();
+      const first = await createImageBitmap(list[0]); ui.cv.width = first.width; ui.cv.height = first.height;
+      // a YouTube- or Shorts-shaped picture starts with the matching video shape chosen
+      const shape = first.width / first.height > 1.5 ? 'wide' : first.height / first.width > 1.5 ? 'tall' : '';
+      if(shape){ const b = ui.v.querySelector('[data-g=fmt] [data-k=' + shape + ']'); if(b) b.click(); }
+      if(first.close) first.close();
       p = {list, i:0, playing:true, speed:1, timer:0};
       ui.pos.max = list.length - 1; ui.speed.textContent = '1×'; ui.note.textContent = '';
       const canRecord = !!(window.MediaRecorder && HTMLCanvasElement.prototype.captureStream);
@@ -179,13 +206,15 @@
       for(const w of words){ const t = line ? line + ' ' + w : w; if(x.measureText(t).width > maxW && line){ lines.push(line); line = w; } else line = t; }
       if(line) lines.push(line); return lines.slice(0, 2);
     }
-    function layout(f){
+    function layout(f, tallArt){
+      // a Shorts-shaped picture gets a taller frame so it fills more of a tall video
+      if(f === 'tall' && tallArt) return {art:[60, 225, 600, 870], title:{x:360, y:170, size:46, align:'center', maxW:640}, brand:{x:360, y:1152, size:38, align:'center'}, url:{x:360, y:1202, size:28, align:'center'}};
       if(f === 'wide')   return {art:[40, 64, 1200, 590], title:{x:40, y:44, size:30, align:'left', maxW:1200}, brand:{x:40, y:694, size:22, align:'left'}, url:{x:1240, y:694, size:20, align:'right'}};
       if(f === 'square') return {art:[60, 140, 960, 790], title:{x:540, y:84, size:40, align:'center', maxW:960}, brand:{x:540, y:996, size:34, align:'center'}, url:{x:540, y:1042, size:26, align:'center'}};
       return                {art:[36, 300, 648, 720], title:{x:360, y:170, size:46, align:'center', maxW:640}, brand:{x:360, y:1120, size:38, align:'center'}, url:{x:360, y:1172, size:28, align:'center'}};
     }
     function paint(x, f, bmp, title, outro, name){
-      const F = FORMATS[f], L = layout(f);
+      const F = FORMATS[f], L = layout(f, bmp.height / bmp.width > 1.5);
       x.fillStyle = '#14100a'; x.fillRect(0, 0, F.w, F.h);
       const [ax, ay, aw, ah] = L.art, k = Math.min(aw / bmp.width, ah / bmp.height), w = bmp.width * k, h = bmp.height * k;
       const dx = ax + (aw - w) / 2, dy = ay + (ah - h) / 2;
