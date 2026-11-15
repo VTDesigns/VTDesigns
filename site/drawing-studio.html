@@ -350,18 +350,21 @@ function renderLayers(){
   });
 }
 let hist=[],redoS=[];
-const bytes=e=>e.px?e.px.before.data.length*2:0;
-function push(e){hist.push(e);redoS=[];let tot=hist.reduce((a,x)=>a+bytes(x),0);while(hist.length>60||tot>220e6){tot-=bytes(hist.shift());}updUndo();dirty();}
-function beginEdit(L){scratch.width=st.W;scratch.height=st.H;sctx=scratch.getContext('2d',{willReadFrequently:true});sctx.drawImage(L.canvas,0,0);}
+const bytes=e=>e.px?e.px.before.width*e.px.before.height*8:0;
+// copy part of a canvas into a new small canvas (stays on the graphics chip, so it's quick)
+function crop(src,x,y,w,h){const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(src,x,y,w,h,0,0,w,h);return c;}
+function freeEntry(e){if(e&&e.px){e.px.before.width=e.px.after.width=0;}}
+function push(e){hist.push(e);redoS.forEach(freeEntry);redoS=[];let tot=hist.reduce((a,x)=>a+bytes(x),0);while(hist.length>60||tot>140e6){const o=hist.shift();tot-=bytes(o);freeEntry(o);}updUndo();dirty();}
+function beginEdit(L){if(scratch.width!==st.W||scratch.height!==st.H){scratch.width=st.W;scratch.height=st.H;}sctx=scratch.getContext('2d');sctx.clearRect(0,0,st.W,st.H);sctx.drawImage(L.canvas,0,0);}
 function endEdit(L,bb,list){
   let x=0,y=0,w=st.W,h=st.H;
   if(bb){x=clamp(Math.floor(bb.x0),0,st.W-1);y=clamp(Math.floor(bb.y0),0,st.H-1);w=clamp(Math.ceil(bb.x1),x+1,st.W)-x;h=clamp(Math.ceil(bb.y1),y+1,st.H)-y;}
-  push({px:{L,x,y,before:sctx.getImageData(x,y,w,h),after:L.ctx.getImageData(x,y,w,h)},list});thumb(L);
+  push({px:{L,x,y,before:crop(scratch,x,y,w,h),after:crop(L.canvas,x,y,w,h)},list});thumb(L);
 }
 const listSnap=()=>({order:[...st.layers],active:st.active});
 function listEdit(fn,px){const before=listSnap();fn();const e={list:{before,after:listSnap()}};if(px)e.px=px;push(e);syncDOM();}
 function applyEntry(e,dir){
-  if(e.px){e.px.L.ctx.putImageData(dir<0?e.px.before:e.px.after,e.px.x,e.px.y);thumb(e.px.L);}
+  if(e.px){const c=e.px.L.ctx,src=dir<0?e.px.before:e.px.after;c.clearRect(e.px.x,e.px.y,src.width,src.height);c.drawImage(src,e.px.x,e.px.y);thumb(e.px.L);}
   if(e.list){const s=dir<0?e.list.before:e.list.after;st.layers=[...s.order];st.active=s.active;}
   if(!st.layers.includes(st.active))st.active=st.layers[st.layers.length-1];
   syncDOM();updUndo();dirty();
@@ -456,7 +459,7 @@ function moveStroke(e){
       S.last=p;grow(S,p);
     }
   }
-  replay.drawing();
+  lastInk=performance.now();replay.drawing();
 }
 function endStroke(cancel){
   if(!S)return;const L=S.L,s=S;S=null;
@@ -660,6 +663,8 @@ work.addEventListener('pointerup',up);work.addEventListener('pointercancel',up);
 work.addEventListener('pointerleave',()=>{$('ring').style.display='none';});
 work.addEventListener('wheel',e=>{if(e.target.closest('.ui'))return;e.preventDefault();zoomAt(e.clientX,e.clientY,Math.exp(-e.deltaY*(e.ctrlKey?.01:.0018)));},{passive:false});
 document.addEventListener('gesturestart',e=>e.preventDefault());
+work.addEventListener('touchstart',e=>{const t=e.changedTouches[0];if(t&&t.touchType==='stylus'&&!e.target.closest('.ui,button,input,textarea,select,.refwin'))e.preventDefault();},{passive:false});
+work.addEventListener('touchmove',e=>{const t=e.changedTouches[0];if(t&&t.touchType==='stylus'&&!e.target.closest('.ui,.refwin'))e.preventDefault();},{passive:false});
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT'&&e.target.type!=='range')return;
   const k=e.key.toLowerCase();
@@ -846,7 +851,7 @@ function openPop(kind,anchor,ev){
     if(i>0)act('Move down',()=>listEdit(()=>{st.layers.splice(i,1);st.layers.splice(i-1,0,L);}));
     act('Make a copy',()=>{const C=mkLayer();C.ctx.drawImage(L.canvas,0,0);C.opacity=L.opacity;listEdit(()=>{st.layers.splice(i+1,0,C);st.active=C;});});
     if(i>0)act('Join with the layer below',()=>{const D=st.layers[i-1];beginEdit(D);D.ctx.globalAlpha=L.opacity;D.ctx.drawImage(L.canvas,0,0);D.ctx.globalAlpha=1;
-      const px={L:D,x:0,y:0,before:sctx.getImageData(0,0,st.W,st.H),after:D.ctx.getImageData(0,0,st.W,st.H)};listEdit(()=>{st.layers.splice(i,1);st.active=D;},px);});
+      const px={L:D,x:0,y:0,before:crop(scratch,0,0,st.W,st.H),after:crop(D.canvas,0,0,st.W,st.H)};listEdit(()=>{st.layers.splice(i,1);st.active=D;},px);});
     act('Wipe this layer clean',()=>{beginEdit(L);L.ctx.clearRect(0,0,st.W,st.H);endEdit(L);renderLayers();},'warn');
     if(st.layers.length>1)act('Delete this layer',()=>listEdit(()=>{st.layers.splice(i,1);st.active=st.layers[Math.max(0,i-1)];}),'warn');
   }else if(kind==='text'){
@@ -939,10 +944,12 @@ function newDoc(w,h,keep){
   st.vps=[{x:w*.72,y:h*.47},{x:w*.16,y:h*.47}];syncDOM();fit();updUndo();syncTools();if(!keep)dirty();
 }
 // keep the drawing on this device
-let db=null,saveT=null;
-function dirty(){clearTimeout(saveT);saveT=setTimeout(save,1200);replay.changed();}
+let db=null,saveT=null,lastInk=0;
+function dirty(){clearTimeout(saveT);saveT=setTimeout(save,2000);replay.changed();}
 function idb(){return new Promise((res,rej)=>{if(db)return res(db);const r=indexedDB.open('vtaa-studio',1);r.onupgradeneeded=()=>r.result.createObjectStore('doc');r.onsuccess=()=>res(db=r.result);r.onerror=()=>rej(r.error);});}
 async function save(){
+  // wait for a pause in drawing so saving never interrupts the pen
+  if(S||performance.now()-lastInk<1200){clearTimeout(saveT);saveT=setTimeout(save,800);return;}
   try{
     const d=await idb(),layers=await Promise.all(st.layers.map(L=>new Promise(r=>L.canvas.toBlob(b=>r({blob:b,opacity:L.opacity,visible:L.visible}),'image/png'))));
     const tx=d.transaction('doc','readwrite');tx.objectStore('doc').put({w:st.W,h:st.H,paper:st.paper,active:st.layers.indexOf(st.active),layers,color:st.color},'current');
