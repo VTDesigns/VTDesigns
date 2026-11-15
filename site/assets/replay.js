@@ -67,6 +67,14 @@
       const c = document.createElement('canvas'); c.width = Math.round(src.width*k); c.height = Math.round(src.height*k);
       const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, c.width, c.height); return c;
     }
+    let waitT = null;
+    function later(ms){ if(waitT) return; waitT = setTimeout(waitUp, ms); }
+    function waitUp(){
+      waitT = null;
+      const quiet = performance.now() - lastT;
+      if(quiet < 150){ waitT = setTimeout(waitUp, 150 - quiet + 10); return; }
+      grab();
+    }
     function grab(){
       if(busy){ again = true; return; } busy = true;
       let c; try{ c = small(); }catch(_){ c = null; }
@@ -285,8 +293,10 @@
     }
 
     return {
-      changed(){ setTimeout(grab, 0); },
-      drawing(){ const t = performance.now(); if(t - lastT > 200){ lastT = t; grab(); } },
+      // Snapshots are taken in the short gaps between strokes, never while the pen is moving,
+      // so recording the replay can't make the brush stutter.
+      changed(){ later(250); },
+      drawing(){ lastT = performance.now(); later(400); },
       reset(){ frames = []; step = 1; count = 0; dirty = true; },
       open, close,
       state(){ return {frames:frames.slice(), step}; },
