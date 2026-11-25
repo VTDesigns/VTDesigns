@@ -8,6 +8,7 @@ try { if (!sessionStorage.getItem("vtIntroSeen")) { location.replace("art-academ
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PB27M425');</script>
 <!-- End Google Tag Manager -->
+<script defer src="assets/track-events.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vaughn Tucker Art Academy</title>
@@ -992,6 +993,7 @@ function handleJoin(){
   localStorage.setItem('vtaa_member',JSON.stringify({first,last,email,joined:new Date().toISOString()}));
 
   // Show success message
+  if(window.vtTrack) vtTrack('sign_up',{method:'homepage_join'});
   msg.style.color='var(--gold)';
   msg.textContent='Welcome, '+first+'! Signing you up...';
   document.getElementById('joinForm').style.opacity='0.5';
@@ -1157,6 +1159,7 @@ document.getElementById('contactForm').addEventListener('submit',function(e){
   }).then(function(res){
     if(!res.ok) throw new Error(res.status);
     form.reset();
+    if(window.vtTrack) vtTrack('contact_message',{form_name:'contact'});
     msg.style.color='var(--gold)';
     msg.textContent='Thank you, '+name+'! Your message was sent. I will get back to you soon.';
   }).catch(function(){
